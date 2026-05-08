@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+<body class="bg-white overflow-hidden">
+
+  <!-- Top bar -->
+  <div class="fixed top-0 left-0 right-0 h-10 bg-gray-100 border-b border-gray-200 flex items-center px-3 z-50">
+    <button id="menu-btn" class="text-gray-600 hover:bg-gray-200 rounded px-2 py-1 text-base leading-none">
+      ☰
+    </button>
+  </div>
+
+  <!-- Backdrop — closes the menu on outside click -->
+  <div id="backdrop" class="hidden fixed top-10 inset-0 z-30"></div>
+
+  <!-- Side menu -->
+  <div id="side-menu" class="fixed top-10 left-0 bottom-0 w-60 bg-gray-50 border-r border-gray-200 z-40 p-5 -translate-x-full transition-transform duration-200 ease-in-out">
+
+    <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Bars per line</p>
+
+    <!-- Flowbite warning alert (hidden until triggered) -->
+    <div id="bpl-alert" class="hidden flex items-start gap-2 p-3 mb-3 text-sm text-yellow-800 rounded-lg bg-yellow-50 border border-yellow-300" role="alert">
+      <svg class="shrink-0 mt-0.5 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.506 9.506 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+      </svg>
+      <span>Only values between <strong>2 and 8</strong> are accepted.</span>
+    </div>
+
+    <input
+      id="bpl-input"
+      type="number"
+      placeholder="4"
+      class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+    />
+
+  </div>
+
+  <!-- Score area -->
+  <div id="score" class="fixed top-10 left-0 right-0 bottom-0 overflow-auto p-5"></div>
+
+  <script src="node_modules/vexflow/build/cjs/vexflow.js"></script>
+  <script src="renderer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+</body>
+</html>
