@@ -15,9 +15,35 @@ function barRow(i) { return Math.floor(i / barsPerRow); }
 function barX(i)   { return STAVE_X + barCol(i) * BAR_WIDTH; }
 function barY(i)   { return STAVE_Y0 + barRow(i) * ROW_HEIGHT; }
 
+// ── Cursor position mapping ───────────────────────────────────────────────────
+// Positions 1–10, bottom to top.
+//
+//  pos  1 → space between lines 4–5  (bottom space)
+//  pos  2 → line 4
+//  pos  3 → space between lines 3–4
+//  pos  4 → line 3  (middle)
+//  pos  5 → space between lines 2–3
+//  pos  6 → line 2
+//  pos  7 → space between lines 1–2
+//  pos  8 → line 1  (top line)
+//  pos  9 → one space above line 1
+//  pos 10 → two spaces above line 1
+//
+// Anchored to stave.getYForLine(4) so it tracks VexFlow's actual geometry
+// regardless of internal stave padding.
+
+const POSITIONS = 10;
+const SPACE     = 10; // VexFlow default px between stave lines
+
+// Centre y of position p, anchored to the real bottom line of the stave.
+function cursorCentreY(stave, p) {
+  const bottomLineY = stave.getYForLine(4); // y of notation line 5 (bottom)
+  return bottomLineY - p * 5;
+}
+
 // ── State ─────────────────────────────────────────────────────────────────────
 let bars   = [{}];
-let cursor = { barIndex: 0 };
+let cursor = { barIndex: 0, position: 1 }; // position 1 = bottom space
 
 // ── Render ────────────────────────────────────────────────────────────────────
 function render() {
@@ -48,13 +74,10 @@ function render() {
     staves.push(stave);
   });
 
-  // Cursor — a square whose side equals one stave space (10 px in VexFlow default).
-  // getNoteStartX() gives the x right after any clef/time-sig, so the
-  // cursor sits at the correct position regardless of which bar decorations are shown.
-  const SPACE = 10; // VexFlow default distance between stave lines
-  const cs    = staves[cursor.barIndex];
-  const cx    = cs.getNoteStartX() + 2;
-  const cy    = barY(cursor.barIndex) + SPACE * 2; // middle space of the stave
+  // Cursor square: side = SPACE (10 px). Centred vertically on cursorCentreY.
+  const cs   = staves[cursor.barIndex];
+  const cx   = cs.getNoteStartX() + 2;
+  const cy   = cursorCentreY(cs, cursor.position) - SPACE / 2;
 
   const svg  = div.querySelector('svg');
   const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -74,9 +97,24 @@ document.addEventListener('keydown', (e) => {
     cursor.barIndex++;
     render();
   }
+
   if (e.key === 'ArrowLeft') {
     if (cursor.barIndex > 0) {
       cursor.barIndex--;
+      render();
+    }
+  }
+
+  if (e.key === 'ArrowUp') {
+    if (cursor.position < POSITIONS) {
+      cursor.position++;
+      render();
+    }
+  }
+
+  if (e.key === 'ArrowDown') {
+    if (cursor.position > 1) {
+      cursor.position--;
       render();
     }
   }
