@@ -1,42 +1,105 @@
-import { STAVE_X, STAVE_Y0, ROW_HEIGHT, BAR_WIDTH, SPACE } from './constants.js';
+import { STAVE_X, STAVE_Y0, ROW_HEIGHT, SPACE } from './constants.js';
 import { state } from './state.js';
-import { barX, barY, barCol, cursorCentreY } from './layout.js';
+import { barRow, barCol, barY, cursorCentreY } from './layout.js';
 
-const { Renderer, Stave, StaveNote, Voice, Formatter } = VexFlow;
+// Destructure the VexFlow classes we need from the global VexFlow object.
+// VexFlow is loaded as a CJS bundle via <script> in index.html, so it's a global.
+const { Renderer, Stave, StaveNote, Voice, Formatter, Beam, Dot, Fraction } = VexFlow;
+
+// The div where the entire score SVG is rendered
 const div = document.getElementById('score');
 
-function buildTickables(bar) {
-  return [...bar.notes]
-    .sort((a, b) => a.beat - b.beat)
-    .map(note => {
-      if (note.isRest) {
-        return new StaveNote({ clef: 'percussion', keys: ['b/4'], duration: 'qr' });
-      }
-      return new StaveNote({
-        clef:           'percussion',
-        keys:           [note.vexKey],
-        duration:       'q',
-        stem_direction: note.stemDir,
-      });
-    });
+// ── Bar width calculation ─────────────────────────────────────────────────────
+// Each bar is wide enough to fit all its notes without overlap.
+// PX_PER_NOTE: pixels allocated per note (notehead width + stem clearance)
+// MIN_BAR_WIDTH: minimum bar width even if the bar is empty
+// clefPad: the first bar in each row needs extra space for the clef symbol
+const PX_PER_NOTE   = 30;
+const MIN_BAR_WIDTH = 200;
+
+function barWidth(bar, i) {
+  const clefPad = barCol(i) === 0 ? 70 : 35;
+  return Math.max(MIN_BAR_WIDTH, bar.notes.length * PX_PER_NOTE + clefPad);
 }
 
-export function render() {
-  div.innerHTML = '';
+// ── X position of a bar ───────────────────────────────────────────────────────
+// Because bar widths are dynamic, we can't multiply by a fixed width.
+// Instead we sum up the widths of all preceding bars in the same row.
+// widths: pre-computed array of bar widths (one entry per bar)
+function getBarX(i, widths) {
+  let x = STAVE_X;
+  const rowStart = barRow(i) * state.barsPerRow;  // index of the first bar on this row
+  for (let j = rowStart; j < i; j++) x += widths[j];
+  return x;
+}
 
-  const numRows     = Math.ceil(state.bars.length / state.barsPerRow);
-  const totalWidth  = STAVE_X * 2 + BAR_WIDTH * state.barsPerRow;
+// ── Build VexFlow tickable objects from a bar's notes ─────────────────────────
+// VexFlow needs an array of StaveNote objects in beat order.
+// A "tickable" is VexFlow's term for any object that takes up time (note or rest).
+//
+// For rests: duration string gets 'r' appended (e.g. 'qr' = crotchet rest).
+//            key is always 'b/4' which centres the rest on the middle line.
+// For drum notes: key is the vexKey from DRUM_DEFS, stem_direction from stemDir.
+// In VexFlow 5 the `dots` constructor option was removed — we must call
+// Dot.buildAndAttach() after construction to attach the dot modifier visually.
+// Notes are already in order (the array IS the sequence), so no sorting needed.
+function buildTickables(bar) {
+  return bar.notes.map(note => {
+    const dur = note.duration ?? 'q';
+    let sn;
+    if (note.isRest) {
+      sn = new StaveNote({ clef: 'percussion', keys: ['b/4'], duration: dur + 'r' });
+    } else {
+      sn = new StaveNote({
+        clef:           'percussion',
+        keys:           [note.vexKey],
+        duration:       dur,
+        stem_direction: note.stemDir,
+      });
+    }
+    if (note.dotted) {
+      Dot.buildAndAttach([sn], { all: true });
+    }
+    return sn;
+  });
+}
+
+// ── Main render function ──────────────────────────────────────────────────────
+// Called after every state change. Wipes the SVG and redraws everything from scratch.
+export function render() {
+  div.innerHTML = '';  // clear previous SVG
+
+  // Pre-compute every bar's pixel width so we can position them correctly
+  const widths  = state.bars.map((bar, i) => barWidth(bar, i));
+  const numRows = Math.ceil(state.bars.length / state.barsPerRow);
+
+  // Find the widest row so we can size the canvas correctly.
+  // Each row's total width = left margin + sum of bar widths in that row.
+  let maxRowW = 0;
+  for (let row = 0; row < numRows; row++) {
+    let w = STAVE_X * 2;
+    for (let col = 0; col < state.barsPerRow; col++) {
+      const idx = row * state.barsPerRow + col;
+      w += idx < state.bars.length ? widths[idx] : MIN_BAR_WIDTH;
+    }
+    maxRowW = Math.max(maxRowW, w);
+  }
+
   const totalHeight = STAVE_Y0 + numRows * ROW_HEIGHT + 40;
 
+  // Create the VexFlow SVG renderer and size it to fit all rows
   const vfRenderer = new Renderer(div, Renderer.Backends.SVG);
-  vfRenderer.resize(totalWidth, totalHeight);
+  vfRenderer.resize(maxRowW, totalHeight);
   const ctx = vfRenderer.getContext();
 
-  const staves = [];
-  let cursorTickables = null;
+  const staves = [];          // keep stave refs so we can look up cursor's stave later
+  let cursorTickables = null; // VexFlow tickable objects for the bar the cursor is in
 
   state.bars.forEach((bar, i) => {
-    const stave = new Stave(barX(i), barY(i), BAR_WIDTH);
+    // Create and draw the stave (the 5 horizontal staff lines for this bar)
+    const stave = new Stave(getBarX(i, widths), barY(i), widths[i]);
+
+    // First bar: show clef + time signature. First bar of each new row: show clef only.
     if (i === 0) {
       stave.addClef('percussion');
       stave.addTimeSignature('4/4');
@@ -48,35 +111,64 @@ export function render() {
 
     if (bar.notes.length > 0) {
       const tickables = buildTickables(bar);
+
+      // Voice tells VexFlow "this bar has 4 beats in 4/4 time".
+      // SOFT mode means VexFlow won't throw an error if the notes don't add up
+      // exactly to a full bar — useful while the user is still editing.
       const voice = new Voice({ numBeats: 4, beatValue: 4 });
       voice.setMode(Voice.Mode.SOFT);
       voice.addTickables(tickables);
 
+      // ── Beam generation must happen BEFORE voice.draw() ──────────────────
+      // When VexFlow draws a voice, it draws flags on 8th/16th notes.
+      // Beam.generateBeams() suppresses those flags and replaces them with
+      // beam bars connecting adjacent short notes.
+      // If we called generateBeams() AFTER draw(), the flags would already
+      // be drawn and visible underneath the beams.
+      //
+      // stem_direction: 1 forces all stems up (standard for percussion notation).
+      // groups: [new Fraction(1, 4)] tells VexFlow to form one beam group per
+      //   quarter-note beat. This is what makes dotted-8th + 16th beam together:
+      //   they fill exactly one beat (3 + 1 = 4 sixteenth-note ticks), so VexFlow
+      //   keeps them in the same group instead of splitting at the dot boundary.
+      const beams = Beam.generateBeams(tickables, {
+        stem_direction: 1,
+        groups: [new Fraction(1, 4)],
+      });
+
+      // Format: space the notes evenly across the available note area of the bar
+      // (stave width minus the clef/time-sig area and a small right margin)
       const noteWidth = stave.getX() + stave.getWidth() - stave.getNoteStartX() - 15;
       new Formatter().joinVoices([voice]).format([voice], noteWidth);
       voice.draw(ctx, stave);
 
+      // Draw the beam bars (connecting lines between beamed stems) after voice.draw()
+      beams.forEach(b => b.setContext(ctx).draw());
+
+      // Remember the tickables for the bar the cursor is currently in,
+      // so we can snap the cursor's x-position to the correct notehead below.
       if (i === state.cursor.barIndex) cursorTickables = tickables;
     }
   });
 
-  // ── Cursor ────────────────────────────────────────────────────────────────
-  const cs = staves[state.cursor.barIndex];
+  // ── Draw the cursor ───────────────────────────────────────────────────────
+  // The cursor is a small blue rectangle drawn on top of the VexFlow SVG.
 
-  let cx;
-  if (cursorTickables) {
-    const sorted = [...state.bars[state.cursor.barIndex].notes].sort((a, b) => a.beat - b.beat);
-    const idx    = sorted.findIndex(n => n.beat === state.cursor.beat);
-    cx = idx >= 0
-      ? cursorTickables[idx].getAbsoluteX() - SPACE / 2
-      : cs.getNoteStartX() + 2;
-  } else {
-    cx = cs.getNoteStartX() + 2;
-  }
+  const cs = staves[state.cursor.barIndex];  // the stave the cursor lives in
 
+  // cursor.noteIndex is a direct index into the bar's note array, which matches
+  // the cursorTickables array 1-to-1. No beat-searching needed.
+  const ni = state.cursor.noteIndex;
+  const cx = (cursorTickables && ni < cursorTickables.length)
+    ? cursorTickables[ni].getAbsoluteX() - SPACE / 2 + 4
+    : cs.getNoteStartX() + 2;
+
+  // cursorCentreY converts the cursor's position slot (1-10) to a pixel y using
+  // VexFlow's actual staff geometry so it lines up with the correct staff line/space
   const cy  = cursorCentreY(cs, state.cursor.position) - SPACE / 2;
   const svg = div.querySelector('svg');
 
+  // Inject the cursor rectangle directly into the SVG DOM
   const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
   rect.setAttribute('x',            cx);
   rect.setAttribute('y',            cy);

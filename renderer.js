@@ -3,21 +3,21 @@ const { Renderer, Stave, StaveNote, Voice, Formatter } = VexFlow;
 const div = document.getElementById('score');
 
 // ── Layout ────────────────────────────────────────────────────────────────────
-const STAVE_X    = 10;
-const STAVE_Y0   = 30;
+const STAVE_X = 10;
+const STAVE_Y0 = 30;
 const ROW_HEIGHT = 110;
-const BAR_WIDTH  = 200;
+const BAR_WIDTH = 200;
 
 let barsPerRow = 4;
 
 function barCol(i) { return i % barsPerRow; }
 function barRow(i) { return Math.floor(i / barsPerRow); }
-function barX(i)   { return STAVE_X + barCol(i) * BAR_WIDTH; }
-function barY(i)   { return STAVE_Y0 + barRow(i) * ROW_HEIGHT; }
+function barX(i) { return STAVE_X + barCol(i) * BAR_WIDTH; }
+function barY(i) { return STAVE_Y0 + barRow(i) * ROW_HEIGHT; }
 
 // ── Cursor vertical positions (1 = bottom space, 10 = above top line) ────────
 const POSITIONS = 10;
-const SPACE     = 10;
+const SPACE = 10;
 
 function cursorCentreY(stave, p) {
   return stave.getYForLine(4) - p * 5;
@@ -35,7 +35,7 @@ const DRUM_DEFS = {
 };
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let bars   = [{ notes: [] }];
+let bars = [{ notes: [] }];
 let cursor = { barIndex: 0, position: 1, beat: 0 };
 
 // ── Voice builder — only the notes that exist, no rests ──────────────────────
@@ -43,10 +43,10 @@ function buildTickables(bar) {
   return [...bar.notes]
     .sort((a, b) => a.beat - b.beat)
     .map(note => new StaveNote({
-      clef:           'percussion',
-      keys:           [note.vexKey],
-      duration:       'q',
-      stem_direction: note.stemDir,
+      clef: 'percussion',
+      keys: [note.vexKey],
+      duration: 'q',
+
     }));
 }
 
@@ -54,8 +54,8 @@ function buildTickables(bar) {
 function render() {
   div.innerHTML = '';
 
-  const numRows     = Math.ceil(bars.length / barsPerRow);
-  const totalWidth  = STAVE_X * 2 + BAR_WIDTH * barsPerRow;
+  const numRows = Math.ceil(bars.length / barsPerRow);
+  const totalWidth = STAVE_X * 2 + BAR_WIDTH * barsPerRow;
   const totalHeight = STAVE_Y0 + numRows * ROW_HEIGHT + 40;
 
   const vfRenderer = new Renderer(div, Renderer.Backends.SVG);
@@ -102,18 +102,18 @@ function render() {
   } else {
     cx = cs.getNoteStartX() + 2;
   }
-  const cy   = cursorCentreY(cs, cursor.position) - SPACE / 2;
+  const cy = cursorCentreY(cs, cursor.position) - SPACE / 2;
 
-  const svg  = div.querySelector('svg');
+  const svg = div.querySelector('svg');
   const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  rect.setAttribute('x',      cx);
-  rect.setAttribute('y',      cy);
-  rect.setAttribute('width',  SPACE);
+  rect.setAttribute('x', cx);
+  rect.setAttribute('y', cy);
+  rect.setAttribute('width', SPACE);
   rect.setAttribute('height', SPACE);
-  rect.setAttribute('fill',   'rgba(74,158,255,0.15)');
+  rect.setAttribute('fill', 'rgba(74,158,255,0.15)');
   rect.setAttribute('stroke', '#4a9eff');
   rect.setAttribute('stroke-width', '1.5');
-  rect.setAttribute('rx',     '2');
+  rect.setAttribute('rx', '2');
   svg.appendChild(rect);
 }
 
@@ -122,7 +122,7 @@ function placeNote(drumKey) {
   const def = DRUM_DEFS[drumKey];
   if (!def) return;
 
-  const bar      = bars[cursor.barIndex];
+  const bar = bars[cursor.barIndex];
   const usedBeats = new Set(bar.notes.map(n => n.beat));
 
   let beat = 0;
@@ -146,7 +146,7 @@ function handleDrumKey(key) {
 }
 
 // ── Keyboard ──────────────────────────────────────────────────────────────────
-const DRUM_KEYS = new Set(['0','1','2','3','4','5','6','7','8','9','.']);
+const DRUM_KEYS = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']);
 
 document.addEventListener('keydown', (e) => {
   if (DRUM_KEYS.has(e.key)) { handleDrumKey(e.key); return; }
@@ -168,7 +168,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ── Side menu ─────────────────────────────────────────────────────────────────
-const menuBtn  = document.getElementById('menu-btn');
+const menuBtn = document.getElementById('menu-btn');
 const sideMenu = document.getElementById('side-menu');
 const backdrop = document.getElementById('backdrop');
 const bplInput = document.getElementById('bpl-input');
@@ -202,14 +202,14 @@ backdrop.addEventListener('click', () => {
 });
 
 // ── Floating keypad ───────────────────────────────────────────────────────────
-const keypad       = document.getElementById('keypad');
+const keypad = document.getElementById('keypad');
 const keypadHandle = document.getElementById('keypad-handle');
 
 let dragging = false, dragOffX = 0, dragOffY = 0;
 
 keypadHandle.addEventListener('mousedown', (e) => {
   dragging = true;
-  const r  = keypad.getBoundingClientRect();
+  const r = keypad.getBoundingClientRect();
   dragOffX = e.clientX - r.left;
   dragOffY = e.clientY - r.top;
   keypadHandle.style.cursor = 'grabbing';
@@ -217,8 +217,8 @@ keypadHandle.addEventListener('mousedown', (e) => {
 });
 document.addEventListener('mousemove', (e) => {
   if (!dragging) return;
-  keypad.style.left  = (e.clientX - dragOffX) + 'px';
-  keypad.style.top   = (e.clientY - dragOffY) + 'px';
+  keypad.style.left = (e.clientX - dragOffX) + 'px';
+  keypad.style.top = (e.clientY - dragOffY) + 'px';
   keypad.style.right = 'auto';
 });
 document.addEventListener('mouseup', () => {
