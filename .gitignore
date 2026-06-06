@@ -5,3 +5,17 @@ dist/
 *.log
 npm-debug.log*
 package-lock.json
+/reflow/
+/__pycache__/
+__pycache__/
+/.agents/
+/dataset/
+/dataset 2/
+/reflow_gp5/
+/reflow_pdf/
+export_gp5.sh
+export_log.txt
+export_pdf.sh
+export_pdf_log.txt
+/labels
+/songsterr
