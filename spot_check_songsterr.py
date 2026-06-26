@@ -2,8 +2,7 @@
 """
 spot_check_songsterr.py
 
-Opens up to 30 random Songsterr bar images that contain at least one unresolved
-midi{n} note. midi{n} entries are highlighted in red.
+Opens 30 random Songsterr bar images alongside their labels in the browser.
 
 Usage: python spot_check_songsterr.py
 """
@@ -16,14 +15,6 @@ from pathlib import Path
 IMG_DIR = Path(__file__).parent / 'dataset' / 'images'
 LBL_DIR = Path(__file__).parent / 'dataset' / 'labels'
 OUT     = Path(__file__).parent / 'dataset' / 'spot_check_songsterr.html'
-
-
-def has_midi(beats: list) -> bool:
-    return any(
-        d.startswith('midi')
-        for b in beats
-        for d in b.get('drums', [])
-    )
 
 
 def drums_html(drums: list[str]) -> str:
@@ -41,38 +32,27 @@ if not imgs:
     print("No Songsterr images found. Run  python3.12 crop_bars_songsterr.py  first.")
     raise SystemExit
 
-# Only keep images whose label contains at least one midi{n} note
-midi_imgs = []
-for img_path in imgs:
-    lbl_path = LBL_DIR / (img_path.stem + '.json')
-    if not lbl_path.exists():
-        continue
-    try:
-        data = json.loads(lbl_path.read_text())
-        if has_midi(data.get('beats', [])):
-            midi_imgs.append(img_path)
-    except Exception:
-        pass
-
-if not midi_imgs:
-    print("No bars with midi{n} notes found in dataset/labels/.")
-    raise SystemExit
-
-print(f"Found {len(midi_imgs)} bars with midi{{n}} notes. Sampling 30.")
-sample = random.sample(midi_imgs, min(30, len(midi_imgs)))
+sample = random.sample(imgs, min(30, len(imgs)))
 
 rows = []
 for img_path in sorted(sample):
     lbl_path = LBL_DIR / (img_path.stem + '.json')
+    if not lbl_path.exists():
+        continue
+
     data  = json.loads(lbl_path.read_text())
     beats = data.get('beats', [])
 
-    beat_html = ''.join(
-        f'<tr><td>{b["beat"]}</td>'
-        f'<td>{b["duration"]}</td>'
-        f'<td>{drums_html(b["drums"])}</td></tr>'
-        for b in beats
-    )
+    beat_html = ''
+    for b in beats:
+        rest_style = ' style="color:#888"' if b.get('rest') else ''
+        beat_html += (
+            f'<tr{rest_style}>'
+            f'<td>{b["beat"]}</td>'
+            f'<td>{b["duration"]}</td>'
+            f'<td>{"rest" if b.get("rest") else drums_html(b["drums"])}</td>'
+            f'</tr>'
+        )
 
     rows.append(f"""
     <div class="card">
@@ -91,7 +71,7 @@ html = f"""<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<title>Spot Check — midi notes ({len(rows)} bars)</title>
+<title>Spot Check Songsterr — {len(rows)} bars</title>
 <style>
   body {{ font-family: monospace; background: #1a1a1a; color: #eee; padding: 20px; }}
   h1   {{ color: #f4a261; }}
@@ -109,8 +89,8 @@ html = f"""<!DOCTYPE html>
 </style>
 </head>
 <body>
-<h1>Spot Check — bars with unresolved midi{{n}} notes ({len(rows)} shown, {len(midi_imgs)} total)</h1>
-<p style="color:#aaa">Only bars containing at least one <span class="midi">midi{{n}}</span> entry are shown. Run again for a new sample.</p>
+<h1>Spot Check — Songsterr ({len(rows)} random bars)</h1>
+<p style="color:#aaa">Check that each image matches its label. Run the script again to get a new random sample.</p>
 {''.join(rows)}
 </body>
 </html>"""

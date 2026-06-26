@@ -222,8 +222,10 @@ class GpifParser:
                             "tuplet_num": tuplet_num,
                             "tuplet_den": tuplet_den,
                             "pitches":    set(),
+                            "is_rest":    False,
                         }
                     events[offset]["pitches"].update(pitches)
+                    events[offset]["is_rest"] = False
                     # Keep the shortest (most specific) duration at this offset
                     existing = NOTE_VALUES.get(events[offset]["note_value"], Fraction(1, 4))
                     incoming = NOTE_VALUES.get(note_value, Fraction(1, 4))
@@ -234,6 +236,16 @@ class GpifParser:
                             "tuplet_num": tuplet_num,
                             "tuplet_den": tuplet_den,
                         })
+                else:
+                    if offset not in events:
+                        events[offset] = {
+                            "note_value": note_value,
+                            "is_dotted":  is_dotted,
+                            "tuplet_num": tuplet_num,
+                            "tuplet_den": tuplet_den,
+                            "pitches":    set(),
+                            "is_rest":    True,
+                        }
 
                 offset += dur
 
@@ -244,13 +256,14 @@ class GpifParser:
                 DRUM_MAP.get(midi, f"midi{midi}") + ("_ghost" if is_ghost else "")
                 for midi, is_ghost in ev["pitches"]
             })
-            if not drums:
-                continue
-            beats_list.append({
+            entry = {
                 "beat":     beat_position(offset),
                 "duration": duration_name(ev["note_value"], ev["is_dotted"], ev["tuplet_num"], ev["tuplet_den"]),
                 "drums":    drums,
-            })
+            }
+            if ev.get("is_rest", False) and not drums:
+                entry["rest"] = True
+            beats_list.append(entry)
 
         return {
             "song":           song_name,
