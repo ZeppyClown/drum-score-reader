@@ -256,6 +256,9 @@ class GpifParser:
                 DRUM_MAP.get(midi, f"midi{midi}") + ("_ghost" if is_ghost else "")
                 for midi, is_ghost in ev["pitches"]
             })
+            for d in drums:
+                if d.startswith('midi'):
+                    print(f"Warning: unmapped Midi {d[4:]} in {song_name} bar {bar_number}")
             entry = {
                 "beat":     beat_position(offset),
                 "duration": duration_name(ev["note_value"], ev["is_dotted"], ev["tuplet_num"], ev["tuplet_den"]),
