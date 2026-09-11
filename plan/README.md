@@ -195,8 +195,13 @@ or tuplet durations before it is considered complete.
 
 Train the 14-drum model on the 19,942 supported bars selected from the reconciled
 23,660-pair dataset, then evaluate and export one internally consistent release bundle
-before adding UI or inference code. Report accuracy as supported-subset accuracy;
+before adding Electron UI code. Report accuracy as supported-subset accuracy;
 the full notation-import goal remains broader than this first model's contract.
+
+Ordering change (2026-09-11, approved by Victor): while the first training run is in
+progress, the Python side of Workstream 3 — the local inference service and its
+`/predict` contract — may be built and tested against a randomly initialized export.
+Electron import UI still waits for an evaluated release.
 
 ## Plan maintenance
 

@@ -1,0 +1,11 @@
+# Runtime: the local OMR inference service (no PyTorch needed).
+fastapi>=0.128
+uvicorn>=0.40
+python-multipart>=0.0.21
+onnxruntime>=1.27
+numpy>=2.0
+Pillow>=10.4
+
+# Tests only: httpx for FastAPI's TestClient; torch, torchvision, onnx, and onnxscript
+# build a randomly initialized export and compare against the training transform.
+httpx>=0.28

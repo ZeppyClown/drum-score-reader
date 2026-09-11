@@ -433,7 +433,8 @@ the current model.
 - [ ] Add more training songs (target: 500+) to reduce overfitting
 - [ ] Replace global average pool with spatially-aware pooling to better distinguish toms
 - [ ] Add rest detection to output silent positions explicitly
-- [ ] Wire into Electron + FastAPI for end-to-end drum score reading
+- [ ] Wire into Electron for end-to-end drum score reading (the local FastAPI service is in
+      `backend/`; see `backend/README.md`)
 
 ---
 

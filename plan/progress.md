@@ -150,19 +150,32 @@ checkpoints and history under the ignored `ml/data/training/runs/baseline-14drum
 `omr_config.json`, `eval_results.json`, and `benchmark_results.json` are absent, so no
 model result is currently shippable or reproducible.
 
-### Workstream 3 — Integrate single-bar local inference: not started
+### Workstream 3 — Integrate single-bar local inference: in progress (Python side)
+
+Started early with Victor's approval while training runs; Electron work still waits for a
+release. Everything below was verified against a randomly initialized export only, so it
+proves the contract and error handling, not recognition quality.
 
 - [ ] PNG/JPEG file picker.
-- [ ] Long-lived local Python/ONNX inference service.
-- [ ] Shared preprocessing and decoding contract.
-- [ ] Validated `/predict` and error contract.
+- [x] Long-lived local Python/ONNX inference service.
+  `backend/app.py` binds to 127.0.0.1, loads the bundle once, and refuses to start on a
+  missing config or model, hash mismatch, or wrong input/output names or shape.
+- [x] Shared preprocessing and decoding contract.
+  `backend/omr_bundle.py` reads every dimension and name from `omr_config.json`; tests
+  show preprocessing matches the training transform exactly and decoding matches the
+  reference sigmoid decoder on 25 random logit sets.
+- [x] Validated `/predict` and error contract.
+  `GET /health` and multipart `POST /predict` return ordered `{duration, drums}` notes;
+  errors use one envelope with codes for oversized, unsupported, corrupt, or missing
+  images and invalid model output. 15 backend tests pass, and a live run on port 8799
+  answered `/health`, a real bar image, a text file (415), and a missing field (422).
 - [ ] Electron service lifecycle management.
 - [ ] Canonical editable bar representation and model-event conversion.
 - [ ] Imported-bar rendering and editing.
 - [ ] Actionable import and inference errors.
 
-There is no FastAPI service, ONNX Runtime integration, Electron IPC bridge, import UI, or
-model-output conversion in the repository.
+There is no Electron IPC bridge, service lifecycle management, import UI, or
+model-output-to-editor conversion in the repository yet.
 
 ### Workstream 4 — Import complete pages and PDFs: not started
 
