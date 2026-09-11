@@ -56,8 +56,9 @@ HLINE_MIN_WIDTH   = 50   # pt: filters beams for 4-bar rows (beam ≈ 32pt, staf
 STAFF_LINE_GAP    = 2    # pt: y-values closer than this = same staff line
 STAFF_ROW_GAP     = 8    # pt: gap-to-previous y-cluster; > this = new staff row
 ENDPOINT_TOL      = 1    # pt: x-endpoints within this distance are the same bar line
-MIN_BAR_LINE_FREQ = 4    # bar line endpoints appear 5× (outer) or 10× (inner bar lines).
-                         #   Beam endpoints appear 1–2× regardless of bar width.
+MIN_BAR_LINE_FREQ = 5    # bar line endpoints appear 5× (outer) or 10× (inner bar lines).
+                         #   Shared triplet/bracket endpoints can appear 4×, so accepting
+                         #   four creates false boundaries on notation-heavy rows.
                          #   Width filter handles 4-bar rows; frequency filter handles 2-bar rows.
 PAD_Y             = 50   # px: vertical padding on each bar crop (stems extend ~20-30pt above staff)
 PAD_X             = 4    # px: horizontal padding on each bar crop

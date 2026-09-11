@@ -17,9 +17,9 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 
 | Reason | Songs | Bars | Meaning |
 | --- | ---: | ---: | --- |
-| `crop_label_count_mismatch` | 14 | 1,694 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
+| `crop_label_count_mismatch` | 10 | 1,445 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
 | `packaged_dataset_incomplete` | 6 | 17 | The song is packaged, but specific raw-label identities are absent; the current crop audit matches the complete song. |
-| `packaged_dataset_not_regenerated` | 12 | 2,160 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
+| `packaged_dataset_not_regenerated` | 16 | 2,409 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
 
 ## Affected songs
 
@@ -28,8 +28,8 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | gp7 | 21 Guns Drum Tab Green Day May 27 2026 | 0 | 107 | 107 crops / 107 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/21 Guns Drum Tab by Green Day _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | AC_DC-For Those About To Rock-05-09-2026 | 0 | 184 | 182 crops / 184 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/For Those About To Rock Drum Tab by AC_DC _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | AC_DC-Rock And Roll Ain't Noise Pollution-05-30-2026 | 100 | 2 | 102 crops / 102 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Rock And Roll Ain't Noise Pollution Drum Tab by AC_DC _ Songsterr Tabs with Rhythm.pdf |
-| gp5 | Alwin_Alwin homework 15 may | 0 | 117 | 118 crops / 117 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/Alwin_Alwin homework 15 may.pdf |
-| gp5 | Alwin_the different patterns | 0 | 8 | 10 crops / 8 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/Alwin_the different patterns.pdf |
+| gp5 | Alwin_Alwin homework 15 may | 0 | 117 | 117 crops / 117 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/Alwin_Alwin homework 15 may.pdf |
+| gp5 | Alwin_the different patterns | 0 | 8 | 8 crops / 8 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/Alwin_the different patterns.pdf |
 | gp7 | Best Of You Drum Tab Foo Fighters May 7 2026 | 0 | 137 | 137 crops / 137 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Best Of You Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Closer To The Heart Drum Tab by Rush | 70 | 10 | 80 crops / 80 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Closer To The Heart Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Could You Be Loved Drum Tab by Bob Marley | 0 | 104 | 104 crops / 104 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Could You Be Loved Drum Tab by Bob Marley _ Songsterr Tabs with Rhythm.pdf |
@@ -37,7 +37,7 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | gp7 | Driven To Tears Drum Tab The Police Apr 4 2025 | 0 | 137 | 137 crops / 137 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Driven To Tears Drum Tab by The Police _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Foo Fighters Everlong May 16 2026 | 0 | 164 | 163 crops / 164 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Everlong Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | For Whom The Bell Tolls Drum Tab by Metallica | 0 | 146 | 145 crops / 146 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/For Whom The Bell Tolls Drum Tab by Metallica _ Songsterr Tabs with Rhythm.pdf |
-| gp5 | Grade 5 fills_counting 32nd notes | 0 | 8 | 51 crops / 8 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/Grade 5 fills_counting 32nd notes.pdf |
+| gp5 | Grade 5 fills_counting 32nd notes | 0 | 8 | 16 crops / 8 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/Grade 5 fills_counting 32nd notes.pdf |
 | gp7 | Heart-Shaped Box Drum Tab by Nirvana | 0 | 116 | 115 crops / 116 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Heart-Shaped Box Drum Tab by Nirvana _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Hotel California The Eagles 2026 | 0 | 121 | 121 crops / 121 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Hotel California Drum Tab by The Eagles _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Immigrant Song Drum Tab by Led Zeppelin | 67 | 1 | 68 crops / 68 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Immigrant Song Drum Tab by Led Zeppelin _ Songsterr Tabs with Rhythm.pdf |
@@ -55,8 +55,8 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | gp7 | Rush YYZ Drum Tab Apr 2 2026 | 149 | 2 | 151 crops / 151 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/YYZ Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
 | gp5 | Songs_Into the night (YAOSOBI) | 0 | 138 | 136 crops / 138 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/Songs_Into the night (YAOSOBI).pdf |
 | gp7 | The Trees Drum Tab by Rush Oct 20 2025 | 0 | 159 | 0 crops / 159 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/The Trees Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
-| gp5 | bennygreb | 0 | 23 | 27 crops / 23 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/bennygreb.pdf |
-| gp5 | jamming songs_Unravel | 0 | 101 | 104 crops / 101 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/jamming songs_Unravel.pdf |
+| gp5 | bennygreb | 0 | 23 | 23 crops / 23 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/bennygreb.pdf |
+| gp5 | jamming songs_Unravel | 0 | 101 | 101 crops / 101 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/jamming songs_Unravel.pdf |
 
 ## Interpretation
 
