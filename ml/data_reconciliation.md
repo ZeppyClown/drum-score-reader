@@ -17,9 +17,9 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 
 | Reason | Songs | Bars | Meaning |
 | --- | ---: | ---: | --- |
-| `crop_label_count_mismatch` | 9 | 1,437 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
+| `crop_label_count_mismatch` | 8 | 1,299 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
 | `packaged_dataset_incomplete` | 6 | 17 | The song is packaged, but specific raw-label identities are absent; the current crop audit matches the complete song. |
-| `packaged_dataset_not_regenerated` | 17 | 2,417 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
+| `packaged_dataset_not_regenerated` | 18 | 2,555 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
 
 ## Affected songs
 
@@ -53,7 +53,7 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | gp7 | Rush Red Barchetta Drum Tab Mar 22 2026 | 219 | 1 | 220 crops / 220 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Red Barchetta Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Rush The Spirit Of Radio Drum Tab Apr 2 2026 | 174 | 1 | 175 crops / 175 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/The Spirit Of Radio Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Rush YYZ Drum Tab Apr 2 2026 | 149 | 2 | 151 crops / 151 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/YYZ Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
-| gp5 | Songs_Into the night (YAOSOBI) | 0 | 138 | 136 crops / 138 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/Songs_Into the night (YAOSOBI).pdf |
+| gp5 | Songs_Into the night (YAOSOBI) | 0 | 138 | 138 crops / 138 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/Songs_Into the night (YAOSOBI).pdf |
 | gp7 | The Trees Drum Tab by Rush Oct 20 2025 | 0 | 159 | 0 crops / 159 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/The Trees Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
 | gp5 | bennygreb | 0 | 23 | 23 crops / 23 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/bennygreb.pdf |
 | gp5 | jamming songs_Unravel | 0 | 101 | 101 crops / 101 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/jamming songs_Unravel.pdf |

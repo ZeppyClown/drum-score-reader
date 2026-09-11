@@ -50,20 +50,21 @@ DPI   = 150
 SCALE = DPI / 72      # PDF points → pixels
 
 # ── Tuning (all in PDF points unless noted) ───────────────────────────────────
-HLINE_MIN_WIDTH   = 50   # pt: filters beams for 4-bar rows (beam ≈ 32pt, staff seg ≈ 128pt).
-                         #   Longer beams can still pass this coarse filter; find_bar_xs
-                         #   verifies the five-line staff geometry before using endpoints.
-STAFF_LINE_GAP    = 2    # pt: y-values closer than this = same staff line
-STAFF_ROW_GAP     = 8    # pt: gap-to-previous y-cluster; > this = new staff row
-STAFF_SPACING_MIN = 3    # pt: minimum gap between consecutive lines in a five-line staff
-STAFF_SPACING_MAX = 7    # pt: maximum gap between consecutive lines in a five-line staff
-STAFF_SPACING_TOL = 1.5  # pt: maximum variation among the four staff-line gaps
-ENDPOINT_TOL      = 1    # pt: x-endpoints within this distance are the same bar line
-MIN_BAR_LINE_FREQ = 5    # bar line endpoints appear 5× (outer) or 10× (inner bar lines).
-                         #   Only endpoints from verified staff-segment groups are counted.
-PAD_Y             = 50   # px: vertical padding on each bar crop (stems extend ~20-30pt above staff)
-PAD_X             = 4    # px: horizontal padding on each bar crop
-MIN_BAR_PX        = 40   # px: two bar lines closer than this are duplicates (repeat signs)
+HLINE_MIN_WIDTH     = 30  # pt: filters short notation strokes while retaining narrow bars.
+                          #   Beams can pass this coarse filter; find_bar_xs verifies the
+                          #   five-line staff geometry before using endpoints.
+STAFF_ROW_MIN_WIDTH = 50  # pt: only stable long segments participate in row discovery
+STAFF_LINE_GAP      = 2   # pt: y-values closer than this = same staff line
+STAFF_ROW_GAP       = 8   # pt: gap-to-previous y-cluster; > this = new staff row
+STAFF_SPACING_MIN   = 3   # pt: minimum gap between consecutive lines in a five-line staff
+STAFF_SPACING_MAX   = 7   # pt: maximum gap between consecutive lines in a five-line staff
+STAFF_SPACING_TOL   = 1.5  # pt: maximum variation among the four staff-line gaps
+ENDPOINT_TOL        = 1   # pt: x-endpoints within this distance are the same bar line
+MIN_BAR_LINE_FREQ   = 5   # bar line endpoints appear 5× (outer) or 10× (inner bar lines).
+                          #   Only endpoints from verified staff-segment groups are counted.
+PAD_Y               = 50  # px: vertical padding on each bar crop (stems extend ~20-30pt above staff)
+PAD_X               = 4   # px: horizontal padding on each bar crop
+MIN_BAR_PX          = 40  # px: two bar lines closer than this are duplicates (repeat signs)
 
 
 # ── Step 1: extract horizontal line segments from PDF vector data ─────────────
@@ -113,7 +114,7 @@ def find_staff_rows(hlines: list[dict]) -> list[tuple[float, float]]:
     Return (top_y, bot_y) in PDF points for each staff row on the page.
 
     Approach:
-    1. Cluster nearby y-values into individual staff lines
+    1. Keep stable long segments and cluster nearby y-values into staff lines
     2. Group consecutive clusters using gap-to-PREVIOUS (not gap-to-first).
        This prevents a stray beam above the staff from shifting the cluster's
        reference point and causing actual staff lines to be missed.
@@ -122,10 +123,11 @@ def find_staff_rows(hlines: list[dict]) -> list[tuple[float, float]]:
     downstream by the frequency filter in find_bar_xs — they produce no valid
     bar xs and get skipped at crop time.
     """
-    if not hlines:
+    row_hlines = [line for line in hlines if line['width'] >= STAFF_ROW_MIN_WIDTH]
+    if not row_hlines:
         return []
 
-    ys = sorted(l['y'] for l in hlines)
+    ys = sorted(line['y'] for line in row_hlines)
 
     # Step 1: cluster identical y-values into single staff-line positions
     y_clusters: list[float] = []

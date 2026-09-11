@@ -80,8 +80,8 @@ valid evaluated model bundle.
   bars. Both spot-check tools ran headlessly, and the packager produced a ZIP containing
   all 165 images and 165 matching labels.
 - [x] Explain the 3,871 parsed labels not represented in the 19,948 packaged pairs.
-  `ml/data_reconciliation.csv` accounts for every label. The audit found 1,437 labels in
-  9 crop/label-count mismatch songs, 2,417 labels in 17 songs that are ready but were
+  `ml/data_reconciliation.csv` accounts for every label. The audit found 1,299 labels in
+  8 crop/label-count mismatch songs, 2,555 labels in 18 songs that are ready but were
   never packaged, and 17 missing labels across six otherwise-packaged songs. The only
   previously-unmatched Songsterr title is now covered by an explicit confirmed alias and
   produces 79 crops for 79 labels.
@@ -92,7 +92,7 @@ valid evaluated model bundle.
   reconciliation CSV, and Markdown report.
 
 All five implementation tasks are complete. The workstream exit criteria remain open
-until the 9 crop-count mismatches are resolved, the full package is regenerated, and
+until the 8 crop-count mismatches are resolved, the full package is regenerated, and
 human spot checks confirm that crops and labels align.
 
 ### Workstream 2 — Produce a valid model release: not complete
@@ -174,7 +174,7 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 Workstream 1 remains the next milestone. The path contract and small-subset proof are
 complete, and every existing label is now accounted for. The next slice must resolve the
-9 crop-count mismatches. Then regenerate the full package and perform human crop/label
+8 crop-count mismatches. Then regenerate the full package and perform human crop/label
 spot checks before starting model-release work.
 
 ## Verification performed for this review
@@ -201,6 +201,11 @@ spot checks before starting model-release work.
   with five evenly spaced staff lines, and added a regression test based on the failing
   geometry. The song now yields 8 crops for 8 labels, and the full Reflow audit improves
   to 175 of 176 matching songs without breaking an existing match.
+- Diagnosed two narrow repeat measures being discarded in
+  `Songs_Into the night (YAOSOBI)`, separated the conservative staff-row discovery gate
+  from the narrower staff-segment extraction gate, and added regressions for both the
+  missing measures and beam-induced row clustering. The song now yields 138 crops for
+  138 labels, and all 176 labeled Reflow songs pass the crop-count audit.
 - Checked for model config, evaluation, benchmark, manifest, inference, playback, and
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.
