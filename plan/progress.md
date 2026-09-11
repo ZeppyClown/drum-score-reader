@@ -220,7 +220,7 @@ parsers' earlier onset quantization and voice merging are not reversed by filter
 This is target compatibility, not a claim of lossless original-notation support. Model
 metrics must disclose the subset and the 359 excluded bars from the original test split.
 Training is in progress on MPS in the ignored `baseline-14drum-v1` run directory; only the
-head-phase epoch-1 metrics are currently available. Do not treat these interim artifacts
+head-phase epoch-1 and epoch-2 metrics are currently available. Do not treat these interim artifacts
 as a release until all epochs finish and the completion marker, evaluation, export, and
 benchmark checks pass.
 
