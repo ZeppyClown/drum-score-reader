@@ -103,7 +103,7 @@ class SubsetTests(unittest.TestCase):
         self.assertEqual(first, archive.read_bytes())
         with zipfile.ZipFile(archive) as source:
             self.assertIsNone(source.testzip())
-            self.assertEqual(len(source.namelist()), 10)
+            self.assertEqual(len(source.namelist()), 11)
             source.extractall(self.root / 'extracted')
         dataset = self.root / 'extracted' / 'dataset'
         groups, _ = load_training_split(dataset)

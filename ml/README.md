@@ -347,6 +347,37 @@ Run training-contract regressions with:
 python3 -m unittest discover -s ml/omr -p 'test_*.py'
 ```
 
+### Local training and resumption
+
+The local runner uses the same `omr_model.py` architecture, preprocessing, and strict
+targets packaged for Colab. Prepare and extract the package before running it:
+
+```bash
+python3 ml/omr/prepare_training.py
+python3 -m zipfile -e ml/data/training.zip ml/data/training
+python3 -u ml/omr/train.py --device mps --run-dir ml/data/training/runs/baseline
+```
+
+Use `--device cpu` or `--device cuda` for other hardware. Apple GPU access must be
+available to the process; the runner fails if MPS was explicitly selected but unavailable.
+ImageNet backbone weights are downloaded on the first full run into the ignored
+`ml/data/training/torch-cache/` directory.
+
+The defaults match Colab: 15 head-only epochs, 25 full-model epochs, batch size 32,
+learning rate 0.0003 then 0.00003. The head-only phase freezes BatchNorm buffers as well
+as backbone parameters. The runner saves `last.pt` after each completed epoch with
+optimizer, scheduler, RNG state, and run configuration; resume with the same arguments
+plus `--resume`. Code, model, dataset, runtime, or hyperparameter mismatches are rejected.
+An interrupted partial epoch restarts from the last completed epoch. If initialization
+failed before the first checkpoint, `--resume` retries initialization.
+
+For a short rehearsal, use a separate run directory and add
+`--smoke-batches 2 --epochs 1 --finetune-epochs 1 --random-init`. Add
+`--stop-after-epochs 1` to exercise a controlled epoch boundary, then repeat the same
+arguments with `--resume` and without the stop flag. Smoke runs are marked explicitly
+and must never be exported as a release. Full runs produce `training_complete.json`;
+held-out test evaluation and ONNX export are still separate release steps.
+
 ---
 
 ## Limitations

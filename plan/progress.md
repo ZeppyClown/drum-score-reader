@@ -111,6 +111,12 @@ remains explicitly excluded until a non-blank source PDF is available.
   The approved strict subset is now packaged: 19,942 included bars and 3,718 exclusions.
   Preparation and the notebook share one strict encoder; the notebook validates content
   hashes and loads the saved split membership before training.
+  A local runner now shares the notebook's model and preprocessing. It supports epoch
+  checkpoints with optimizer/scheduler/RNG state and rejects resume attempts when the
+  code, dataset, model, runtime, or training configuration differs.
+  A two-batch GPU rehearsal completed head-only training, stopped at the epoch boundary,
+  resumed its checkpoint in a new process, and completed full-model fine-tuning. Its
+  artifacts are explicitly marked as smoke-test artifacts and are not a model release.
 - [ ] Evaluate the model on the held-out test-song split.
 - [ ] Save reproducible `eval_results.json` metrics.
 - [ ] Export `omr.onnx` and `omr_config.json` together.
@@ -216,6 +222,12 @@ Training has not started.
 - Added subset tests for whole-bar rejection, simultaneous/ghost hits, rests, duplicate
   onsets, long measures, context-dependent bars, split leakage, deterministic archives,
   and modified-file rejection; the notebook target wrapper is also regression-tested.
+- Verified 14 training tests, including model output dimensions, RNG restoration, and
+  unchanged backbone parameters/BatchNorm buffers while the prediction heads learn.
+- Confirmed that PyTorch MPS is available outside the execution sandbox. A 64-bar GPU
+  rehearsal took 40.8 seconds for its head-only epoch and 92.8 seconds for the resumed
+  fine-tuning epoch, including initial GPU setup/compilation. These are rehearsal times,
+  not an estimate of full-dataset throughput or accuracy.
 - The initial package had 19,948 pairs across 264 songs (212 train / 26 validation /
   26 test), leaving 3,871 raw labels unpackaged. The replacement adds 3,712 pairs;
   the remaining 159 labels belong to the blank `The Trees` source. Adding songs changes

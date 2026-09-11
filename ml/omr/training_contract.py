@@ -122,6 +122,8 @@ def load_training_split(dataset_dir):
         raise ValueError('Training manifest hash mismatch')
     if sha256_file(Path(__file__)) != report['training_contract_sha256']:
         raise ValueError('Training contract hash mismatch; rebuild the training package')
+    if sha256_file(root / 'omr_model.py') != report['model_source_sha256']:
+        raise ValueError('Model source hash mismatch; rebuild the training package')
     with manifest.open(newline='') as stream:
         rows = list(csv.DictReader(stream))
     if len(rows) != report['included_bars']:

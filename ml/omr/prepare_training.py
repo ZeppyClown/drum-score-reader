@@ -18,6 +18,7 @@ from training_contract import SPLITS, label_issues, sha256_file
 ML_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = ML_DIR.parent
 CONTRACT = Path(__file__).with_name('training_contract.py')
+MODEL = Path(__file__).with_name('omr_model.py')
 
 
 def csv_bytes(rows, fields):
@@ -78,6 +79,7 @@ def prepare(manifest, root, output_dir, archive):
         'training_manifest_sha256': sha256_file(kept_file),
         'training_exclusions_sha256': sha256_file(excluded_file),
         'training_contract_sha256': sha256_file(CONTRACT),
+        'model_source_sha256': sha256_file(MODEL),
         'source_bars': len(rows), 'included_bars': len(included),
         'excluded_bars': len(excluded),
         'exclusion_counts': dict(sorted(Counter(
@@ -103,7 +105,7 @@ def prepare(manifest, root, output_dir, archive):
         # A fixed timestamp/order makes identical inputs produce an identical archive.
         with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED) as target:
             files = [(path, f'dataset/{path.name}')
-                     for path in (CONTRACT, kept_file, excluded_file, report_file)]
+                     for path in (CONTRACT, MODEL, kept_file, excluded_file, report_file)]
             for row in included:
                 for kind, key in (('images', 'image_path'), ('labels', 'label_path')):
                     path = root / row[key]
