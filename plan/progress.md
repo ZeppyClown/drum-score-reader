@@ -97,8 +97,10 @@ human spot checks confirm that crops and labels align.
 
 ### Workstream 2 — Produce a valid model release: not complete
 
-- [ ] Remove stale 15-drum/480-output descriptions and the saved 2,469,056-parameter
-  Phase 2 output from the notebook.
+- [x] Remove stale 15-drum/480-output descriptions and the saved 2,469,056-parameter
+  Phase 2 output from the notebook. The notebook now consistently documents the current
+  14-drum / 448-logit contract, and the obsolete Phase 2 execution output and count are
+  cleared so its invalid metrics cannot be mistaken for a current run.
 - [ ] Train or verifiably resume the current 14-drum model on the reconciled dataset.
 - [ ] Evaluate the model on the held-out test-song split.
 - [ ] Save reproducible `eval_results.json` metrics.
@@ -185,6 +187,9 @@ human crop/label spot checks before starting model-release work.
 - Compared image and label stems in both packaged forms; each comparison had zero
   mismatches.
 - Rechecked stale paths and stale notebook descriptions.
+- Updated all remaining notebook shape descriptions from 15 drums / 480 outputs to
+  14 drums / 448 outputs, cleared the obsolete Phase 2 output and execution count, and
+  validated the edited notebook as JSON.
 - Exercised every data-preparation CLI with its repository-relative defaults or explicit
   path overrides.
 - Ran a two-song end-to-end subset through both parsers, both crop tools, both spot-check
