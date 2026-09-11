@@ -75,11 +75,11 @@ contains the code but no weights. Local downloaded copies currently live in
 | `omr.onnx`         | `Checkpoints OMR.onnx` | 284 KB  |
 | `omr_config.json`  | *not downloaded*       | —       |
 
-> ⚠️ **The local `.onnx` copy looks wrong.** A 2,305,056-parameter fp32 model is about
-> 9.2 MB, which is roughly what the `.pt` weighs. The `.onnx` is 284 KB — about 1/33rd of
-> that, and too small even for the three head layers alone (~5.6 MB). Treat it as stale or
-> partial, and re-export before using it for anything. No model size should be quoted from
-> this file.
+> ⚠️ **The local `.onnx` copy is broken, not merely suspect.** A reference export of this
+> exact architecture measures **8.78 MB**. The file on disk is 284 KB — about 1/31st of
+> that, and too small even for the three head layers alone. Re-export before using it for
+> anything, and quote no model size from it. Notebook cell 14a now checks this
+> automatically, so it cannot happen again unnoticed.
 
 ---
 
@@ -230,6 +230,46 @@ vs crash weakest. Treat those as expectations to confirm, not as results.
 
 ---
 
+## Benchmarking on-device
+
+`omr/benchmark.py` measures what the model costs on the machine it is meant to run on.
+Run it locally — not in Colab, whose hardware is not the target.
+
+```bash
+pip install onnx                      # needed for quantisation only
+python ml/omr/benchmark.py \
+    --model  path/to/omr.onnx \
+    --images ml/data/dataset/images \
+    --n 200
+```
+
+It reports fp32 and int8 size, p50/p95/p99 latency per execution provider (pinned to one
+intra-op thread so the figure is reproducible), and how often int8 decodes to the *same
+note sequence* as fp32 across real bar images. Results land in
+`ml/omr/benchmark_results.json`.
+
+Two deliberate choices in how it scores:
+
+- **Agreement is exact-sequence match, not per-slot.** Per-slot agreement would sit near
+  100% because most of the 448-slot grid is empty — it would measure how sparse drum
+  notation is, not what quantisation costs.
+- **It refuses to report a meaningless agreement.** Two models that both predict nothing
+  agree perfectly, so the script counts how many bars decoded to any notes at all and
+  marks the comparison `NOT MEANINGFUL` when almost none did.
+
+**Expect int8 to be slower here.** On an M-series Mac (macOS 14.4, onnxruntime 1.27, one
+thread) a dynamically quantised build came out 3.75× smaller but roughly 2.5× *slower* on
+CPU than fp32 — the fp32 path hits optimised kernels the `MatMulInteger` path does not.
+CoreML was slower than CPU for both, this model being far too small to pay back the
+dispatch overhead.
+
+Those figures come from a **reference export of the architecture, not the trained
+checkpoint** — size and latency depend on the graph and its shapes, not on what the
+weights contain, so they carry over. Output agreement does not: re-measure that against
+real weights before quoting it.
+
+---
+
 ## Training data
 
 - **Source:** Songsterr (Guitar Pro 7 tabs) + local Guitar Pro 5 files
@@ -259,8 +299,11 @@ the current model.
 
 ## Roadmap
 
-- [ ] Re-run the Phase 2 evaluation and save its output, so this card carries real numbers
-- [ ] Re-export `omr.onnx` and confirm the file size is consistent with the parameter count
+- [ ] Re-run the Phase 2 evaluation, then cell 13c to write `eval_results.json`, and paste
+      the markdown it prints into [Performance](#performance)
+- [ ] Re-export `omr.onnx` and run cell 14a — it fails loudly if the file is the wrong size
+- [ ] Run `omr/benchmark.py` against the re-exported model and record the numbers here,
+      including the int8 agreement rate, which the reference export could not establish
 - [ ] Add more training songs (target: 500+) to reduce overfitting
 - [ ] Replace global average pool with spatially-aware pooling to better distinguish toms
 - [ ] Add rest detection to output silent positions explicitly
