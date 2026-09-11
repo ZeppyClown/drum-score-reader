@@ -27,13 +27,17 @@ itself; the renderer does not call it directly.
 `POST /predict` — multipart form with one field, `image`: a PNG or JPEG of one bar.
 
 ```json
-{"notes": [{"duration": "eighth", "drums": ["kick", "hi_hat_closed"]},
-           {"duration": "eighth", "drums": ["hi_hat_closed"]}],
+{"notes": [{"position": 0, "duration": "eighth", "drums": ["kick", "hi_hat_closed"]},
+           {"position": 4, "duration": "eighth", "drums": ["hi_hat_closed"]}],
  "model_sha256": "59fce5c4..."}
 ```
 
-Notes are in left-to-right order. Silent beat positions are omitted, as in the model card's
-reference decoder. Every error uses one envelope:
+Notes are in left-to-right order and silent slots are omitted, as in the model card's
+reference decoder. `position` is the beat-grid slot where the hit starts (0 to
+`N_BEATS - 1`); on the current 32-slot grid it counts 32nd notes from the start of a 4/4
+bar. Use it to put rests back: silence is any gap between where one note ends and the next
+note's `position`. The reference decoder drops positions, so without them a rest between
+two hits would be lost. Every error uses one envelope:
 
 ```json
 {"error": {"code": "unsupported_file", "message": "The file is not a PNG or JPEG image"}}

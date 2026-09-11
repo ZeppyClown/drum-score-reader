@@ -45,8 +45,11 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         body = response.json()
         self.assertEqual(body['model_sha256'], self.bundle.model_sha256)
+        positions = [note['position'] for note in body['notes']]
+        self.assertEqual(positions, sorted(set(positions)))
         for note in body['notes']:
-            self.assertEqual(set(note), {'duration', 'drums'})
+            self.assertEqual(set(note), {'position', 'duration', 'drums'})
+            self.assertIn(note['position'], range(self.bundle.config['N_BEATS']))
             self.assertIn(note['duration'], self.bundle.config['DURATIONS'])
             self.assertTrue(note['drums'])
             self.assertLessEqual(set(note['drums']), set(self.bundle.config['DRUMS']))

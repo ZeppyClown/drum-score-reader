@@ -126,7 +126,12 @@ def preprocess(image, config):
 
 
 def decode(drum_logits, duration_logits, config):
-    """Logits -> ordered {duration, drums} events; silent beat positions are omitted."""
+    """Logits -> ordered {position, duration, drums} events; silent positions are omitted.
+
+    position is the beat-grid slot (0 to N_BEATS - 1) where the hit starts. With the
+    current 32-slot grid over a 4/4 bar, that is the number of 32nd notes from the start
+    of the bar, which lets the editor put rests in the gaps between hits.
+    """
     beats, drums, durations = config['N_BEATS'], config['N_DRUMS'], config['N_DURATIONS']
     if (drum_logits.shape != (1, beats * drums)
             or duration_logits.shape != (1, beats * durations)):
@@ -138,7 +143,8 @@ def decode(drum_logits, duration_logits, config):
     # sigmoid(x) > t  <=>  x > log(t / (1 - t)), without overflow for large logits.
     hits = drum_logits[0].reshape(beats, drums) > math.log(threshold / (1 - threshold))
     rhythm = duration_logits[0].reshape(beats, durations).argmax(axis=1)
-    return [{'duration': config['DURATIONS'][int(rhythm[beat])],
+    return [{'position': beat,
+             'duration': config['DURATIONS'][int(rhythm[beat])],
              'drums': [config['DRUMS'][int(drum)] for drum in np.flatnonzero(hits[beat])]}
             for beat in range(beats) if hits[beat].any()]
 

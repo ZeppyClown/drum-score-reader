@@ -165,7 +165,8 @@ proves the contract and error handling, not recognition quality.
   show preprocessing matches the training transform exactly and decoding matches the
   reference sigmoid decoder on 25 random logit sets.
 - [x] Validated `/predict` and error contract.
-  `GET /health` and multipart `POST /predict` return ordered `{duration, drums}` notes;
+  `GET /health` and multipart `POST /predict` return ordered `{position, duration, drums}`
+  notes (position is the 32nd-note slot, so rests between hits survive import);
   errors use one envelope with codes for oversized, unsupported, corrupt, or missing
   images and invalid model output. 15 backend tests pass, and a live run on port 8799
   answered `/health`, a real bar image, a text file (415), and a missing field (422).

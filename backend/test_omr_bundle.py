@@ -15,6 +15,11 @@ from omr_bundle import (BundleError, ImageInputError, decode, load_bundle, predi
                         preprocess, read_image)
 
 
+def without_positions(notes):
+    """The reference decoder has no positions; compare everything else."""
+    return [{key: value for key, value in note.items() if key != 'position'} for note in notes]
+
+
 class OMRBundleTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -51,10 +56,22 @@ class OMRBundleTests(unittest.TestCase):
         for _ in range(25):
             drums = rng.normal(0, 3, (1, 448)).astype(np.float32)
             durations = rng.normal(0, 1, (1, 320)).astype(np.float32)
-            self.assertEqual(decode(drums, durations, self.config),
+            self.assertEqual(without_positions(decode(drums, durations, self.config)),
                              reference_decode(drums, durations, self.config))
         silent = np.zeros((1, 448), dtype=np.float32)
         self.assertEqual(decode(silent, np.zeros((1, 320), np.float32), self.config), [])
+
+    def test_positions_keep_the_silence_between_hits(self):
+        drums = np.full((1, 448), -5, dtype=np.float32)
+        durations = np.zeros((1, 320), dtype=np.float32)
+        drums[0, 0 * 14 + 2] = 5    # kick on beat 1
+        drums[0, 16 * 14 + 1] = 5   # snare on beat 3, after a half bar of silence
+        durations[0, 0 * 10 + 3] = 5
+        durations[0, 16 * 10 + 1] = 5
+        self.assertEqual(decode(drums, durations, self.config), [
+            {'position': 0, 'duration': 'quarter', 'drums': ['kick']},
+            {'position': 16, 'duration': 'half', 'drums': ['snare']},
+        ])
 
     def test_png_and_jpeg_predictions_match_direct_inference(self):
         for image_format in ('PNG', 'JPEG'):
@@ -62,7 +79,7 @@ class OMRBundleTests(unittest.TestCase):
             with Image.open(io.BytesIO(data)) as image:
                 pixels = preprocess(image.convert('L'), self.config)
             outputs = self.bundle.session.run(None, {'image': pixels})
-            self.assertEqual(predict(self.bundle, data),
+            self.assertEqual(without_positions(predict(self.bundle, data)),
                              reference_decode(*outputs, self.config))
 
     def test_phone_photo_orientation_is_applied(self):
