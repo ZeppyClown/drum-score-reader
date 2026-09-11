@@ -80,8 +80,8 @@ valid evaluated model bundle.
   bars. Both spot-check tools ran headlessly, and the packager produced a ZIP containing
   all 165 images and 165 matching labels.
 - [x] Explain the 3,871 parsed labels not represented in the 19,948 packaged pairs.
-  `ml/data_reconciliation.csv` accounts for every label. The audit found 1,445 labels in
-  10 crop/label-count mismatch songs, 2,409 labels in 16 songs that are ready but were
+  `ml/data_reconciliation.csv` accounts for every label. The audit found 1,437 labels in
+  9 crop/label-count mismatch songs, 2,417 labels in 17 songs that are ready but were
   never packaged, and 17 missing labels across six otherwise-packaged songs. The only
   previously-unmatched Songsterr title is now covered by an explicit confirmed alias and
   produces 79 crops for 79 labels.
@@ -92,7 +92,7 @@ valid evaluated model bundle.
   reconciliation CSV, and Markdown report.
 
 All five implementation tasks are complete. The workstream exit criteria remain open
-until the 10 crop-count mismatches are resolved, the full package is regenerated, and
+until the 9 crop-count mismatches are resolved, the full package is regenerated, and
 human spot checks confirm that crops and labels align.
 
 ### Workstream 2 — Produce a valid model release: not complete
@@ -174,7 +174,7 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 Workstream 1 remains the next milestone. The path contract and small-subset proof are
 complete, and every existing label is now accounted for. The next slice must resolve the
-10 crop-count mismatches. Then regenerate the full package and perform human crop/label
+9 crop-count mismatches. Then regenerate the full package and perform human crop/label
 spot checks before starting model-release work.
 
 ## Verification performed for this review
@@ -196,6 +196,11 @@ spot checks before starting model-release work.
   boundary, raised the Reflow endpoint-support threshold from four to five, and added a
   focused regression test. The full Reflow audit improved from 170 to 174 matching songs
   without breaking an existing match.
+- Diagnosed dense 32nd-note beams being mistaken for bar boundaries in
+  `Grade 5 fills_counting 32nd notes`, restricted endpoint detection to segment groups
+  with five evenly spaced staff lines, and added a regression test based on the failing
+  geometry. The song now yields 8 crops for 8 labels, and the full Reflow audit improves
+  to 175 of 176 matching songs without breaking an existing match.
 - Checked for model config, evaluation, benchmark, manifest, inference, playback, and
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.

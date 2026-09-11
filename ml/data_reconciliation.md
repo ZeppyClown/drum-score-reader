@@ -17,9 +17,9 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 
 | Reason | Songs | Bars | Meaning |
 | --- | ---: | ---: | --- |
-| `crop_label_count_mismatch` | 10 | 1,445 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
+| `crop_label_count_mismatch` | 9 | 1,437 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
 | `packaged_dataset_incomplete` | 6 | 17 | The song is packaged, but specific raw-label identities are absent; the current crop audit matches the complete song. |
-| `packaged_dataset_not_regenerated` | 16 | 2,409 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
+| `packaged_dataset_not_regenerated` | 17 | 2,417 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
 
 ## Affected songs
 
@@ -37,7 +37,7 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | gp7 | Driven To Tears Drum Tab The Police Apr 4 2025 | 0 | 137 | 137 crops / 137 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Driven To Tears Drum Tab by The Police _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Foo Fighters Everlong May 16 2026 | 0 | 164 | 163 crops / 164 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Everlong Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | For Whom The Bell Tolls Drum Tab by Metallica | 0 | 146 | 145 crops / 146 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/For Whom The Bell Tolls Drum Tab by Metallica _ Songsterr Tabs with Rhythm.pdf |
-| gp5 | Grade 5 fills_counting 32nd notes | 0 | 8 | 16 crops / 8 labels | `crop_label_count_mismatch` | ml/data/reflow_pdf/Grade 5 fills_counting 32nd notes.pdf |
+| gp5 | Grade 5 fills_counting 32nd notes | 0 | 8 | 8 crops / 8 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/Grade 5 fills_counting 32nd notes.pdf |
 | gp7 | Heart-Shaped Box Drum Tab by Nirvana | 0 | 116 | 115 crops / 116 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Heart-Shaped Box Drum Tab by Nirvana _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Hotel California The Eagles 2026 | 0 | 121 | 121 crops / 121 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Hotel California Drum Tab by The Eagles _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Immigrant Song Drum Tab by Led Zeppelin | 67 | 1 | 68 crops / 68 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Immigrant Song Drum Tab by Led Zeppelin _ Songsterr Tabs with Rhythm.pdf |

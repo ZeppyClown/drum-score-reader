@@ -51,15 +51,16 @@ SCALE = DPI / 72      # PDF points → pixels
 
 # ── Tuning (all in PDF points unless noted) ───────────────────────────────────
 HLINE_MIN_WIDTH   = 50   # pt: filters beams for 4-bar rows (beam ≈ 32pt, staff seg ≈ 128pt).
-                         #   For 2-bar rows (beam ≈ 64pt, staff seg ≈ 257pt), some beams slip
-                         #   through — the frequency filter below catches those.
+                         #   Longer beams can still pass this coarse filter; find_bar_xs
+                         #   verifies the five-line staff geometry before using endpoints.
 STAFF_LINE_GAP    = 2    # pt: y-values closer than this = same staff line
 STAFF_ROW_GAP     = 8    # pt: gap-to-previous y-cluster; > this = new staff row
+STAFF_SPACING_MIN = 3    # pt: minimum gap between consecutive lines in a five-line staff
+STAFF_SPACING_MAX = 7    # pt: maximum gap between consecutive lines in a five-line staff
+STAFF_SPACING_TOL = 1.5  # pt: maximum variation among the four staff-line gaps
 ENDPOINT_TOL      = 1    # pt: x-endpoints within this distance are the same bar line
 MIN_BAR_LINE_FREQ = 5    # bar line endpoints appear 5× (outer) or 10× (inner bar lines).
-                         #   Shared triplet/bracket endpoints can appear 4×, so accepting
-                         #   four creates false boundaries on notation-heavy rows.
-                         #   Width filter handles 4-bar rows; frequency filter handles 2-bar rows.
+                         #   Only endpoints from verified staff-segment groups are counted.
 PAD_Y             = 50   # px: vertical padding on each bar crop (stems extend ~20-30pt above staff)
 PAD_X             = 4    # px: horizontal padding on each bar crop
 MIN_BAR_PX        = 40   # px: two bar lines closer than this are duplicates (repeat signs)
@@ -155,24 +156,61 @@ def find_staff_rows(hlines: list[dict]) -> list[tuple[float, float]]:
 
 # ── Step 3: collect bar line x-positions from staff segment endpoints ─────────
 
+def _has_five_line_staff_geometry(ys: list[float]) -> bool:
+    """Return whether y-values contain five evenly spaced staff lines."""
+    if not ys:
+        return False
+
+    clusters: list[list[float]] = [[ys[0]]]
+    for y in ys[1:]:
+        if y - clusters[-1][-1] <= STAFF_LINE_GAP:
+            clusters[-1].append(y)
+        else:
+            clusters.append([y])
+
+    centers = [sum(cluster) / len(cluster) for cluster in clusters]
+    for start in range(len(centers) - 4):
+        gaps = [
+            centers[index + 1] - centers[index]
+            for index in range(start, start + 4)
+        ]
+        if (
+            all(STAFF_SPACING_MIN <= gap <= STAFF_SPACING_MAX for gap in gaps)
+            and max(gaps) - min(gaps) <= STAFF_SPACING_TOL
+        ):
+            return True
+
+    return False
+
+
 def find_bar_xs(hlines: list[dict], top_y: float, bot_y: float) -> list[float]:
     """
     Return sorted bar line x-positions for one staff row.
 
-    Beams are already filtered out by HLINE_MIN_WIDTH in extract_hlines, so
-    every line that reaches here is a staff segment. Each bar's 5 staff lines
-    share the same x0 and x1 — collecting unique endpoints gives us the bar
-    line positions directly.
+    Each bar's five staff lines share the same x0 and x1. Grouping lines by
+    those endpoints and requiring five evenly spaced y-values distinguishes
+    staff segments from long beams, brackets, and other notation. The verified
+    segment endpoints give us the bar line positions directly.
     """
-    from collections import Counter
+    from collections import Counter, defaultdict
+
+    segment_groups: defaultdict[tuple[float, float], list[dict]] = defaultdict(list)
+    for line in hlines:
+        if top_y - ENDPOINT_TOL <= line['y'] <= bot_y + ENDPOINT_TOL:
+            key = (
+                round(line['x0'] * 2) / 2,
+                round(line['x1'] * 2) / 2,
+            )
+            segment_groups[key].append(line)
 
     counts: Counter = Counter()
-    for l in hlines:
-        if top_y - ENDPOINT_TOL <= l['y'] <= bot_y + ENDPOINT_TOL:
-            counts[round(l['x0'] * 2) / 2] += 1
-            counts[round(l['x1'] * 2) / 2] += 1
+    for (x0, x1), lines in segment_groups.items():
+        if not _has_five_line_staff_geometry(sorted(line['y'] for line in lines)):
+            continue
+        counts[x0] += len(lines)
+        counts[x1] += len(lines)
 
-    # Keep only x-values that appear frequently — these are bar lines, not beams
+    # Keep only endpoints backed by all five lines of at least one staff segment.
     bar_xs = sorted(x for x, n in counts.items() if n >= MIN_BAR_LINE_FREQ)
 
     deduped: list[float] = []
