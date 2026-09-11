@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "policy": "strict supported targets; preserve source manifest song splits",
+  "source_manifest_sha256": "85f15472934569f143b8913fe33c6ee4ab90ada15c928d45fca73a7f3af1cc5d",
+  "training_manifest_sha256": "ae6ba432a1d85af241f4183bca793ba9176f7e9bc4cd26b372fcf947f896df22",
+  "training_exclusions_sha256": "736a8ba80672b2c71ff6ac025b4db0bc7a0f33d2b34c227ef980e94dc3e6599e",
+  "training_contract_sha256": "336e60a349d52c81d0b080a6235e2adf9c4ba922cc3fc22c7cefd3e82b2eddcc",
+  "source_bars": 23660,
+  "included_bars": 19942,
+  "excluded_bars": 3718,
+  "exclusion_counts": {
+    "beat_outside_grid": 495,
+    "context_dependent_simile": 1324,
+    "duplicate_onset": 500,
+    "measure_beyond_grid": 473,
+    "unsupported_drum": 1287,
+    "unsupported_duration": 815
+  },
+  "splits": {
+    "train": {
+      "source_bars": 19029,
+      "included_bars": 15839,
+      "excluded_bars": 3190,
+      "included_songs": 232
+    },
+    "validation": {
+      "source_bars": 2088,
+      "included_bars": 1919,
+      "excluded_bars": 169,
+      "included_songs": 27
+    },
+    "test": {
+      "source_bars": 2543,
+      "included_bars": 2184,
+      "excluded_bars": 359,
+      "included_songs": 28
+    }
+  },
+  "limitations": [
+    "Rests encode silence; their durations are not supervised or emitted.",
+    "Ghost dynamics fold into the corresponding base drum.",
+    "Source parsers already quantized beat positions and merged voices; this audit validates the resulting labels, not original notation fidelity.",
+    "Evaluation applies only to the supported subset, not all source bars."
+  ]
+}

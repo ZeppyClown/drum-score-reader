@@ -89,6 +89,9 @@ Tasks:
 
 1. Remove stale 15/19-drum descriptions and saved outputs from the notebook.
 2. Train or resume the 14-drum MobileNetV3 model using the verified dataset.
+   Use the strict supported subset in `ml/training_manifest.csv`, preserve the full
+   dataset's song assignments, and record excluded bars in `ml/training_exclusions.csv`.
+   Do not substitute unsupported durations or silently discard hits during encoding.
 3. Evaluate on the held-out test-song split.
 4. Save `eval_results.json`, including sequence accuracy, exact-bar accuracy, per-drum F1,
    and duration accuracy at hit positions.
@@ -190,8 +193,10 @@ or tuplet durations before it is considered complete.
 
 ## Immediate next milestone
 
-Train the 14-drum model on the reconciled 23,660-pair replacement dataset, then evaluate
-and export one internally consistent release bundle before adding UI or inference code.
+Train the 14-drum model on the 19,942 supported bars selected from the reconciled
+23,660-pair dataset, then evaluate and export one internally consistent release bundle
+before adding UI or inference code. Report accuracy as supported-subset accuracy;
+the full notation-import goal remains broader than this first model's contract.
 
 ## Plan maintenance
 

@@ -6,10 +6,13 @@ The tests execute selected notebook statements without mounting Drive or trainin
 
 import ast
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
 import torch
+
+from training_contract import encode_target
 
 
 NOTEBOOK = Path(__file__).resolve().parents[1] / 'notebooks' / 'OMR Training After.ipynb'
@@ -57,6 +60,30 @@ class PositiveWeightTests(unittest.TestCase):
         self.assertTrue(torch.isfinite(weights).all())
         self.assertEqual(float(weights[0]), 50.0)
         self.assertEqual(float(weights[1]), 50.0)
+
+
+class NotebookTargetTests(unittest.TestCase):
+    def test_notebook_uses_strict_shared_targets(self):
+        notebook = json.loads(NOTEBOOK.read_text())
+        cell = next(cell for cell in notebook['cells'] if cell.get('id') == 'cell-4')
+        function = next(node for node in ast.parse(''.join(cell['source'])).body
+                        if isinstance(node, ast.FunctionDef) and node.name == 'label_to_target')
+        scope = {'torch': torch, 'json': json, 'Path': Path, 'encode_target': encode_target}
+        exec(compile(ast.Module(body=[function], type_ignores=[]), str(NOTEBOOK), 'exec'), scope)
+        data = {'time_signature': '4/4', 'beats': [
+            {'beat': '1', 'duration': 'quarter', 'drums': ['kick', 'snare']},
+        ]}
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'label.json'
+            path.write_text(json.dumps(data))
+            drums, durations = scope['label_to_target'](path)
+            self.assertEqual(tuple(drums.shape), (448,))
+            self.assertEqual(tuple(durations.shape), (32,))
+            self.assertEqual(float(drums.sum()), 2)
+            data['beats'][0]['duration'] = 'sixty_fourth'
+            path.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'unsupported_duration'):
+                scope['label_to_target'](path)
 
 
 if __name__ == '__main__':

@@ -106,8 +106,11 @@ remains explicitly excluded until a non-blank source PDF is available.
   448-output model. The replacement split also puts 23 old training songs into test
   and 16 into validation; a fresh training run is required for a clean evaluation.
   Fixed an additional training bug: negative counts for each beat/drum output were
-  multiplied by an extra factor of 32, inflating positive weights. Regression tests execute the
-  actual notebook assignments and now verify balanced, imbalanced, and rare outputs.
+  multiplied by an extra factor of 32, inflating positive weights. Regression tests
+  execute the actual notebook assignments and verify balanced, imbalanced, and rare outputs.
+  The approved strict subset is now packaged: 19,942 included bars and 3,718 exclusions.
+  Preparation and the notebook share one strict encoder; the notebook validates content
+  hashes and loads the saved split membership before training.
 - [ ] Evaluate the model on the held-out test-song split.
 - [ ] Save reproducible `eval_results.json` metrics.
 - [ ] Export `omr.onnx` and `omr_config.json` together.
@@ -182,19 +185,37 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 ## Immediate next milestone
 
-Workstream 2 is the next milestone. Train or verifiably resume the current 14-drum model
-on the reconciled 23,660-pair dataset, then evaluate it and save the checkpoint, ONNX,
+Workstream 2 is the next milestone. Train a fresh current 14-drum model
+on the supported 19,942-bar subset, then evaluate it and save the checkpoint, ONNX,
 config, evaluation, and benchmark as one reproducible release. `The Trees` can be restored
 in a later dataset version when a complete 159-bar PDF becomes available.
 
-Training preflight found that pairing correctness does not guarantee the model can
-represent every label: 495 bars have non-rest events outside the current grid, 800 use
-duration fallbacks, and 1,279 include unsupported drums (categories overlap). A decision
-between a strict supported training subset and a broader model contract is pending;
-training has not started. The complete crop package remains available for either path.
+The user selected a strict supported subset for the first training release. The complete
+23,660-pair crop package is preserved; `ml/omr/prepare_training.py` selects 19,942 bars
+without reshuffling songs. `ml/training_report.json` records 15,839 train bars / 232 songs,
+1,919 validation bars / 27 songs, and 2,184 test bars / 28 songs.
+
+`ml/training_exclusions.csv` records all 3,718 excluded bars, including all applicable
+reasons: 495 outside-grid onsets, 1,324 bars flagged as simile/context-dependent, 500
+duplicate-onset bars, 473 measures longer than the grid, 1,287 bars with unsupported
+drums, and 815 with unsupported durations. Counts overlap. These exceed the initial
+preflight counts because the strict audit checks all hits, even those outside the grid.
+
+Rests still encode silence and ghost dynamics still fold into the base drum. The source
+parsers' earlier onset quantization and voice merging are not reversed by filtering.
+This is target compatibility, not a claim of lossless original-notation support. Model
+metrics must disclose the subset and the 359 excluded bars from the original test split.
+Training has not started.
 
 ## Verification performed for this review
 
+- Built and loaded the strict training ZIP through the actual notebook config, dataset,
+  and split cells. All 19,942 image/label content hashes passed, the retained split counts
+  matched the versioned report, and four augmented samples had the required 3x128x384
+  images, 448 drum targets, and 32 duration targets.
+- Added subset tests for whole-bar rejection, simultaneous/ghost hits, rests, duplicate
+  onsets, long measures, context-dependent bars, split leakage, deterministic archives,
+  and modified-file rejection; the notebook target wrapper is also regression-tested.
 - The initial package had 19,948 pairs across 264 songs (212 train / 26 validation /
   26 test), leaving 3,871 raw labels unpackaged. The replacement adds 3,712 pairs;
   the remaining 159 labels belong to the blank `The Trees` source. Adding songs changes

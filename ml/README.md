@@ -307,6 +307,46 @@ It refuses duplicate identities, missing source files, mismatched image/label st
 filename/JSON bar-number disagreements instead of silently emitting an ambiguous
 manifest.
 
+### Strict subset for the first training release
+
+Build the training package from the reconciled dataset:
+
+```bash
+python3 ml/omr/prepare_training.py
+```
+
+This preserves `dataset_manifest.csv` song assignments and writes
+`training_manifest.csv` (19,942 accepted bars with image/label SHA-256 hashes),
+`training_exclusions.csv` (3,718 bars with reasons), `training_report.json`, and the
+ignored local `ml/data/training.zip`. It preserves the full dataset and `dataset.zip`.
+The training split contains 15,839 bars / 232 songs, validation 1,919 / 27, and test
+2,184 / 28. No retained song changes splits.
+
+The shared `ml/omr/training_contract.py` rejects whole bars with unsupported hit drums or
+durations, off-grid onsets, duplicate onsets, long measures, flams, or context-dependent
+simile flags. It never invents a replacement duration or discards an unsupported hit.
+Rests remain silent targets and ghost dynamics map to their base drum. Filtering cannot
+undo quantization or voice merging already performed by the source parsers; this is a
+supported-target baseline, not complete notation fidelity.
+
+Upload **training.zip** to `MyDrive/drumhub/training.zip`, then run
+`ml/notebooks/OMR Training After.ipynb` in a fresh Colab GPU runtime. The ZIP includes the
+shared encoder and audit artifacts. The notebook extracts to a directory keyed by the
+ZIP hash, verifies all included files, and reads the saved splits instead of reshuffling
+songs after filtering. Checkpoints use a package-specific Drive folder. Old 19-drum
+checkpoints must not be resumed, including as backbone warm starts: the new test split
+overlaps their original training songs.
+
+Evaluation records the training manifest/package hashes and the subset scope, including
+359 excluded bars from the source test split. Do not report these metrics as accuracy
+over all 23,660 source pairs.
+
+Run training-contract regressions with:
+
+```bash
+python3 -m unittest discover -s ml/omr -p 'test_*.py'
+```
+
 ---
 
 ## Limitations
