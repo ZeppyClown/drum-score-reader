@@ -120,9 +120,10 @@ remains explicitly excluded until a non-blank source PDF is available.
   A two-batch GPU rehearsal completed head-only training, stopped at the epoch boundary,
   resumed its checkpoint in a new process, and completed full-model fine-tuning. Its
   artifacts are explicitly marked as smoke-test artifacts and are not a model release.
-  The non-smoke MPS run `baseline-14drum-v1` is now in progress: epoch 1 of the 15-epoch
-  head phase completed (train loss 0.58164; validation loss 0.48125), and fine-tuning is
-  underway. No completion marker or release checkpoint has been produced yet.
+  The non-smoke MPS run `baseline-14drum-v1` is now in progress: head epochs 1 and 2 of
+  15 have completed. Epoch 2 recorded train loss 0.43042 and validation loss 0.44688;
+  epoch 3 is underway. Fine-tuning has not started, and no completion marker or release
+  checkpoint has been produced yet.
 - [ ] Evaluate the model on the held-out test-song split.
 - [ ] Save reproducible `eval_results.json` metrics.
 - [ ] Export `omr.onnx` and `omr_config.json` together.
@@ -302,7 +303,7 @@ benchmark checks pass.
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.
 - Confirmed the fresh non-smoke run created `run_config.json`, `provenance.json`,
-  `heads_best.pt`, `last.pt`, and `history.json`; `history.json` currently contains only
-  head epoch 1, and no `training_complete.json` exists yet.
+  `heads_best.pt`, `last.pt`, and `history.json`; `history.json` currently contains head
+  epochs 1 and 2 while epoch 3 runs, and no `training_complete.json` exists yet.
 - Confirmed the only unrelated untracked paths are `ai-engineer-workshop-2026-project/`
   and `songsterr/`; they remain excluded from all staging.
