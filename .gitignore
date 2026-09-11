@@ -13,6 +13,7 @@ __pycache__/
 /ml/data/dataset.zip
 /ml/data/training.zip
 /ml/data/training/
+/ml/data/releases/
 /ml/data/dataset 2/
 /ml/data/reflow/
 /ml/data/reflow_gp5/

@@ -35,6 +35,8 @@ from pathlib import Path
 import numpy as np
 import onnxruntime as ort
 
+from training_contract import sha256_file
+
 WARMUP_RUNS = 10
 
 
@@ -265,7 +267,8 @@ def main() -> int:
     sample = np.random.randn(1, 3, cfg['IMG_H'], cfg['IMG_W']).astype(np.float32)
     batch = build_batch(Path(args.images), args.n, cfg)
 
-    results = {'hardware': hw, 'config_path': str(cfg_path), 'variants': {}}
+    results = {'hardware': hw, 'config_path': str(cfg_path),
+               'model_sha256': sha256_file(model), 'variants': {}}
 
     for name, path in variants.items():
         size_mb = os.path.getsize(path) / 1024**2

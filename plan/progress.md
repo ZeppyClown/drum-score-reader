@@ -136,7 +136,12 @@ remains explicitly excluded until a non-blank source PDF is available.
   bars, plus identical decoded note sequences; it has not yet run on a real checkpoint.
 - [ ] Benchmark the released model on the target Mac and save
   `benchmark_results.json`.
+  `benchmark_results.json` now records the SHA-256 of the ONNX file it measured.
 - [ ] Version the checkpoint, ONNX file, config, evaluation, and benchmark as one release.
+  `ml/omr/release.py` is ready: it cross-checks checkpoint, ONNX, config, evaluation,
+  export, benchmark, and dataset hashes, then writes weights to the ignored
+  `ml/data/releases/<name>/` and JSON evidence to the versioned `ml/releases/<name>/`.
+  Eight focused tests pass on stand-in artifacts; no release exists yet.
 
 The historical model artifacts are `Finetuned Model.pt` (10,012,219 bytes) and
 `Checkpoints OMR.onnx` (283,541 bytes); the ONNX file is far below the approximately

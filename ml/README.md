@@ -386,7 +386,17 @@ After `training_complete.json` exists, run the release steps in order:
 RUN=ml/data/training/runs/baseline-14drum-v1
 python3 ml/omr/evaluate.py --run-dir "$RUN"
 python3 ml/omr/export.py --run-dir "$RUN"
+python3 ml/omr/benchmark.py --model "$RUN/omr.onnx" --out "$RUN/benchmark_results.json" \
+    --images ml/data/training/dataset/images
+python3 ml/omr/release.py --run-dir "$RUN" --name baseline-14drum-v1
 ```
+
+Benchmark with training stopped, or the latency figures measure contention rather than
+the model. `release.py` refuses to bundle unless the completion marker, evaluation,
+export, config, and benchmark all name the same checkpoint hash, ONNX hash, and training
+dataset. Weights go to the ignored `ml/data/releases/<name>/`; the JSON evidence and a
+`release_manifest.json` of file hashes also go to the versioned `ml/releases/<name>/`.
+An existing release name is never overwritten.
 
 `export.py` needs `pip install onnx onnxscript`. It refuses smoke runs, unfinished runs,
 checkpoints without a matching `eval_results.json`, and existing export artifacts. Before
