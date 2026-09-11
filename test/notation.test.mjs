@@ -1,22 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
 
 import { DRUMS, KEY_DRUMS, SHIFT_KEY_DRUMS } from '../js/constants.js';
 import { drumKey, noteKeys, noteStemDir } from '../js/notation.js';
-
-// Read the model's drum list from the training contract so the two cannot drift apart.
-function modelDrums() {
-  const source = fs.readFileSync(new URL('../ml/omr/training_contract.py', import.meta.url), 'utf8');
-  const block = /^DRUMS = \[([\s\S]*?)\]/m.exec(source);
-  assert.ok(block, 'DRUMS list not found in training_contract.py');
-  return [...block[1].matchAll(/'([a-z0-9_]+)'/g)].map(match => match[1]);
-}
+import { contractList } from './contract.mjs';
 
 const sorted = list => [...list].sort();
 
 test('the editor knows exactly the 14 drums the OMR model reads', () => {
-  const model = modelDrums();
+  const model = contractList('DRUMS');
   assert.equal(model.length, 14);
   assert.deepEqual(sorted(Object.keys(DRUMS)), sorted(model));
 });

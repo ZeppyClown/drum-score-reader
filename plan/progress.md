@@ -171,12 +171,19 @@ proves the contract and error handling, not recognition quality.
   images and invalid model output. 15 backend tests pass, and a live run on port 8799
   answered `/health`, a real bar image, a text file (415), and a missing field (422).
 - [ ] Electron service lifecycle management.
-- [ ] Canonical editable bar representation and model-event conversion.
+- [x] Canonical editable bar representation and model-event conversion.
+  The editor note (`{duration, dotted, drums, triplet?}`) now holds every model output:
+  chords, all 14 drums, 32nds, and triplets. `js/import.js` turns `/predict` notes into a
+  full 4/4 bar: timing from `position`, written durations kept when they fit and
+  shortened when they overlap, gaps filled with rests, and triplet hits grouped into
+  the nearest slot of their beat. Every adjustment returns a plain-English warning, and
+  malformed output throws a clear error. Tested in Node only; not yet connected to the
+  service or UI.
 - [ ] Imported-bar rendering and editing.
 - [ ] Actionable import and inference errors.
 
-There is no Electron IPC bridge, service lifecycle management, import UI, or
-model-output-to-editor conversion in the repository yet.
+There is no Electron IPC bridge, service lifecycle management, or import UI in the
+repository yet; those wait for an evaluated model release.
 
 ### Workstream 4 — Import complete pages and PDFs: not started
 

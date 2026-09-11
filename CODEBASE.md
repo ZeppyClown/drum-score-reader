@@ -27,10 +27,11 @@ drum score reader/
 │   ├── layout.js       ← 5. Bar position math (pixel coords)
 │   ├── score.js        ← 6. Rendering — turns state into SVG via VexFlow
 │   ├── notation.js     ← 6. Drum names → VexFlow keys, noteheads, stem direction (pure)
-│   ├── bar.js          ← 7. Pure editing rules — capacity, place, dot, duration, cursor moves
-│   └── input.js        ← 7. Wires keyboard + keypad to bar.js and stores results in state
+│   ├── bar.js          ← 7. Pure editing rules — capacity, place, dot, duration, triplets, cursor moves
+│   ├── input.js        ← 7. Wires keyboard + keypad to bar.js and stores results in state
+│   └── import.js       ← OMR service /predict notes → one editable bar (pure; not wired to the UI yet)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
-└── test/bar.test.mjs   ← Node tests for bar.js — run with `npm test`
+└── test/*.test.mjs     ← Node tests for bar.js, notation.js, import.js — run with `npm test`
 ```
 
 ---
