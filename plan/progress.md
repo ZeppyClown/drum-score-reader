@@ -2,7 +2,7 @@
 
 Reviewed: 2026-09-11
 
-Baseline: `main` at `2c165fd` (`origin/main`); this review records the current working-tree state
+Baseline: `main` at `fe46637` (`origin/main`); this review records the current working-tree state
 
 Scope: the drum-score reader at the repository root and `ml/`; the unrelated untracked
 `ai-engineer-workshop-2026-project/` and `songsterr/` directories are excluded.
