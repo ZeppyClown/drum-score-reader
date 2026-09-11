@@ -114,6 +114,9 @@ remains explicitly excluded until a non-blank source PDF is available.
   A local runner now shares the notebook's model and preprocessing. It supports epoch
   checkpoints with optimizer/scheduler/RNG state and rejects resume attempts when the
   code, dataset, model, runtime, or training configuration differs.
+  `ml/omr/evaluate.py` now verifies a non-smoke completion marker, checkpoint hash,
+  dataset/model provenance, and the unchanged test-song split before computing the
+  documented held-out metrics. Its three focused tests pass; no real-run metrics exist yet.
   A two-batch GPU rehearsal completed head-only training, stopped at the epoch boundary,
   resumed its checkpoint in a new process, and completed full-model fine-tuning. Its
   artifacts are explicitly marked as smoke-test artifacts and are not a model release.
@@ -230,7 +233,8 @@ benchmark checks pass.
   onsets, long measures, context-dependent bars, split leakage, deterministic archives,
   and modified-file rejection; the notebook target wrapper is also regression-tested.
 - Verified 14 training tests, including model output dimensions, RNG restoration, and
-  unchanged backbone parameters/BatchNorm buffers while the prediction heads learn.
+  unchanged backbone parameters/BatchNorm buffers while the prediction heads learn; the
+  three evaluation tests also pass.
 - Confirmed that PyTorch MPS is available outside the execution sandbox. A 64-bar GPU
   rehearsal took 40.8 seconds for its head-only epoch and 92.8 seconds for the resumed
   fine-tuning epoch, including initial GPU setup/compilation. These are rehearsal times,
