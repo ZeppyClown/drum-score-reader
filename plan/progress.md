@@ -102,6 +102,12 @@ remains explicitly excluded until a non-blank source PDF is available.
   14-drum / 448-logit contract, and the obsolete Phase 2 execution output and count are
   cleared so its invalid metrics cannot be mistaken for a current run.
 - [ ] Train or verifiably resume the current 14-drum model on the reconciled dataset.
+  The local checkpoint has a 608-output drum head (19 drums), so it cannot resume the
+  448-output model. The replacement split also puts 23 old training songs into test
+  and 16 into validation; a fresh training run is required for a clean evaluation.
+  Fixed an additional training bug: negative counts for each beat/drum output were
+  multiplied by an extra factor of 32, inflating positive weights. Regression tests execute the
+  actual notebook assignments and now verify balanced, imbalanced, and rare outputs.
 - [ ] Evaluate the model on the held-out test-song split.
 - [ ] Save reproducible `eval_results.json` metrics.
 - [ ] Export `omr.onnx` and `omr_config.json` together.
@@ -180,6 +186,12 @@ Workstream 2 is the next milestone. Train or verifiably resume the current 14-dr
 on the reconciled 23,660-pair dataset, then evaluate it and save the checkpoint, ONNX,
 config, evaluation, and benchmark as one reproducible release. `The Trees` can be restored
 in a later dataset version when a complete 159-bar PDF becomes available.
+
+Training preflight found that pairing correctness does not guarantee the model can
+represent every label: 495 bars have non-rest events outside the current grid, 800 use
+duration fallbacks, and 1,279 include unsupported drums (categories overlap). A decision
+between a strict supported training subset and a broader model contract is pending;
+training has not started. The complete crop package remains available for either path.
 
 ## Verification performed for this review
 
