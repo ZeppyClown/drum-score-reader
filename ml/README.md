@@ -282,6 +282,27 @@ The by-song split is deliberate. Drum notation repeats heavily within a song, so
 bar-level split would put near-identical bars on both sides of the boundary and inflate
 every score.
 
+### Manifest and reconciliation
+
+Regenerate the versioned dataset audit from the current files under `ml/data/`:
+
+```bash
+python ml/data-prep/build_manifest.py
+```
+
+This writes:
+
+- `ml/dataset_manifest.csv`: one row per packaged pair, including its song, original
+  GP5/GP7 source, bar number, image, label, and deterministic train/validation/test split.
+- `ml/data_reconciliation.csv`: one row per raw label absent from the packaged dataset,
+  with the evidence-based reason and crop-audit totals.
+- `ml/data_reconciliation.md`: a human-readable summary grouped by reason and song.
+
+The generator reruns both crop detectors in read-only mode, so it can take about a minute.
+It refuses duplicate identities, missing source files, mismatched image/label stems, and
+filename/JSON bar-number disagreements instead of silently emitting an ambiguous
+manifest.
+
 ---
 
 ## Limitations

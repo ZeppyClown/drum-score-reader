@@ -2,7 +2,7 @@
 
 Reviewed: 2026-09-11
 
-Baseline: `main` at `158b007` (`origin/main`)
+Baseline: `main` at `31132af` (`origin/main`)
 
 Scope: the drum-score reader at the repository root and `ml/`; the unrelated untracked
 `ai-engineer-workshop-2026-project/` and `songsterr/` directories are excluded.
@@ -57,9 +57,10 @@ model response into this editor yet.
 - [x] `ml/omr/benchmark.py` contains fp32/int8 size, latency, and sequence-agreement
   measurement code.
 
-The data and tooling above are inputs to Workstreams 1 and 2. They do not make those
-workstreams complete because the pipeline cannot currently be reproduced from its
-documented repository-relative locations and no valid evaluated model bundle is present.
+The data and tooling above are inputs to Workstreams 1 and 2. Data paths, subset
+reproduction, and the manifest audit are now implemented. Workstream 1 still needs its
+documented crop/name mismatches resolved and human spot checks; Workstream 2 still has no
+valid evaluated model bundle.
 
 ## Delivery-plan progress
 
@@ -78,13 +79,20 @@ documented repository-relative locations and no valid evaluated model bundle is 
   A two-song temporary run parsed and cropped 76 GP5/Reflow bars and 89 GP7/Songsterr
   bars. Both spot-check tools ran headlessly, and the packager produced a ZIP containing
   all 165 images and 165 matching labels.
-- [ ] Explain the 3,871 parsed labels not represented in the 19,948 packaged pairs.
-- [ ] Generate a repeatable manifest with song, source, bar, image, label, and split.
+- [x] Explain the 3,871 parsed labels not represented in the 19,948 packaged pairs.
+  `ml/data_reconciliation.csv` accounts for every label. The audit found 1,694 labels in
+  14 crop/label-count mismatch songs, 79 labels with no PDF selected by the current name
+  matcher, 2,081 labels in 11 songs that are ready but were never packaged, and 17
+  missing labels across six otherwise-packaged songs.
+- [x] Generate a repeatable manifest with song, source, bar, image, label, and split.
+  `ml/dataset_manifest.csv` contains 19,948 rows and reproduces the notebook split exactly:
+  212 train songs / 15,709 bars, 26 validation songs / 2,315 bars, and 26 test songs /
+  1,924 bars. `ml/data-prep/build_manifest.py` regenerates the manifest, detailed
+  reconciliation CSV, and Markdown report.
 
-The path contract and small-subset pipeline are now proven. The existing full packaged
-image/label sets also match exactly and the notebook's split is deterministic by song.
-However, there is no manifest and the 3,871-label difference remains unexplained, so the
-workstream exit criteria are not yet met.
+All five implementation tasks are complete. The workstream exit criteria remain open
+until the 14 crop-count mismatches and one unmatched Songsterr title are resolved, the
+full package is regenerated, and human spot checks confirm that crops and labels align.
 
 ### Workstream 2 — Produce a valid model release: not complete
 
@@ -164,8 +172,10 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 ## Immediate next milestone
 
 Workstream 1 remains the next milestone. The path contract and small-subset proof are
-complete; the next implementation slice should generate the manifest and use it to
-account for the 3,871 unpackaged labels before retraining or exporting the model.
+complete, and every existing label is now accounted for. The next slice must resolve the
+14 crop-count mismatches and decide how the unmatched Songsterr title should map. Then
+regenerate the full package and perform human crop/label spot checks before starting
+model-release work.
 
 ## Verification performed for this review
 
@@ -178,6 +188,8 @@ account for the 3,871 unpackaged labels before retraining or exporting the model
   path overrides.
 - Ran a two-song end-to-end subset through both parsers, both crop tools, both spot-check
   tools, and the ZIP packager; the result contained 165 matching image/label pairs.
+- Generated and validated the 19,948-row dataset manifest and the 3,871-row reconciliation
+  audit by rerunning bar detection across all available PDFs.
 - Checked for model config, evaluation, benchmark, manifest, inference, playback, and
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.
