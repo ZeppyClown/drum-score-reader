@@ -2,7 +2,7 @@
 
 Reviewed: 2026-09-11
 
-Baseline: `main` at `2be0b0d` (`origin/main`); updated through `fe91068`
+Baseline: `main` at `2c165fd` (`origin/main`); this review records the current working-tree state
 
 Scope: the drum-score reader at the repository root and `ml/`; the unrelated untracked
 `ai-engineer-workshop-2026-project/` and `songsterr/` directories are excluded.
@@ -102,13 +102,13 @@ remains explicitly excluded until a non-blank source PDF is available.
   14-drum / 448-logit contract, and the obsolete Phase 2 execution output and count are
   cleared so its invalid metrics cannot be mistaken for a current run.
 - [ ] Train or verifiably resume the current 14-drum model on the reconciled dataset.
-  The local checkpoint has a 608-output drum head (19 drums), so it cannot resume the
-  448-output model. The replacement split also puts 23 old training songs into test
-  and 16 into validation; a fresh training run is required for a clean evaluation.
+  The obsolete local checkpoint has a 608-output drum head (19 drums), so it cannot
+  resume the 448-output model. The replacement split also puts 23 old training songs
+  into test and 16 into validation; a fresh training run is required for a clean evaluation.
   Fixed an additional training bug: negative counts for each beat/drum output were
   multiplied by an extra factor of 32, inflating positive weights. Regression tests
   execute the actual notebook assignments and verify balanced, imbalanced, and rare outputs.
-  The approved strict subset is now packaged: 19,942 included bars and 3,718 exclusions.
+  The approved strict subset is packaged: 19,942 included bars and 3,718 exclusions.
   Preparation and the notebook share one strict encoder; the notebook validates content
   hashes and loads the saved split membership before training.
   A local runner now shares the notebook's model and preprocessing. It supports epoch
@@ -117,6 +117,9 @@ remains explicitly excluded until a non-blank source PDF is available.
   A two-batch GPU rehearsal completed head-only training, stopped at the epoch boundary,
   resumed its checkpoint in a new process, and completed full-model fine-tuning. Its
   artifacts are explicitly marked as smoke-test artifacts and are not a model release.
+  The non-smoke MPS run `baseline-14drum-v1` is now in progress: epoch 1 of the 15-epoch
+  head phase completed (train loss 0.58164; validation loss 0.48125), and fine-tuning is
+  underway. No completion marker or release checkpoint has been produced yet.
 - [ ] Evaluate the model on the held-out test-song split.
 - [ ] Save reproducible `eval_results.json` metrics.
 - [ ] Export `omr.onnx` and `omr_config.json` together.
@@ -125,11 +128,12 @@ remains explicitly excluded until a non-blank source PDF is available.
   `benchmark_results.json`.
 - [ ] Version the checkpoint, ONNX file, config, evaluation, and benchmark as one release.
 
-The only local model artifacts found are `Finetuned Model.pt` (10,012,219 bytes) and
-`Checkpoints OMR.onnx` (283,541 bytes). The ONNX file is far below the approximately
-8.8 MB expected for this fp32 architecture. `omr_config.json`, `eval_results.json`, and
-`benchmark_results.json` are absent, so no model result is currently shippable or
-reproducible.
+The historical model artifacts are `Finetuned Model.pt` (10,012,219 bytes) and
+`Checkpoints OMR.onnx` (283,541 bytes); the ONNX file is far below the approximately
+8.8 MB expected for this fp32 architecture. The current run has only in-progress
+checkpoints and history under the ignored `ml/data/training/runs/baseline-14drum-v1/`.
+`omr_config.json`, `eval_results.json`, and `benchmark_results.json` are absent, so no
+model result is currently shippable or reproducible.
 
 ### Workstream 3 — Integrate single-bar local inference: not started
 
@@ -191,10 +195,10 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 ## Immediate next milestone
 
-Workstream 2 is the next milestone. Train a fresh current 14-drum model
-on the supported 19,942-bar subset, then evaluate it and save the checkpoint, ONNX,
-config, evaluation, and benchmark as one reproducible release. `The Trees` can be restored
-in a later dataset version when a complete 159-bar PDF becomes available.
+Workstream 2 is the next milestone. Let the fresh current 14-drum run finish on the
+supported 19,942-bar subset, then evaluate it and save the checkpoint, ONNX, config,
+evaluation, and benchmark as one reproducible release. `The Trees` can be restored in a
+later dataset version when a complete 159-bar PDF becomes available.
 
 The user selected a strict supported subset for the first training release. The complete
 23,660-pair crop package is preserved; `ml/omr/prepare_training.py` selects 19,942 bars
@@ -211,7 +215,10 @@ Rests still encode silence and ghost dynamics still fold into the base drum. The
 parsers' earlier onset quantization and voice merging are not reversed by filtering.
 This is target compatibility, not a claim of lossless original-notation support. Model
 metrics must disclose the subset and the 359 excluded bars from the original test split.
-Training has not started.
+Training is in progress on MPS in the ignored `baseline-14drum-v1` run directory; only the
+head-phase epoch-1 metrics are currently available. Do not treat these interim artifacts
+as a release until all epochs finish and the completion marker, evaluation, export, and
+benchmark checks pass.
 
 ## Verification performed for this review
 
@@ -290,5 +297,8 @@ Training has not started.
 - Checked for model config, evaluation, benchmark, manifest, inference, playback, and
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.
-- Confirmed `main` and `origin/main` both pointed to `158b007` before this progress-file
-  update, with only the two excluded directories untracked.
+- Confirmed the fresh non-smoke run created `run_config.json`, `provenance.json`,
+  `heads_best.pt`, `last.pt`, and `history.json`; `history.json` currently contains only
+  head epoch 1, and no `training_complete.json` exists yet.
+- Confirmed the only unrelated untracked paths are `ai-engineer-workshop-2026-project/`
+  and `songsterr/`; they remain excluded from all staging.
