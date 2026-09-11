@@ -17,16 +17,16 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 
 | Reason | Songs | Bars | Meaning |
 | --- | ---: | ---: | --- |
-| `crop_label_count_mismatch` | 8 | 1,299 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
+| `crop_label_count_mismatch` | 6 | 1,029 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
 | `packaged_dataset_incomplete` | 6 | 17 | The song is packaged, but specific raw-label identities are absent; the current crop audit matches the complete song. |
-| `packaged_dataset_not_regenerated` | 18 | 2,555 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
+| `packaged_dataset_not_regenerated` | 20 | 2,825 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
 
 ## Affected songs
 
 | Source | Song | Packaged bars | Missing bars | Crop audit | Reason | PDF |
 | --- | --- | ---: | ---: | --- | --- | --- |
 | gp7 | 21 Guns Drum Tab Green Day May 27 2026 | 0 | 107 | 107 crops / 107 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/21 Guns Drum Tab by Green Day _ Songsterr Tabs with Rhythm.pdf |
-| gp7 | AC_DC-For Those About To Rock-05-09-2026 | 0 | 184 | 182 crops / 184 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/For Those About To Rock Drum Tab by AC_DC _ Songsterr Tabs with Rhythm.pdf |
+| gp7 | AC_DC-For Those About To Rock-05-09-2026 | 0 | 184 | 184 crops / 184 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/For Those About To Rock Drum Tab by AC_DC _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | AC_DC-Rock And Roll Ain't Noise Pollution-05-30-2026 | 100 | 2 | 102 crops / 102 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Rock And Roll Ain't Noise Pollution Drum Tab by AC_DC _ Songsterr Tabs with Rhythm.pdf |
 | gp5 | Alwin_Alwin homework 15 may | 0 | 117 | 117 crops / 117 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/Alwin_Alwin homework 15 may.pdf |
 | gp5 | Alwin_the different patterns | 0 | 8 | 8 crops / 8 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/Alwin_the different patterns.pdf |
@@ -46,7 +46,7 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | gp7 | King Of Pain Drum Tab by The Police | 0 | 148 | 148 crops / 148 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/King Of Pain Drum Tab by The Police _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Long Road to Ruin Drum Tab - Foo Fighters | 0 | 126 | 126 crops / 126 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Long Road To Ruin Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Metallica Creeping Death May 2026 | 0 | 330 | 329 crops / 330 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Creeping Death Drum Tab by Metallica _ Songsterr Tabs with Rhythm.pdf |
-| gp7 | Phil Collins I Wish It Would Rain Down Dec 2 2023 | 0 | 86 | 85 crops / 86 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/I Wish It Would Rain Down Drum Tab by Phil Collins _ Songsterr Tabs with Rhythm.pdf |
+| gp7 | Phil Collins I Wish It Would Rain Down Dec 2 2023 | 0 | 86 | 86 crops / 86 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/I Wish It Would Rain Down Drum Tab by Phil Collins _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Ramble On Drum Tab - Led Zeppelin | 0 | 114 | 113 crops / 114 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Ramble On Drum Tab by Led Zeppelin _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Rush 2112 Drum Tab | 0 | 588 | 588 crops / 588 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Rush La Villa Strangiato Drum Tab May 25 2026 | 0 | 354 | 354 crops / 354 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/La Villa Strangiato Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |

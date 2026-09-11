@@ -152,11 +152,21 @@ def extract_hlines(page: fitz.Page) -> list[dict]:
                 dx = abs(p2.x - p1.x)
                 dy = abs(p2.y - p1.y)
                 if dy < 1 and dx >= HLINE_MIN_WIDTH:
-                    hlines.append({'y': (p1.y + p2.y) / 2})
+                    hlines.append({
+                        'y': (p1.y + p2.y) / 2,
+                        'x0': min(p1.x, p2.x),
+                        'x1': max(p1.x, p2.x),
+                        'width': dx,
+                    })
             elif item[0] == 're':
                 r = item[1]
                 if r.height < 1 and r.width >= HLINE_MIN_WIDTH:
-                    hlines.append({'y': r.y0 + r.height / 2})
+                    hlines.append({
+                        'y': r.y0 + r.height / 2,
+                        'x0': r.x0,
+                        'x1': r.x1,
+                        'width': r.width,
+                    })
     return hlines
 
 
@@ -188,6 +198,18 @@ def find_staff_rows(hlines: list[dict]) -> list[tuple[float, float]]:
         rows.append((min(row), max(row)))
 
     return rows
+
+
+def find_staff_span(hlines: list[dict], top_y: float, bot_y: float) -> tuple[float, float]:
+    """Return the widest horizontal staff span inside one detected row."""
+    candidates = [
+        line for line in hlines
+        if top_y - STAFF_LINE_GAP <= line['y'] <= bot_y + STAFF_LINE_GAP
+    ]
+    if not candidates:
+        return (0.0, 0.0)
+    widest = max(candidates, key=lambda line: line['width'])
+    return (widest['x0'], widest['x1'])
 
 
 # ── Step 2: vertical bar lines → bar x-positions ─────────────────────────────
@@ -248,18 +270,62 @@ def render_gray(page: fitz.Page) -> np.ndarray:
 
 def crop_bars(gray: np.ndarray,
               staff_rows: list[tuple[float, float]],
-              bar_xs_per_row: list[list[float]]) -> list[np.ndarray]:
+              bar_xs_per_row: list[list[float]],
+              staff_spans: list[tuple[float, float]]) -> list[np.ndarray]:
+    """Crop complete bars and join measures that wrap across staff rows."""
     ph, pw = gray.shape
     crops: list[np.ndarray] = []
-    for (top_y, bot_y), bar_xs in zip(staff_rows, bar_xs_per_row):
-        if len(bar_xs) < 2:
-            continue
+    pending_fragments: list[np.ndarray] = []
+
+    def crop_region(top_y: float, bot_y: float,
+                    left_x: float, right_x: float) -> np.ndarray:
         yt = max(0,  int(top_y * SCALE) - PAD_Y)
         yb = min(ph, int(bot_y * SCALE) + PAD_Y)
+        xl = max(0,  int(left_x  * SCALE) - PAD_X)
+        xr = min(pw, int(right_x * SCALE) + PAD_X)
+        return gray[yt:yb, xl:xr].copy()
+
+    def join_fragments(fragments: list[np.ndarray]) -> np.ndarray:
+        height = max(fragment.shape[0] for fragment in fragments)
+        width = sum(fragment.shape[1] for fragment in fragments)
+        joined = np.full((height, width), 255, dtype=gray.dtype)
+        offset = 0
+        for fragment in fragments:
+            top = (height - fragment.shape[0]) // 2
+            joined[top:top + fragment.shape[0], offset:offset + fragment.shape[1]] = fragment
+            offset += fragment.shape[1]
+        return joined
+
+    for (top_y, bot_y), bar_xs, (span_left, span_right) in zip(
+        staff_rows,
+        bar_xs_per_row,
+        staff_spans,
+    ):
+        if pending_fragments:
+            if not bar_xs:
+                pending_fragments.append(crop_region(
+                    top_y, bot_y, span_left, span_right,
+                ))
+                continue
+            pending_fragments.append(crop_region(
+                top_y, bot_y, span_left, bar_xs[0],
+            ))
+            crops.append(join_fragments(pending_fragments))
+            pending_fragments = []
+
         for i in range(len(bar_xs) - 1):
-            xl = max(0,  int(bar_xs[i]     * SCALE) - PAD_X)
-            xr = min(pw, int(bar_xs[i + 1] * SCALE) + PAD_X)
-            crops.append(gray[yt:yb, xl:xr].copy())
+            crops.append(crop_region(
+                top_y, bot_y, bar_xs[i], bar_xs[i + 1],
+            ))
+
+        if (
+            bar_xs
+            and (span_right - bar_xs[-1]) * SCALE >= MIN_BAR_PX
+        ):
+            pending_fragments = [crop_region(
+                top_y, bot_y, bar_xs[-1], span_right,
+            )]
+
     return crops
 
 
@@ -320,9 +386,10 @@ def process_pdf(pdf_path: Path, labels: list[Path], output_dir: Path,
         vlines         = extract_vlines(page)
         staff_rows     = find_staff_rows(hlines)
         bar_xs_per_row = [find_bar_xs(vlines, t, b) for t, b in staff_rows]
+        staff_spans    = [find_staff_span(hlines, t, b) for t, b in staff_rows]
 
         gray  = render_gray(page)
-        crops = crop_bars(gray, staff_rows, bar_xs_per_row)
+        crops = crop_bars(gray, staff_rows, bar_xs_per_row, staff_spans)
         all_crops.extend(crops)
 
         if save_debug:
