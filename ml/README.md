@@ -378,6 +378,25 @@ arguments with `--resume` and without the stop flag. Smoke runs are marked expli
 and must never be exported as a release. Full runs produce `training_complete.json`;
 held-out test evaluation and ONNX export are still separate release steps.
 
+### Local evaluation and ONNX export
+
+After `training_complete.json` exists, run the release steps in order:
+
+```bash
+RUN=ml/data/training/runs/baseline-14drum-v1
+python3 ml/omr/evaluate.py --run-dir "$RUN"
+python3 ml/omr/export.py --run-dir "$RUN"
+```
+
+`export.py` needs `pip install onnx onnxscript`. It refuses smoke runs, unfinished runs,
+checkpoints without a matching `eval_results.json`, and existing export artifacts. Before
+publishing, it checks the file on disk: size must match the fp32 parameter count (the
+historical 284 KB file fails), logits must match PyTorch within 1e-4 on random probes and
+64 held-out test bars, and every bar must decode to the same note sequence. It writes
+`omr.onnx`, `omr_config.json` (the notebook's keys plus input/output names, ImageNet
+normalization, and `MODEL_SHA256`), and `export_results.json` with the verification
+evidence and checkpoint/dataset hashes.
+
 ---
 
 ## Limitations
@@ -397,7 +416,8 @@ the current model.
 
 - [ ] Re-run the Phase 2 evaluation, then cell 13c to write `eval_results.json`, and paste
       the markdown it prints into [Performance](#performance)
-- [ ] Re-export `omr.onnx` and run cell 14a — it fails loudly if the file is the wrong size
+- [ ] Re-export `omr.onnx` with `omr/export.py` (or notebook cell 14a) — both fail loudly
+      if the file is the wrong size or drifts from PyTorch
 - [ ] Run `omr/benchmark.py` against the re-exported model and record the numbers here,
       including the int8 agreement rate, which the reference export could not establish
 - [ ] Add more training songs (target: 500+) to reduce overfitting

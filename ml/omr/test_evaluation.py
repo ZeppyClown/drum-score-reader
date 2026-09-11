@@ -42,6 +42,14 @@ class EvaluationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'cannot be evaluated as a release'):
                 verified_run(root, root / 'dataset')
 
+    def test_unfinished_run_is_reported_clearly(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'run_config.json').write_text(json.dumps(
+                {'smoke_batches': 0, 'random_init': False}))
+            with self.assertRaisesRegex(ValueError, 'Training has not finished'):
+                verified_run(root, root / 'dataset')
+
 
 if __name__ == '__main__':
     unittest.main()

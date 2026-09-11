@@ -127,7 +127,13 @@ remains explicitly excluded until a non-blank source PDF is available.
 - [ ] Evaluate the model on the held-out test-song split.
 - [ ] Save reproducible `eval_results.json` metrics.
 - [ ] Export `omr.onnx` and `omr_config.json` together.
+  `ml/omr/export.py` is ready: it refuses smoke, unfinished, or unevaluated runs and never
+  overwrites existing artifacts, then writes the ONNX file, config, and
+  `export_results.json` together. Seven focused tests pass against a randomly initialized
+  model (8.78 MB export, 2,305,056 parameters); no trained model has been exported yet.
 - [ ] Verify ONNX/PyTorch numerical parity for the released artifacts.
+  The export step enforces a 1e-4 logit tolerance on random probes and 64 held-out test
+  bars, plus identical decoded note sequences; it has not yet run on a real checkpoint.
 - [ ] Benchmark the released model on the target Mac and save
   `benchmark_results.json`.
 - [ ] Version the checkpoint, ONNX file, config, evaluation, and benchmark as one release.

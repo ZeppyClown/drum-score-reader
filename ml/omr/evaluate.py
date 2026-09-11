@@ -67,7 +67,10 @@ def verified_run(run_dir, dataset):
     config = json.loads((run_dir / 'run_config.json').read_text())
     if config['smoke_batches'] or config['random_init']:
         raise ValueError('Smoke/random-initialization runs cannot be evaluated as a release')
-    completed = json.loads((run_dir / 'training_complete.json').read_text())
+    marker = run_dir / 'training_complete.json'
+    if not marker.exists():
+        raise ValueError(f'Training has not finished: {marker} does not exist yet')
+    completed = json.loads(marker.read_text())
     if completed.get('smoke') is not False:
         raise ValueError('Missing non-smoke completion evidence')
     checkpoint = run_dir / 'finetune_best.pt'
