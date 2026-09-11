@@ -17,9 +17,9 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 
 | Reason | Songs | Bars | Meaning |
 | --- | ---: | ---: | --- |
-| `crop_label_count_mismatch` | 6 | 1,029 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
+| `crop_label_count_mismatch` | 1 | 159 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
 | `packaged_dataset_incomplete` | 6 | 17 | The song is packaged, but specific raw-label identities are absent; the current crop audit matches the complete song. |
-| `packaged_dataset_not_regenerated` | 20 | 2,825 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
+| `packaged_dataset_not_regenerated` | 25 | 3,695 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
 
 ## Affected songs
 
@@ -35,19 +35,19 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | gp7 | Could You Be Loved Drum Tab by Bob Marley | 0 | 104 | 104 crops / 104 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Could You Be Loved Drum Tab by Bob Marley _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Don't Stand So Close To Me Drum Tab - The Police | 0 | 137 | 137 crops / 137 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Don't Stand So Close To Me Drum Tab by The Police _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Driven To Tears Drum Tab The Police Apr 4 2025 | 0 | 137 | 137 crops / 137 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Driven To Tears Drum Tab by The Police _ Songsterr Tabs with Rhythm.pdf |
-| gp7 | Foo Fighters Everlong May 16 2026 | 0 | 164 | 163 crops / 164 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Everlong Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm.pdf |
-| gp7 | For Whom The Bell Tolls Drum Tab by Metallica | 0 | 146 | 145 crops / 146 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/For Whom The Bell Tolls Drum Tab by Metallica _ Songsterr Tabs with Rhythm.pdf |
+| gp7 | Foo Fighters Everlong May 16 2026 | 0 | 164 | 164 crops / 164 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Everlong Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm.pdf |
+| gp7 | For Whom The Bell Tolls Drum Tab by Metallica | 0 | 146 | 146 crops / 146 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/For Whom The Bell Tolls Drum Tab by Metallica _ Songsterr Tabs with Rhythm.pdf |
 | gp5 | Grade 5 fills_counting 32nd notes | 0 | 8 | 8 crops / 8 labels | `packaged_dataset_not_regenerated` | ml/data/reflow_pdf/Grade 5 fills_counting 32nd notes.pdf |
-| gp7 | Heart-Shaped Box Drum Tab by Nirvana | 0 | 116 | 115 crops / 116 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Heart-Shaped Box Drum Tab by Nirvana _ Songsterr Tabs with Rhythm.pdf |
+| gp7 | Heart-Shaped Box Drum Tab by Nirvana | 0 | 116 | 116 crops / 116 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Heart-Shaped Box Drum Tab by Nirvana _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Hotel California The Eagles 2026 | 0 | 121 | 121 crops / 121 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Hotel California Drum Tab by The Eagles _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Immigrant Song Drum Tab by Led Zeppelin | 67 | 1 | 68 crops / 68 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Immigrant Song Drum Tab by Led Zeppelin _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Is This Love Drum Tab Bob Marley Aug 22 2025 | 0 | 122 | 122 crops / 122 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Is This Love Drum Tab by Bob Marley _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | It's A Man's World Drum Tab by James Brown Aug 5 2024 | 0 | 79 | 79 crops / 79 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/It's A Man's Man's Man's World Drum Tab by James Brown _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | King Of Pain Drum Tab by The Police | 0 | 148 | 148 crops / 148 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/King Of Pain Drum Tab by The Police _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Long Road to Ruin Drum Tab - Foo Fighters | 0 | 126 | 126 crops / 126 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Long Road To Ruin Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm.pdf |
-| gp7 | Metallica Creeping Death May 2026 | 0 | 330 | 329 crops / 330 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Creeping Death Drum Tab by Metallica _ Songsterr Tabs with Rhythm.pdf |
+| gp7 | Metallica Creeping Death May 2026 | 0 | 330 | 330 crops / 330 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Creeping Death Drum Tab by Metallica _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Phil Collins I Wish It Would Rain Down Dec 2 2023 | 0 | 86 | 86 crops / 86 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/I Wish It Would Rain Down Drum Tab by Phil Collins _ Songsterr Tabs with Rhythm.pdf |
-| gp7 | Ramble On Drum Tab - Led Zeppelin | 0 | 114 | 113 crops / 114 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Ramble On Drum Tab by Led Zeppelin _ Songsterr Tabs with Rhythm.pdf |
+| gp7 | Ramble On Drum Tab - Led Zeppelin | 0 | 114 | 114 crops / 114 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Ramble On Drum Tab by Led Zeppelin _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Rush 2112 Drum Tab | 0 | 588 | 588 crops / 588 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Rush La Villa Strangiato Drum Tab May 25 2026 | 0 | 354 | 354 crops / 354 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/La Villa Strangiato Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Rush Red Barchetta Drum Tab Mar 22 2026 | 219 | 1 | 220 crops / 220 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Red Barchetta Drum Tab by Rush _ Songsterr Tabs with Rhythm.pdf |

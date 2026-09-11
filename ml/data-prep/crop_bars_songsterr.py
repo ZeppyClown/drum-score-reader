@@ -52,14 +52,17 @@ DPI   = 150
 SCALE = DPI / 72
 
 # ── Tuning ────────────────────────────────────────────────────────────────────
-HLINE_MIN_WIDTH = 50    # pt: minimum width to count as a staff line (filters beams)
-STAFF_LINE_GAP  = 2     # pt: y-values closer than this → same staff line cluster
-STAFF_ROW_GAP   = 8     # pt: gap to previous cluster; larger → new staff row
-VLINE_MAX_DX    = 2     # pt: max horizontal drift to count as "vertical"
-VLINE_Y_TOL     = 4     # pt: how closely a vertical line must match staff top/bottom
-MIN_BAR_PX      = 40    # px: bar lines closer than this are duplicates / double bars
-PAD_Y           = 50    # px: vertical padding on each bar crop
-PAD_X           = 4     # px: horizontal padding on each bar crop
+HLINE_MIN_WIDTH   = 25   # pt: retains miniature bars while filtering short notation strokes
+STAFF_LINE_GAP    = 2    # pt: y-values closer than this → same staff line cluster
+STAFF_ROW_GAP     = 8    # pt: gap to previous cluster; larger → new staff row
+STAFF_SPACING_MIN = 4    # pt: minimum gap between consecutive lines in a five-line staff
+STAFF_SPACING_MAX = 7    # pt: maximum gap between consecutive lines in a five-line staff
+STAFF_SPACING_TOL = 1.5  # pt: maximum variation among the four staff-line gaps
+VLINE_MAX_DX      = 2    # pt: max horizontal drift to count as "vertical"
+VLINE_Y_TOL       = 4    # pt: how closely a vertical line must match staff top/bottom
+MIN_BAR_PX        = 40   # px: bar lines closer than this are duplicates / double bars
+PAD_Y             = 50   # px: vertical padding on each bar crop
+PAD_X             = 4    # px: horizontal padding on each bar crop
 
 
 # ── Name matching ─────────────────────────────────────────────────────────────
@@ -173,7 +176,48 @@ def extract_hlines(page: fitz.Page) -> list[dict]:
 def find_staff_rows(hlines: list[dict]) -> list[tuple[float, float]]:
     if not hlines:
         return []
-    ys = sorted(l['y'] for l in hlines)
+
+    from collections import defaultdict
+
+    segment_groups: defaultdict[tuple[float, float], list[dict]] = defaultdict(list)
+    for line in hlines:
+        key = (
+            round(line['x0'] * 2) / 2,
+            round(line['x1'] * 2) / 2,
+        )
+        segment_groups[key].append(line)
+
+    staff_hlines: list[dict] = []
+    for lines in segment_groups.values():
+        ys = sorted(line['y'] for line in lines)
+        clusters: list[list[float]] = [[ys[0]]]
+        for y in ys[1:]:
+            if y - clusters[-1][-1] <= STAFF_LINE_GAP:
+                clusters[-1].append(y)
+            else:
+                clusters.append([y])
+
+        centers = [sum(cluster) / len(cluster) for cluster in clusters]
+        has_staff_geometry = False
+        for start in range(len(centers) - 4):
+            gaps = [
+                centers[index + 1] - centers[index]
+                for index in range(start, start + 4)
+            ]
+            if (
+                all(STAFF_SPACING_MIN <= gap <= STAFF_SPACING_MAX for gap in gaps)
+                and max(gaps) - min(gaps) <= STAFF_SPACING_TOL
+            ):
+                has_staff_geometry = True
+                break
+
+        if has_staff_geometry:
+            staff_hlines.extend(lines)
+
+    if not staff_hlines:
+        return []
+
+    ys = sorted(line['y'] for line in staff_hlines)
 
     y_clusters: list[float] = []
     group = [ys[0]]

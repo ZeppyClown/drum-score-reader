@@ -80,8 +80,8 @@ valid evaluated model bundle.
   bars. Both spot-check tools ran headlessly, and the packager produced a ZIP containing
   all 165 images and 165 matching labels.
 - [x] Explain the 3,871 parsed labels not represented in the 19,948 packaged pairs.
-  `ml/data_reconciliation.csv` accounts for every label. The audit found 1,029 labels in
-  6 crop/label-count mismatch songs, 2,825 labels in 20 songs that are ready but were
+  `ml/data_reconciliation.csv` accounts for every label. The audit found 159 labels in
+  1 crop/label-count mismatch song, 3,695 labels in 25 songs that are ready but were
   never packaged, and 17 missing labels across six otherwise-packaged songs. The only
   previously-unmatched Songsterr title is now covered by an explicit confirmed alias and
   produces 79 crops for 79 labels.
@@ -92,7 +92,7 @@ valid evaluated model bundle.
   reconciliation CSV, and Markdown report.
 
 All five implementation tasks are complete. The workstream exit criteria remain open
-until the 6 crop-count mismatches are resolved, the full package is regenerated, and
+until the final crop-count mismatch is resolved, the full package is regenerated, and
 human spot checks confirm that crops and labels align.
 
 ### Workstream 2 — Produce a valid model release: not complete
@@ -174,7 +174,7 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 Workstream 1 remains the next milestone. The path contract and small-subset proof are
 complete, and every existing label is now accounted for. The next slice must resolve the
-6 crop-count mismatches. Then regenerate the full package and perform human crop/label
+final crop-count mismatch. Then regenerate the full package and perform human crop/label
 spot checks before starting model-release work.
 
 ## Verification performed for this review
@@ -211,6 +211,12 @@ spot checks before starting model-release work.
   focused image-content regression. Visual inspection confirmed both halves of AC/DC
   bars 180 and 181 are preserved. The full Songsterr audit fixes AC/DC (184/184) and
   `I Wish It Would Rain Down` (86/86) without breaking an existing match.
+- Diagnosed miniature final rest bars being discarded by the Songsterr horizontal-line
+  width threshold, admitted short segments only when they form five evenly spaced staff
+  lines, and added a focused regression. The corpus-wide geometry audit identified and
+  fixed exactly five affected songs: `Creeping Death`, `Everlong`,
+  `For Whom the Bell Tolls`, `Heart-Shaped Box`, and `Ramble On`. The Songsterr audit now
+  has 113 of 114 labeled PDFs matching, with only `The Trees` unresolved.
 - Checked for model config, evaluation, benchmark, manifest, inference, playback, and
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.
