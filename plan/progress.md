@@ -231,8 +231,8 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
   Shift+0/4/6/9 — and pressing a drum toggles it in the chord. 23 Node tests pass,
   including a check that the editor's drum list matches `training_contract.py`. A
   19-step keyboard/Shift/keypad script in the real app produced the expected drums and
-  notehead count at every step on two consecutive runs; an earlier run showed one
-  unexplained extra drum that did not reproduce.
+  notehead count at every step on two consecutive runs; an earlier run's extra drum
+  came from a manual keypad click during the automated run, not from the editor.
   Stems now follow each note: VexFlow 5 ignored the old `stem_direction` option, so
   snare stems pointed down and kick/floor-tom stems up; a real-app check confirms
   hands stem up and feet/floor toms stem down after the fix.
