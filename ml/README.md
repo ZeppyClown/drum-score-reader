@@ -20,6 +20,12 @@ A computer vision model that reads **drum sheet music** from images.
 
 Give it a cropped image of one bar of drum notation, and it outputs an ordered list of notes — which drums are hit and how long each note lasts — ready to feed into a music renderer or drum machine.
 
+> **Status: the performance numbers are pending a re-run.** The architecture and data
+> sections below describe the current 14-drum configuration in
+> `notebooks/OMR Training After.ipynb`. The metrics previously published here came from an
+> earlier 19-drum run and do **not** describe this model — see
+> [Superseded metrics](#superseded-metrics) for why, and what has to be re-run.
+
 ---
 
 ## What it does
@@ -47,61 +53,87 @@ No beat positions — just the sequence of notes in the order they appear. Use t
 
 ## Files
 
-| File               | Purpose                                                       |
-| ------------------ | ------------------------------------------------------------- |
-| `omr_finetuned.pt` | PyTorch checkpoint — use this to resume training or fine-tune |
-| `omr.onnx`         | ONNX export — use this for inference (no PyTorch needed)      |
+Training writes three files to `CKPT_DIR` (a Google Drive folder during Colab runs):
+
+| File               | Purpose                                                               |
+| ------------------ | --------------------------------------------------------------------- |
+| `omr_finetuned.pt` | PyTorch checkpoint — use this to resume training or fine-tune          |
+| `omr.onnx`         | ONNX export — use this for inference (no PyTorch needed)               |
+| `omr_config.json`  | Sidecar written by cell 14: drum names, duration names, `N_BEATS`, `N_DRUMS`, `N_DURATIONS`, `IMG_H`, `IMG_W`, `THRESHOLD` |
+
+Always read dimensions and class names from `omr_config.json` rather than hardcoding them.
+The config is the contract between training and inference: if the drum list changes, only
+the config changes.
+
+**The artifacts are not in this repository.** `ml/data/` is gitignored, so a fresh clone
+contains the code but no weights. Local downloaded copies currently live in
+`ml/data/songsterr/guitar_pro/`, hand-renamed on download:
+
+| Documented name    | Local copy             | Size    |
+| ------------------ | ---------------------- | ------- |
+| `omr_finetuned.pt` | `Finetuned Model.pt`   | 10.0 MB |
+| `omr.onnx`         | `Checkpoints OMR.onnx` | 284 KB  |
+| `omr_config.json`  | *not downloaded*       | —       |
+
+> ⚠️ **The local `.onnx` copy looks wrong.** A 2,305,056-parameter fp32 model is about
+> 9.2 MB, which is roughly what the `.pt` weighs. The `.onnx` is 284 KB — about 1/33rd of
+> that, and too small even for the three head layers alone (~5.6 MB). Treat it as stale or
+> partial, and re-export before using it for anything. No model size should be quoted from
+> this file.
 
 ---
 
 ## How to use (ONNX — recommended)
 
 ```python
-import onnxruntime as ort
+import json
+
 import numpy as np
-from PIL import Image
+import onnxruntime as ort
 import torchvision.transforms as T
+from PIL import Image
 
-DRUMS = [
-    'hi_hat_closed', 'snare', 'kick', 'ride', 'crash',
-    'hi_hat_open_half', 'hi_hat_open_full', 'hi_hat_pedal',
-    'floor_tom_1', 'floor_tom_2', 'tom_mid', 'tom_hi',
-    'ride_bell', 'snare_rim',
-]
-    # to be added later
-    # 'snare_rimshot', 'cowbell', 'clap', 'choked_crash', 'china',
-DURATIONS = [
-    'whole', 'half', 'dotted_quarter', 'quarter',
-    'dotted_eighth', 'eighth', 'sixteenth', 'thirty_second',
-    'triplet_eighth', 'triplet_sixteenth',
-]
-CONFIG_PATH = f'{CKPT_DIR}/omr_config.json'
-N_BEATS, N_DRUMS, N_DURATIONS = CONFIG_PATH.N_BEATS, CONFIG_PATH.N_DRUMS, CONFIG_PATH.N_DURATIONS,
-THRESHOLD = 0.5
+CKPT_DIR = '.'  # directory holding omr.onnx and omr_config.json
 
-sess = ort.InferenceSession('omr.onnx')
+# Every dimension and class name comes from the sidecar config — never hardcode them.
+with open(f'{CKPT_DIR}/omr_config.json') as f:
+    cfg = json.load(f)
+
+DRUMS       = cfg['DRUMS']        # 14 drum names, in output-column order
+DURATIONS   = cfg['DURATIONS']    # 10 duration names, in class order
+N_BEATS     = cfg['N_BEATS']      # 32 rhythmic positions per bar
+N_DRUMS     = cfg['N_DRUMS']      # 14
+N_DURATIONS = cfg['N_DURATIONS']  # 10
+IMG_H       = cfg['IMG_H']        # 128
+IMG_W       = cfg['IMG_W']        # 384
+THRESHOLD   = cfg['THRESHOLD']    # 0.5
+
+sess = ort.InferenceSession(f'{CKPT_DIR}/omr.onnx')
 
 transform = T.Compose([
-    T.Resize((128, 384)),
+    T.Resize((IMG_H, IMG_W)),
     T.Grayscale(num_output_channels=3),
     T.ToTensor(),
     T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
+
 def predict_bar(image_path: str) -> list:
+    """Run ONNX inference on one bar image → ordered list of {duration, drums}."""
     img = Image.open(image_path).convert('L')
-    x   = transform(img).unsqueeze(0).numpy()
+    x   = transform(img).unsqueeze(0).numpy()      # (1, 3, IMG_H, IMG_W)
 
     drum_logits, dur_logits = sess.run(None, {'image': x})
 
+    # sigmoid: raw logits → probability that each drum is present at each beat slot
     drum_probs = 1 / (1 + np.exp(-drum_logits[0]))
-    drum_grid  = drum_probs.reshape(N_BEATS, N_DRUMS)
+    drum_grid  = drum_probs.reshape(N_BEATS, N_DRUMS)          # (32, 14)
     dur_preds  = dur_logits[0].reshape(N_BEATS, N_DURATIONS).argmax(axis=1)
 
     notes = []
     for bi in range(N_BEATS):
         drums = [DRUMS[di] for di in range(N_DRUMS) if drum_grid[bi, di] > THRESHOLD]
-        if drums:
+        if drums:  # silent slots are skipped — the durations fill the bar time
             notes.append({
                 'duration': DURATIONS[dur_preds[bi]],
                 'drums':    drums,
@@ -109,116 +141,130 @@ def predict_bar(image_path: str) -> list:
     return notes
 ```
 
+This mirrors cell 17 of the training notebook, which is the reference implementation.
+
 ---
 
 ## Architecture
 
 - **Backbone:** MobileNetV3-Small, pretrained on ImageNet
 - **Shared head:** Linear(576→1024) + Hardswish + Dropout
-- **Drum head:** Linear(1024→480) — 32 beat positions × 15 drums, binary per slot
+- **Drum head:** Linear(1024→448) — 32 beat positions × 14 drums, binary per slot
 - **Duration head:** Linear(1024→320) — 32 beat positions × 10 duration classes
-- **Total parameters:** 2,469,056
+- **Total parameters:** 2,305,056
 - **Training:** Two-phase — backbone frozen (Phase 1, 15 epochs), full fine-tune at LR/10 (Phase 2, 25 epochs)
+
+Head sizes derive from `N_DRUMS` / `N_DURATIONS` in cell 3, so they track the drum list
+automatically. The parameter count above is computed from the architecture defined in
+cells 3 and 8; it is not a figure read off a training run.
 
 ---
 
 ## Drums recognised
 
-15 drum types:
+**14 drum types**, in output-column order:
 
 | Category      | Drums                                            |
 | ------------- | ------------------------------------------------ |
-| Core          | kick, snare, hi_hat_closed                       |
+| Core          | hi_hat_closed, snare, kick                       |
 | Hi-hat        | hi_hat_open_half, hi_hat_open_full, hi_hat_pedal |
-| Cymbals       | ride, crash, china*, ride_bell, choked_crash*    |
+| Cymbals       | ride, crash, ride_bell                           |
 | Toms          | tom_hi, tom_mid, floor_tom_1, floor_tom_2        |
-| Articulations | snare_rim, snare_rimshot\*                       |
-| Percussion    | cowbell*, clap*                                  |
+| Articulations | snare_rim (side stick / cross stick)             |
 
-- To Be added in version 0.2
+**Not recognised.** These were removed from the label set in cell 3; the model has no
+output column for them:
+
+- `cowbell`, `clap`, `choked_crash`, `china`, `snare_rimshot` — scored F1 = 0.000 in the
+  earlier 19-drum run, so they only diluted the loss
+- `ride_tie`, `splash`, `sticks` — fewer than 70 hits in the dataset
+
+Re-adding any of them needs more training songs that actually contain them, then a
+retrain — the head resizes itself from `N_DRUMS`.
 
 ## Durations recognised
 
-`whole`, `half`, `dotted_quarter`, `quarter`, `dotted_eighth`, `eighth`, `sixteenth`, `thirty_second`, `triplet_eighth`, `triplet_sixteenth`
+**10 duration classes:** `whole`, `half`, `dotted_quarter`, `quarter`, `dotted_eighth`, `eighth`, `sixteenth`, `thirty_second`, `triplet_eighth`, `triplet_sixteenth`
 
 ---
 
 ## Performance
 
-Evaluated on 26 held-out songs (~1,924 bars) the model never saw during training.
+**No current numbers.** Cell 15 (`13b. Re-evaluate after Phase 2`) has no saved output in
+the committed notebook, so nothing here is reproducible from the repository as it stands.
+Re-run that cell and record its output before quoting any figure anywhere.
 
-### Per-drum F1
+When re-run, cell 15 reports:
 
-| Drum             | F1        | Notes                                            |
-| ---------------- | --------- | ------------------------------------------------ |
-| kick             | **0.929** | Excellent                                        |
-| snare            | **0.890** | Excellent                                        |
-| hi_hat_closed    | **0.810** | Good                                             |
-| hi_hat_open_half | **0.708** | Good                                             |
-| hi_hat_open_full | 0.550     | Moderate                                         |
-| crash            | 0.532     | Moderate                                         |
-| tom_hi           | 0.462     | Moderate                                         |
-| snare_rim        | 0.458     | Moderate                                         |
-| ride             | 0.431     | Weak — visually similar to crash                 |
-| floor_tom_1      | 0.424     | Weak                                             |
-| ride_bell        | 0.424     | Weak                                             |
-| tom_mid          | 0.264     | Weak                                             |
-| hi_hat_pedal     | 0.245     | Weak                                             |
-| floor_tom_2      | 0.131     | Very weak — hard to distinguish from floor_tom_1 |
-| snare_rimshot    | 0.018     | Too few training examples                        |
-| cowbell          | 0.000     | Too few training examples                        |
-| clap             | 0.000     | Too few training examples                        |
-| choked_crash     | 0.000     | Too few training examples                        |
-| china            | 0.000     | Too few training examples                        |
+| Metric | What it measures |
+| --- | --- |
+| Exact-bar accuracy | Every slot in the 448-slot grid correct. Very strict, and low by construction |
+| Cell accuracy | Per-slot correctness. Dominated by empty slots, so it reads high and means little |
+| **Sequence accuracy** | The ordered left-to-right list of (drums, duration) events matches, ignoring beat-slot position. **This is the metric that reflects what the product ships** |
+| Per-drum F1 | One score per drum, computed at bar level |
+| Duration accuracy | Measured at hit positions only, plus a per-duration breakdown with counts |
 
-### Duration accuracy
+Sequence accuracy is the one to lead with. The output contract is an ordered note list, so
+it scores the model the way it is actually consumed — cell accuracy flatters it and
+exact-bar accuracy punishes it for slot-level noise that never reaches the output.
 
-| Metric                    | Value                  |
-| ------------------------- | ---------------------- |
-| Overall duration accuracy | **90.9%**              |
-| triplet_eighth            | 98%                    |
-| eighth                    | 94%                    |
-| quarter                   | 92%                    |
-| sixteenth                 | 87%                    |
-| dotted_eighth             | 11% — too few examples |
+### Superseded metrics
 
-### Bar-level metrics
+The previous version of this file reported per-drum F1 for **19 drums** (kick 0.929, snare
+0.890, … , plus cowbell / clap / choked_crash / china / snare_rimshot at 0.000), cell
+accuracy 97.4%, exact-bar accuracy 14.7%, and duration accuracy 90.9%.
 
-| Metric                   | Value |
-| ------------------------ | ----- |
-| Cell accuracy (per slot) | 97.4% |
-| Exact-bar accuracy       | 14.7% |
+Those figures describe a different model and have been removed rather than carried forward:
 
-> Note: exact-bar accuracy requires every single prediction in a 480-slot grid to be correct — it is an extremely strict metric. Cell accuracy and per-drum F1 are more meaningful for practical use.
+1. **The drum list changed.** That run had 19 output classes; the notebook now defines 14.
+   Five drums in the old table no longer exist as outputs.
+2. **The parameter count proves it.** The old card claimed 2,469,056 parameters, which is
+   exactly a 19-drum head (Linear(1024→608)). The current 14-drum configuration is
+   2,305,056.
+3. **Nothing was saved.** The evaluation cells carry no stored output, so the old numbers
+   cannot be checked against the notebook that produced them.
+
+The earlier run's qualitative findings still look sound and are kept in
+[Limitations](#limitations) — kick and snare strongest, floor_tom_1 vs floor_tom_2 and ride
+vs crash weakest. Treat those as expectations to confirm, not as results.
 
 ---
 
 ## Training data
 
 - **Source:** Songsterr (Guitar Pro 7 tabs) + local Guitar Pro 5 files
-- **Songs:** 264 total — 212 train / 26 val / 26 test (split by song to prevent leakage)
+- **Songs:** 264 total — 212 train / 26 val / 26 test, **split by song, not by bar**
 - **Bars:** ~19,948 labelled bar images
-- **Labels:** generated programmatically from Guitar Pro MIDI data via `parse_gp7.py` / `parse_gp5.py`
-- **Image source:** bar images cropped from Songsterr rendered PDFs
+- **Labels:** generated programmatically from Guitar Pro MIDI data via `parse_gp7.py` / `parse_gp5.py` — machine-derived, not hand-annotated
+- **Image source:** bar images cropped from rendered PDFs
+
+The by-song split is deliberate. Drum notation repeats heavily within a song, so a random
+bar-level split would put near-identical bars on both sides of the boundary and inflate
+every score.
 
 ---
 
 ## Limitations
 
-- **Rare drums:** cowbell, clap, choked_crash, china have near-zero F1 — not enough training examples. More songs with these drums needed.
-- **Tom confusion:** floor_tom_1 vs floor_tom_2 differ only by vertical staff position, which the global average pool architecture handles poorly.
-- **Ride vs crash confusion:** both are x-noteheads on high staff lines — the model confuses them at moderate rates.
-- **Non-standard notation:** unusual time signatures, grace notes, and multi-voice complexity may degrade accuracy.
-- **Overfitting:** train loss (0.205) is lower than val loss (0.492) — adding more diverse songs will close this gap.
+Carried over from the earlier run — expectations to re-confirm, not measured results for
+the current model.
+
+- **Tom confusion:** floor_tom_1 vs floor_tom_2 differ only by vertical staff position, which global average pooling handles poorly.
+- **Ride vs crash confusion:** both are x-noteheads on high staff lines and are confused at moderate rates.
+- **Rare drums:** several classes were dropped outright for having too few examples; the remaining rare ones are still the weakest.
+- **Non-standard notation:** unusual time signatures, grace notes and multi-voice complexity may degrade accuracy.
+- **Overfitting:** the earlier run had train loss 0.205 against val loss 0.492. More diverse songs should close the gap.
 
 ---
 
 ## Roadmap
 
-- [ ] Add more training songs (target: 500+) to improve rare drums and reduce overfitting
+- [ ] Re-run the Phase 2 evaluation and save its output, so this card carries real numbers
+- [ ] Re-export `omr.onnx` and confirm the file size is consistent with the parameter count
+- [ ] Add more training songs (target: 500+) to reduce overfitting
 - [ ] Replace global average pool with spatially-aware pooling to better distinguish toms
 - [ ] Add rest detection to output silent positions explicitly
-- [ ] Wire into Electron + FastAPI for end-to-end drum score reading app
+- [ ] Wire into Electron + FastAPI for end-to-end drum score reading
 
 ---
 
