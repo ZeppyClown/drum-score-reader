@@ -57,7 +57,7 @@ function buildTickables(bar) {
         clef:           'percussion',
         keys:           noteKeys(note),
         duration:       dur,
-        stem_direction: noteStemDir(note),
+        stemDirection:  noteStemDir(note),  // VexFlow 5 reads camelCase; stem_direction is ignored
       });
     }
     if (note.dotted) {
@@ -129,13 +129,16 @@ export function render() {
       // If we called generateBeams() AFTER draw(), the flags would already
       // be drawn and visible underneath the beams.
       //
-      // stem_direction: 1 forces all stems up (standard for percussion notation).
+      // maintainStemDirections: keep each note's own stem (hands up, feet/floor
+      //   toms down, from noteStemDir). Without it VexFlow re-picks every group's
+      //   direction from pitch — even for unbeamed quarter notes — which drew snare
+      //   stems down and kick stems up. A beam breaks where the direction changes.
       // groups: [new Fraction(1, 4)] tells VexFlow to form one beam group per
       //   quarter-note beat. This is what makes dotted-8th + 16th beam together:
       //   they fill exactly one beat (3 + 1 = 4 sixteenth-note ticks), so VexFlow
       //   keeps them in the same group instead of splitting at the dot boundary.
       const beams = Beam.generateBeams(tickables, {
-        stem_direction: 1,
+        maintainStemDirections: true,
         groups: [new Fraction(1, 4)],
       });
 

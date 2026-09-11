@@ -237,7 +237,8 @@ Converts `bar.notes` to VexFlow `StaveNote` objects. One-to-one mapping, same or
 new StaveNote({ clef: 'percussion', keys: ['b/4'], duration: dur + 'r' })
 
 // For a drum hit or chord: one key per drum, each with its own notehead code
-new StaveNote({ clef: 'percussion', keys: noteKeys(note), duration: dur, stem_direction: noteStemDir(note) })
+new StaveNote({ clef: 'percussion', keys: noteKeys(note), duration: dur, stemDirection: noteStemDir(note) })
+// VexFlow 5 option names are camelCase — `stem_direction` is silently ignored.
 // noteKeys({ drums: ['snare', 'hi_hat_closed'] }) → ['c/5', 'f/5/x']
 
 // Dotted notes need this called after construction (VexFlow 5 requirement):
