@@ -81,9 +81,10 @@ valid evaluated model bundle.
   all 165 images and 165 matching labels.
 - [x] Explain the 3,871 parsed labels not represented in the 19,948 packaged pairs.
   `ml/data_reconciliation.csv` accounts for every label. The audit found 1,694 labels in
-  14 crop/label-count mismatch songs, 79 labels with no PDF selected by the current name
-  matcher, 2,081 labels in 11 songs that are ready but were never packaged, and 17
-  missing labels across six otherwise-packaged songs.
+  14 crop/label-count mismatch songs, 2,160 labels in 12 songs that are ready but were
+  never packaged, and 17 missing labels across six otherwise-packaged songs. The only
+  previously-unmatched Songsterr title is now covered by an explicit confirmed alias and
+  produces 79 crops for 79 labels.
 - [x] Generate a repeatable manifest with song, source, bar, image, label, and split.
   `ml/dataset_manifest.csv` contains 19,948 rows and reproduces the notebook split exactly:
   212 train songs / 15,709 bars, 26 validation songs / 2,315 bars, and 26 test songs /
@@ -91,8 +92,8 @@ valid evaluated model bundle.
   reconciliation CSV, and Markdown report.
 
 All five implementation tasks are complete. The workstream exit criteria remain open
-until the 14 crop-count mismatches and one unmatched Songsterr title are resolved, the
-full package is regenerated, and human spot checks confirm that crops and labels align.
+until the 14 crop-count mismatches are resolved, the full package is regenerated, and
+human spot checks confirm that crops and labels align.
 
 ### Workstream 2 — Produce a valid model release: not complete
 
@@ -173,9 +174,8 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 Workstream 1 remains the next milestone. The path contract and small-subset proof are
 complete, and every existing label is now accounted for. The next slice must resolve the
-14 crop-count mismatches and decide how the unmatched Songsterr title should map. Then
-regenerate the full package and perform human crop/label spot checks before starting
-model-release work.
+14 crop-count mismatches. Then regenerate the full package and perform human crop/label
+spot checks before starting model-release work.
 
 ## Verification performed for this review
 
@@ -190,6 +190,8 @@ model-release work.
   tools, and the ZIP packager; the result contained 165 matching image/label pairs.
 - Generated and validated the 19,948-row dataset manifest and the 3,871-row reconciliation
   audit by rerunning bar detection across all available PDFs.
+- Confirmed the James Brown source/PDF title alias and verified its 79 crops match all 79
+  labels.
 - Checked for model config, evaluation, benchmark, manifest, inference, playback, and
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.

@@ -18,9 +18,8 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | Reason | Songs | Bars | Meaning |
 | --- | ---: | ---: | --- |
 | `crop_label_count_mismatch` | 14 | 1,694 | A PDF matches the source song, but detected crop and source-label totals differ; the crop tool refuses to package the song. |
-| `no_matching_pdf` | 1 | 79 | No PDF is selected for this source song by the current Songsterr name-matching rules. |
 | `packaged_dataset_incomplete` | 6 | 17 | The song is packaged, but specific raw-label identities are absent; the current crop audit matches the complete song. |
-| `packaged_dataset_not_regenerated` | 11 | 2,081 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
+| `packaged_dataset_not_regenerated` | 12 | 2,160 | The current crop audit matches all source labels, but the song is absent from the existing packaged dataset. |
 
 ## Affected songs
 
@@ -43,7 +42,7 @@ All 3,871 raw labels outside the packaged dataset are accounted for below. These
 | gp7 | Hotel California The Eagles 2026 | 0 | 121 | 121 crops / 121 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Hotel California Drum Tab by The Eagles _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Immigrant Song Drum Tab by Led Zeppelin | 67 | 1 | 68 crops / 68 labels | `packaged_dataset_incomplete` | ml/data/songsterr/pdf/Immigrant Song Drum Tab by Led Zeppelin _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Is This Love Drum Tab Bob Marley Aug 22 2025 | 0 | 122 | 122 crops / 122 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Is This Love Drum Tab by Bob Marley _ Songsterr Tabs with Rhythm.pdf |
-| gp7 | It's A Man's World Drum Tab by James Brown Aug 5 2024 | 0 | 79 | no unique match | `no_matching_pdf` | — |
+| gp7 | It's A Man's World Drum Tab by James Brown Aug 5 2024 | 0 | 79 | 79 crops / 79 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/It's A Man's Man's Man's World Drum Tab by James Brown _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | King Of Pain Drum Tab by The Police | 0 | 148 | 148 crops / 148 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/King Of Pain Drum Tab by The Police _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Long Road to Ruin Drum Tab - Foo Fighters | 0 | 126 | 126 crops / 126 labels | `packaged_dataset_not_regenerated` | ml/data/songsterr/pdf/Long Road To Ruin Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm.pdf |
 | gp7 | Metallica Creeping Death May 2026 | 0 | 330 | 329 crops / 330 labels | `crop_label_count_mismatch` | ml/data/songsterr/pdf/Creeping Death Drum Tab by Metallica _ Songsterr Tabs with Rhythm.pdf |

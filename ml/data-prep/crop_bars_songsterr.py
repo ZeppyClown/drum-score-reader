@@ -79,6 +79,12 @@ _DATE_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Confirmed source/PDF title equivalences that cannot be derived mechanically.
+# Keep this explicit: broad fuzzy matching could silently pair the wrong song.
+_TITLE_ALIASES = {
+    "its a mans mans mans world": "its a mans world",
+}
+
 
 def _normalise_title(name: str) -> str:
     """Strip band names, dates, 'Drum Tab', 'by Band', 'Songsterr...' to get bare song title."""
@@ -108,7 +114,7 @@ def _normalise_title(name: str) -> str:
     s = re.sub(r"[',.]", '', s)
     # Normalise whitespace
     s = re.sub(r'\s+', ' ', s).strip()
-    return s
+    return _TITLE_ALIASES.get(s, s)
 
 
 def build_name_map(label_dir: Path) -> dict[str, list[Path]]:
