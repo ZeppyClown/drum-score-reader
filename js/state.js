@@ -6,8 +6,10 @@
 //   VexFlow reads them in sequence and handles timing from their durations.
 //
 //   Each note = {
-//     duration: VexFlow duration string — '16' | '8' | 'q' | 'h' | 'w'
+//     duration: VexFlow duration string — '32' | '16' | '8' | 'q' | 'h' | 'w'
 //     dotted:   true if the note is dotted (duration × 1.5)
+//     triplet:  optional; true for each of three same-duration notes that take
+//               the time of two (bar.js tripletStarts finds the groups)
 //     drums:    drum names from DRUMS in constants.js, e.g. ['kick', 'hi_hat_closed'].
 //               Several names are a chord; an empty array is a rest.
 //   }

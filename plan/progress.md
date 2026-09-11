@@ -225,7 +225,16 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
   including a check that the editor's drum list matches `training_contract.py`. A
   19-step keyboard/Shift/keypad script in the real app produced the expected drums and
   notehead count at every step on two consecutive runs; an earlier run showed one
-  unexplained extra drum that did not reproduce. 32nd notes and triplets are next.
+  unexplained extra drum that did not reproduce.
+  Stems now follow each note: VexFlow 5 ignored the old `stem_direction` option, so
+  snare stems pointed down and kick/floor-tom stems up; a real-app check confirms
+  hands stem up and feet/floor toms stem down after the fix.
+  32nd notes and triplets are in: ticks moved to 48 per quarter (192 per bar) so every
+  supported note is a whole number, `-` reaches 32nds, and `T` turns a note of length d
+  into a triplet group spanning 2×d (or splits a group back into two notes). Triplet
+  notes cannot be dotted, resized, or have their rests deleted, and 32nds cannot be
+  dotted. 32 Node tests pass, and a 20-step real-app script confirmed triplet creation,
+  splitting, every refusal, 32nds, and the dotted 16th with no page errors.
 - [ ] Add `test`, `lint`, build, and packaging scripts. `npm test` now runs the editor
   rule tests; lint, build, and packaging scripts do not exist yet.
 - [x] Keep generated datasets and model weights out of Git. The regenerated local dataset

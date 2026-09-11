@@ -20,6 +20,7 @@ export const SPACE     = 10;
 // VexFlow duration strings, ordered so that + and - keys walk up and down.
 //
 // String  British name   American name
+// '32'  = demisemiquaver  32nd note
 // '16'  = semiquaver      16th note
 // '8'   = quaver          8th note      ← NOTE: 'q' is NOT quaver
 // 'q'   = crotchet        quarter note  ← 'q' stands for "quarter", not quaver
@@ -27,19 +28,21 @@ export const SPACE     = 10;
 // 'w'   = semibreve       whole note
 //
 // Rests use the same strings with 'r' appended: 'qr' = crotchet rest, '8r' = quaver rest.
-export const DURATIONS = ['16', '8', 'q', 'h', 'w'];
+// Triplets are not separate strings: a note with `triplet: true` keeps its written
+// duration and lasts 2/3 as long (three triplet eighths fill a quarter).
+export const DURATIONS = ['32', '16', '8', 'q', 'h', 'w'];
 
 // ── Tick system ───────────────────────────────────────────────────────────────
-// Instead of storing beats as 1/2/3/4, we use "ticks" so that quavers and
-// semi-quavers can land at exact sub-beat positions.
-// 1 semi-quaver = 1 tick.  A 4/4 bar has 16 ticks total.
+// Instead of storing beats as 1/2/3/4, we use "ticks" so every supported note
+// lands on a whole number. 48 ticks per crotchet is the smallest scale where
+// 32nds (6), triplet eighths (16), triplet 16ths (8), and dotted 16ths (18) are
+// all whole numbers. A 4/4 bar has 192 ticks.
 //
 // DUR_TICKS maps a VexFlow duration string → how many ticks that note takes.
-//   e.g. a crotchet (q) takes 4 ticks, so the next note lands at beat + 4.
-//        a quaver (8) takes 2 ticks, next note at beat + 2.
-// BAR_TICKS: total ticks in one bar (4 crotchets × 4 ticks = 16)
-export const DUR_TICKS = { '16': 1, '8': 2, 'q': 4, 'h': 8, 'w': 16 };
-export const BAR_TICKS = 16;
+//   e.g. a crotchet (q) takes 48 ticks, a quaver (8) takes 24.
+// BAR_TICKS: total ticks in one bar (4 crotchets × 48 ticks = 192)
+export const DUR_TICKS = { '32': 6, '16': 12, '8': 24, 'q': 48, 'h': 96, 'w': 192 };
+export const BAR_TICKS = 192;
 
 // ── Keys that trigger drum notes ──────────────────────────────────────────────
 // The numpad keys 0-9 and '.' are all intercepted for drum input.

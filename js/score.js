@@ -1,12 +1,12 @@
 import { STAVE_X, STAVE_Y0, ROW_HEIGHT, SPACE } from './constants.js';
 import { state } from './state.js';
 import { barRow, barCol, barY, cursorCentreY } from './layout.js';
-import { isRest } from './bar.js';
+import { isRest, tripletStarts } from './bar.js';
 import { noteKeys, noteStemDir } from './notation.js';
 
 // Destructure the VexFlow classes we need from the global VexFlow object.
 // VexFlow is loaded as a CJS bundle via <script> in index.html, so it's a global.
-const { Renderer, Stave, StaveNote, Voice, Formatter, Beam, Dot, Fraction } = VexFlow;
+const { Renderer, Stave, StaveNote, Voice, Formatter, Beam, Dot, Fraction, Tuplet } = VexFlow;
 
 // The div where the entire score SVG is rendered
 const div = document.getElementById('score');
@@ -115,6 +115,11 @@ export function render() {
     if (bar.notes.length > 0) {
       const tickables = buildTickables(bar);
 
+      // Triplets must be attached BEFORE the voice counts ticks: each Tuplet
+      // shortens its three notes to 2/3 of their written length.
+      const tuplets = tripletStarts(bar).map(start =>
+        new Tuplet(tickables.slice(start, start + 3), { numNotes: 3, notesOccupied: 2 }));
+
       // Voice tells VexFlow "this bar has 4 beats in 4/4 time".
       // SOFT mode means VexFlow won't throw an error if the notes don't add up
       // exactly to a full bar — useful while the user is still editing.
@@ -150,6 +155,7 @@ export function render() {
 
       // Draw the beam bars (connecting lines between beamed stems) after voice.draw()
       beams.forEach(b => b.setContext(ctx).draw());
+      tuplets.forEach(t => t.setContext(ctx).draw());  // the "3" over each triplet
 
       // Remember the tickables for the bar the cursor is currently in,
       // so we can snap the cursor's x-position to the correct notehead below.

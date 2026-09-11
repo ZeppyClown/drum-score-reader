@@ -2,7 +2,8 @@ import { DRUM_KEYS, DRUMS, KEY_DRUMS, SHIFT_KEY_DRUMS, POSITIONS } from './const
 import { state } from './state.js';
 import { render } from './score.js';
 import {
-  toggleDrum, toggleDot, changeDuration, backspaceAt, moveRight, moveLeft,
+  toggleDrum, toggleDot, changeDuration, toggleTriplet, tripletGroupStart,
+  backspaceAt, moveRight, moveLeft,
 } from './bar.js';
 
 // ── Wiring between user input and the pure bar rules ─────────────────────────
@@ -49,6 +50,16 @@ function shiftedDigit(e) {
   return match ? match[1] : null;
 }
 
+// ── T: make a triplet group at the cursor, or turn a triplet back into plain notes
+function handleTriplet() {
+  const cur   = state.cursor;
+  const start = tripletGroupStart(state.bars[cur.barIndex], cur.noteIndex);
+  if (!updateCurrentBar(toggleTriplet)) return;  // refused (see bar.js)
+  // Splitting turns three notes into two, so keep the cursor inside the new pair.
+  if (start >= 0) cur.noteIndex = Math.min(cur.noteIndex, start + 1);
+  render();
+}
+
 // ── Backspace: delete a rest, or turn a hit or chord into a rest ──────────────
 function handleBackspace() {
   const cur = state.cursor;
@@ -69,6 +80,7 @@ export function initKeyboard() {
     if (e.key === '-') { if (updateCurrentBar((b, i) => changeDuration(b, i, -1))) render(); return; }
     if (e.key === '+') { if (updateCurrentBar((b, i) => changeDuration(b, i, 1)))  render(); return; }
     if (e.key === 'Backspace') { handleBackspace(); return; }
+    if (e.key === 't' || e.key === 'T') { handleTriplet(); return; }
 
     if (e.key === 'ArrowRight') {
       const moved = moveRight(state.bars, state.cursor);

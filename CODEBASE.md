@@ -73,18 +73,19 @@ Order matters: all three `init` calls must happen before `render()`. That's it �
 ### Duration system
 
 ```js
-DURATIONS = ['16', '8', 'q', 'h', 'w']   // shortest → longest (VexFlow strings)
+DURATIONS = ['32', '16', '8', 'q', 'h', 'w']   // shortest → longest (VexFlow strings)
 ```
 
 These are the **VexFlow duration strings** — the exact strings you pass to `new StaveNote({ duration: '...' })`.
 
 | VexFlow string | British name | American name | Ticks |
 |---|---|---|---|
-| `'16'` | semiquaver | 16th note | 1 |
-| `'8'` | quaver | 8th note | 2 |
-| `'q'` | crotchet | quarter note | 4 |
-| `'h'` | minim | half note | 8 |
-| `'w'` | semibreve | whole note | 16 |
+| `'32'` | demisemiquaver | 32nd note | 6 |
+| `'16'` | semiquaver | 16th note | 12 |
+| `'8'` | quaver | 8th note | 24 |
+| `'q'` | crotchet | quarter note | 48 |
+| `'h'` | minim | half note | 96 |
+| `'w'` | semibreve | whole note | 192 |
 
 > **Common confusion:** `'q'` stands for **quarter** (American), not quaver. `'8'` is the quaver.
 >
@@ -93,13 +94,17 @@ These are the **VexFlow duration strings** — the exact strings you pass to `ne
 ### Tick system
 
 ```js
-DUR_TICKS = { '16': 1, '8': 2, 'q': 4, 'h': 8, 'w': 16 }
-BAR_TICKS = 16   // a 4/4 bar has 16 semiquaver ticks
+DUR_TICKS = { '32': 6, '16': 12, '8': 24, 'q': 48, 'h': 96, 'w': 192 }
+BAR_TICKS = 192   // a 4/4 bar: 4 crotchets × 48 ticks
 ```
 
-Ticks only exist for **bar capacity checks** in `input.js`. They are never used for note positioning — VexFlow handles that.
+Ticks only exist for **bar capacity checks** in `bar.js`. They are never used for note positioning — VexFlow handles that.
+48 ticks per crotchet is the smallest scale where every supported note is a whole number.
 
-Dotted notes = 1.5 × base ticks (e.g. dotted crotchet = 6 ticks).
+Dotted notes = 1.5 × base ticks (e.g. dotted crotchet = 72 ticks).
+Triplet notes (`triplet: true`) = 2/3 × ticks (e.g. triplet quaver = 16). A triplet group is
+exactly three consecutive triplet notes of one duration; `score.js` draws each with a
+VexFlow `Tuplet`, which must be created **before** the notes are added to the voice.
 
 ### Drum definitions
 
@@ -161,7 +166,8 @@ bar = {
 
 ```js
 {
-  duration: 'q',      // VexFlow duration string — '16' | '8' | 'q' | 'h' | 'w'
+  duration: 'q',      // VexFlow duration string — '32' | '16' | '8' | 'q' | 'h' | 'w'
+  triplet:  true,     // optional — one of three same-duration notes taking the time of two
   dotted:   false,    // boolean — extends the note by half its value
   drums:    ['kick', 'hi_hat_closed'],  // DRUMS names; several = chord, [] = rest
 }
@@ -321,7 +327,7 @@ Triggered by pressing `.`
 
 ```
 1. Get note at cursor.noteIndex
-2. Block if duration === '16' (dotted semiquaver ticks = 1.5, non-integer, unsupported)
+2. Block if duration === '32' (a dotted 32nd leaves gaps no plain rest can fill) or the note is a triplet
 3. Calculate tick change: +baseTicks×0.5 (adding dot) or −baseTicks×0.5 (removing dot)
 4. Block if barTicks(bar) + change > BAR_TICKS
 5. Flip note.dotted
@@ -396,6 +402,7 @@ Changes `cursor.position` (1–10). Does not touch any notes. `render()` moves t
 | `0`–`9` | Add/remove that drum in the chord at the cursor (`KEY_DRUMS`) |
 | `Shift` + `0` `4` `6` `9` | Hi-hat pedal, half-open hi-hat, floor tom 2, ride bell (`SHIFT_KEY_DRUMS`); Shift-click on the keypad works too |
 | `.` | Toggle dot on current note |
+| `T` | Plain note of length d → the next 2×d becomes a triplet group of 3; on a triplet note → back to 2 plain notes (see `toggleTriplet` in `bar.js`) |
 | `-` | Shorten duration (one step) |
 | `+` | Lengthen duration (one step) |
 | `→` | Move cursor forward one note |
