@@ -436,13 +436,13 @@ def write_report(
         '',
         '## Interpretation',
         '',
-        'The repository does not record a deliberate filtering policy for these labels. '
-        'Accordingly, the reconciliation distinguishes mechanical causes and stale '
-        'packaging state without labelling any omission intentional.',
+        'This report records mechanical causes and packaging state, not policy decisions. '
+        'See `plan/progress.md` for documented source exclusions and follow-up work.',
         '',
-        'Before full regeneration, fix the crop-count mismatches and decide how the '
-        'unmatched Songsterr title should map. Then rebuild the packaged dataset and rerun '
-        'this generator; the reconciliation CSV should become empty.',
+        'Rows caused by stale packaging can be cleared by regenerating the dataset. '
+        'Crop-count mismatches require a usable source PDF or a detector fix, and unmatched '
+        'Songsterr titles require a confirmed source-title mapping. Rerun this generator '
+        'after any source, mapping, crop, or packaged-dataset change.',
         '',
     ])
     path.parent.mkdir(parents=True, exist_ok=True)

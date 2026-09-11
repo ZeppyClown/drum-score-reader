@@ -273,10 +273,14 @@ real weights before quoting it.
 ## Training data
 
 - **Source:** Songsterr (Guitar Pro 7 tabs) + local Guitar Pro 5 files
-- **Songs:** 264 total — 212 train / 26 val / 26 test, **split by song, not by bar**
-- **Bars:** ~19,948 labelled bar images
+- **Songs:** 289 total — 233 train / 28 val / 28 test, **split by song, not by bar**
+- **Bars:** 23,660 labelled bar images
 - **Labels:** generated programmatically from Guitar Pro MIDI data via `parse_gp7.py` / `parse_gp5.py` — machine-derived, not hand-annotated
 - **Image source:** bar images cropped from rendered PDFs
+
+The 159 parsed labels for `The Trees` are excluded from this replacement dataset because
+the available one-page Songsterr PDF contains no score content. The exclusion remains in
+`data_reconciliation.csv` so it cannot be mistaken for silently missing data.
 
 The by-song split is deliberate. Drum notation repeats heavily within a song, so a random
 bar-level split would put near-identical bars on both sides of the boundary and inflate
@@ -298,7 +302,7 @@ This writes:
   with the evidence-based reason and crop-audit totals.
 - `ml/data_reconciliation.md`: a human-readable summary grouped by reason and song.
 
-The generator reruns both crop detectors in read-only mode, so it can take about a minute.
+The generator reruns both crop detectors in read-only mode, so it can take several minutes.
 It refuses duplicate identities, missing source files, mismatched image/label stems, and
 filename/JSON bar-number disagreements instead of silently emitting an ambiguous
 manifest.

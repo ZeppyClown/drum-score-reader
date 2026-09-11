@@ -2,7 +2,7 @@
 
 Reviewed: 2026-09-11
 
-Baseline: `main` at `2be0b0d` (`origin/main`)
+Baseline: `main` at `2be0b0d` (`origin/main`); updated through `fe91068`
 
 Scope: the drum-score reader at the repository root and `ml/`; the unrelated untracked
 `ai-engineer-workshop-2026-project/` and `songsterr/` directories are excluded.
@@ -13,11 +13,11 @@ The plan consolidation itself is complete: `plan/README.md` is the authoritative
 this file preserves the dated audit, and `model_training.md` and `score_editor.md` are
 archived pointers to Git history.
 
-The product is still at the manual-editor and ML-preparation stage. The repository has a
-working VexFlow editing prototype, a paired training dataset, and model-training/export
-tooling, but none of the six delivery workstreams meets its exit criteria yet. In
-particular, image/PDF import, local inference, page segmentation, playback, and export do
-not exist in the Electron app.
+The product is at the manual-editor and model-training stage. Workstream 1 is complete
+with a reproducible 23,660-pair replacement dataset and an explicit 159-label exclusion
+for the blank `The Trees` source. The remaining five delivery workstreams are incomplete;
+image/PDF import, local inference, page segmentation, playback, and export do not exist
+in the Electron app.
 
 ## Done or present
 
@@ -46,25 +46,25 @@ model response into this editor yet.
 - [x] The workspace contains 178 GP5 source files, 179 Reflow PDFs, 314 GP7 files, and
   119 Songsterr PDFs under `ml/data/`.
 - [x] `ml/data/labels/` contains 23,819 parsed labels.
-- [x] The unpacked packaged dataset contains 19,948 images and 19,948 labels.
-- [x] The checked-in `ml/data/dataset.zip` also contains 19,948 images and 19,948 labels.
+- [x] The regenerated unpacked dataset contains 23,660 images and 23,660 labels.
+- [x] The local `ml/data/dataset.zip` contains the same 23,660 pairs and is excluded from
+  Git as a generated artifact.
 - [x] Image and label stems have zero mismatches in both the unpacked dataset and ZIP.
-- [x] The notebook uses a fixed seed (`42`) and a song-level split. Its saved audit counts
-  are 212 train songs / 15,709 bars, 26 validation songs / 2,315 bars, and 26 test songs /
-  1,924 bars.
+- [x] The notebook uses a fixed seed (`42`) and a song-level split. The versioned manifest
+  reproduces 233 train songs / 19,029 bars, 28 validation songs / 2,088 bars, and 28 test
+  songs / 2,543 bars. Stale notebook execution output has been cleared.
 - [x] The notebook contains two-phase MobileNetV3 training, evaluation, ONNX export, and
   numerical-verification code.
 - [x] `ml/omr/benchmark.py` contains fp32/int8 size, latency, and sequence-agreement
   measurement code.
 
-The data and tooling above are inputs to Workstreams 1 and 2. Data paths, subset
-reproduction, and the manifest audit are now implemented. Workstream 1 still needs its
-documented crop/name mismatches resolved and human spot checks; Workstream 2 still has no
-valid evaluated model bundle.
+The data and tooling above complete Workstream 1 and are inputs to Workstream 2. The one
+remaining raw-label mismatch is an explicit source exclusion, not an unexplained package
+gap. Workstream 2 still has no valid evaluated model bundle.
 
 ## Delivery-plan progress
 
-### Workstream 1 — Make data preparation reproducible: not complete
+### Workstream 1 — Make data preparation reproducible: complete
 
 - [x] Replace stale paths in both parsers, both crop scripts, both spot-check scripts,
   and `ml/omr/prepare_upload.py`.
@@ -79,21 +79,21 @@ valid evaluated model bundle.
   A two-song temporary run parsed and cropped 76 GP5/Reflow bars and 89 GP7/Songsterr
   bars. Both spot-check tools ran headlessly, and the packager produced a ZIP containing
   all 165 images and 165 matching labels.
-- [x] Explain the 3,871 parsed labels not represented in the 19,948 packaged pairs.
-  `ml/data_reconciliation.csv` accounts for every label. The audit found 159 labels in
-  1 crop/label-count mismatch song, 3,695 labels in 25 songs that are ready but were
-  never packaged, and 17 missing labels across six otherwise-packaged songs. The only
-  previously-unmatched Songsterr title is now covered by an explicit confirmed alias and
-  produces 79 crops for 79 labels.
+- [x] Explain every parsed label not represented in the package.
+  Regeneration cleared all 3,712 stale-package gaps. `ml/data_reconciliation.csv` now
+  contains only the 159 `The Trees` labels excluded because its available PDF has no score
+  content. The confirmed James Brown alias produces 79 crops for 79 labels.
 - [x] Generate a repeatable manifest with song, source, bar, image, label, and split.
-  `ml/dataset_manifest.csv` contains 19,948 rows and reproduces the notebook split exactly:
-  212 train songs / 15,709 bars, 26 validation songs / 2,315 bars, and 26 test songs /
-  1,924 bars. `ml/data-prep/build_manifest.py` regenerates the manifest, detailed
+  `ml/dataset_manifest.csv` contains 23,660 rows and reproduces the notebook split exactly:
+  233 train songs / 19,029 bars, 28 validation songs / 2,088 bars, and 28 test songs /
+  2,543 bars. `ml/data-prep/build_manifest.py` regenerates the manifest, detailed
   reconciliation CSV, and Markdown report.
 
-All five implementation tasks are complete. The workstream exit criteria remain open
-until the final crop-count mismatch is resolved, the full package is regenerated, and
-human spot checks confirm that crops and labels align.
+All five implementation tasks and exit criteria are complete. A clean run produced the
+documented replacement set: all 289 usable songs match exactly, every packaged image and
+label is paired, the split is deterministic by song, and targeted visual checks cover
+ordinary, dense, narrow, wrapped, miniature-rest, and aliased-source bars. `The Trees`
+remains explicitly excluded until a non-blank source PDF is available.
 
 ### Workstream 2 — Produce a valid model release: not complete
 
@@ -167,21 +167,27 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
   and export timing.
 - [ ] Add `test`, `lint`, build, and packaging scripts. `package.json` currently exposes
   only `npm start`.
-- [ ] Keep generated datasets and model weights out of Git. The live `ml/data/`
-  directories are ignored, but the 73,311,803-byte `ml/data/dataset.zip` is currently
-  tracked and needs an explicit retention/removal decision.
-- [ ] Save versioned manifests, configs, metrics, and reproducibility instructions.
+- [x] Keep generated datasets and model weights out of Git. The regenerated local dataset
+  and `ml/data/dataset.zip` are ignored; the ZIP is removed from version control without
+  deleting the local copy.
+- [ ] Save versioned manifests, configs, metrics, and reproducibility instructions. The
+  manifest and reconciliation evidence are versioned; model config and metrics await a
+  valid training run.
 
 ## Immediate next milestone
 
-Workstream 1 remains the next milestone. The path contract and small-subset proof are
-complete, and every existing label is now accounted for. The next slice must resolve the
-final crop-count mismatch by replacing the blank one-page `The Trees` Songsterr PDF with
-a complete export containing its 159 bars. Then regenerate the full package and perform
-human crop/label spot checks before starting model-release work.
+Workstream 2 is the next milestone. Train or verifiably resume the current 14-drum model
+on the reconciled 23,660-pair dataset, then evaluate it and save the checkpoint, ONNX,
+config, evaluation, and benchmark as one reproducible release. `The Trees` can be restored
+in a later dataset version when a complete 159-bar PDF becomes available.
 
 ## Verification performed for this review
 
+- The initial package had 19,948 pairs across 264 songs (212 train / 26 validation /
+  26 test), leaving 3,871 raw labels unpackaged. The replacement adds 3,712 pairs;
+  the remaining 159 labels belong to the blank `The Trees` source. Adding songs changes
+  the seeded split membership, so earlier checkpoints need a leakage audit before any
+  reuse against the replacement test split.
 - Compared every delivery-plan task with the current root app and `ml/` source tree.
 - Recounted source data, parsed labels, unpacked pairs, and ZIP pairs.
 - Compared image and label stems in both packaged forms; each comparison had zero
@@ -194,8 +200,15 @@ human crop/label spot checks before starting model-release work.
   path overrides.
 - Ran a two-song end-to-end subset through both parsers, both crop tools, both spot-check
   tools, and the ZIP packager; the result contained 165 matching image/label pairs.
-- Generated and validated the 19,948-row dataset manifest and the 3,871-row reconciliation
-  audit by rerunning bar detection across all available PDFs.
+- Regenerated all usable source songs into 23,660 image/label pairs: Reflow matched
+  176/176 labeled PDFs (6,811 pairs), and Songsterr matched 113/114 labeled PDFs
+  (16,849 pairs), excluding only the blank `The Trees` source.
+- Verified all 23,660 PNGs and parsed all 23,660 JSON labels, confirmed zero stem
+  mismatches, and validated a ZIP with 47,320 unique, non-corrupt members.
+- Generated the 23,660-row manifest with repository-relative paths and a 159-row
+  reconciliation audit; all 3,712 stale-package gaps from the prior package are gone.
+- Visually checked representative ordinary, dense-32nd, narrow-ending, wrapped-measure,
+  miniature-rest, and aliased-title crops against their JSON labels.
 - Confirmed the James Brown source/PDF title alias and verified its 79 crops match all 79
   labels.
 - Diagnosed a fourfold triplet/bracket endpoint being mistaken for a five-line staff

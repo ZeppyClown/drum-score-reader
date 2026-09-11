@@ -40,17 +40,17 @@ The 2026-09-11 audit found:
 
 - Manual VexFlow score entry and editing are present in the Electron app.
 - There is currently no image/PDF import UI or inference bridge.
-- The ML workspace has 23,819 parsed labels and 19,948 packaged image/label pairs.
-- The packaged data contains 264 songs, split by song into 212 train, 26 validation, and
-  26 test songs.
+- The ML workspace has 23,819 parsed labels and 23,660 packaged image/label pairs. The
+  only exclusion is 159 labels for `The Trees`, whose available PDF contains no score.
+- The replacement dataset contains 289 songs, split by song into 233 train,
+  28 validation, and 28 test songs.
 - The active model contract is 32 positions x 14 drums (448 drum logits) and 32 positions
   x 10 duration classes (320 duration logits).
 - The current local ONNX file is invalid: it is about 284 KB, while this fp32 architecture
   should be roughly 8.8 MB.
 - Reproducible current-model evaluation results, `omr_config.json`, and benchmark results
   are absent.
-- Data-preparation scripts contain stale paths and do not consistently target
-  `ml/data/`.
+- Data-preparation scripts use repository-relative defaults under `ml/data/`.
 
 See `progress.md` for the full audit and count reconciliation.
 
@@ -68,8 +68,8 @@ Tasks:
 2. Add command-line arguments for source and output directories where useful, with
    repository-relative defaults under `ml/data/`.
 3. Run the pipeline on a small fixture or subset before processing all data.
-4. Reconcile the 3,871 labels that are not represented in the packaged 19,948 pairs and
-   document whether they were intentionally filtered or failed to crop/match.
+4. Reconcile labels not represented in the package and document whether they were
+   intentionally excluded or failed to crop/match.
 5. Produce a repeatable manifest containing song, source file, bar number, image path,
    label path, and split.
 
@@ -183,16 +183,15 @@ or tuplet durations before it is considered complete.
   conversion, and export timing.
 - Add `test`, `lint`, and packaging scripts to `package.json` as their tooling is adopted.
 - Keep generated datasets and model weights out of Git; version manifests, configs,
-  metrics, and instructions.
+  metrics, and instructions. The local `ml/data/dataset.zip` is ignored.
 - Keep the unrelated untracked `ai-engineer-workshop-2026-project/` out of this project's
   implementation commits.
 - Deliver one small vertical slice per commit and verify it before starting the next.
 
 ## Immediate next milestone
 
-Complete Workstream 1 before adding UI or inference code. The first implementation slice
-should fix the dataset path contract and prove it on a small subset. The next slice should
-produce the reconciled manifest. Only then should the model be retrained or exported.
+Train the 14-drum model on the reconciled 23,660-pair replacement dataset, then evaluate
+and export one internally consistent release bundle before adding UI or inference code.
 
 ## Plan maintenance
 

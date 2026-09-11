@@ -10,6 +10,7 @@ package-lock.json
 __pycache__/
 /.agents/
 /ml/data/dataset/
+/ml/data/dataset.zip
 /ml/data/dataset 2/
 /ml/data/reflow/
 /ml/data/reflow_gp5/
