@@ -174,8 +174,9 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 Workstream 1 remains the next milestone. The path contract and small-subset proof are
 complete, and every existing label is now accounted for. The next slice must resolve the
-final crop-count mismatch. Then regenerate the full package and perform human crop/label
-spot checks before starting model-release work.
+final crop-count mismatch by replacing the blank one-page `The Trees` Songsterr PDF with
+a complete export containing its 159 bars. Then regenerate the full package and perform
+human crop/label spot checks before starting model-release work.
 
 ## Verification performed for this review
 
@@ -217,6 +218,12 @@ spot checks before starting model-release work.
   fixed exactly five affected songs: `Creeping Death`, `Everlong`,
   `For Whom the Bell Tolls`, `Heart-Shaped Box`, and `Ramble On`. The Songsterr audit now
   has 113 of 114 labeled PDFs matching, with only `The Trees` unresolved.
+- Diagnosed `The Trees` as an invalid source export rather than a crop-detector failure.
+  Its local PDF is a single blank score page with 24 header/footer words, one unrelated
+  drawing path, no embedded images, and no horizontal or vertical score lines. The live
+  Songsterr page identifies the correct Neil Peart drum track, but its score canvas also
+  remained blank in the available browser. A complete 159-bar PDF export is required
+  before this final mismatch can be verified and packaged.
 - Checked for model config, evaluation, benchmark, manifest, inference, playback, and
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.
