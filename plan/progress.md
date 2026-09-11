@@ -212,8 +212,13 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 - [ ] Add tests for the canonical bar representation, capacity rules, model conversion,
   and export timing.
-- [ ] Add `test`, `lint`, build, and packaging scripts. `package.json` currently exposes
-  only `npm start`.
+  Capacity rules are covered: the editing rules moved from `js/input.js` into the pure
+  `js/bar.js`, with 15 Node tests (placing, dots, durations, backspace, cursor moves,
+  and no mutation of input). A 27-step keyboard/keypad script drove the real Electron app
+  before and after the move and produced identical rendered SVG at every step. Model
+  conversion and export timing are not covered yet.
+- [ ] Add `test`, `lint`, build, and packaging scripts. `npm test` now runs the editor
+  rule tests; lint, build, and packaging scripts do not exist yet.
 - [x] Keep generated datasets and model weights out of Git. The regenerated local dataset
   and `ml/data/dataset.zip` are ignored; the ZIP is removed from version control without
   deleting the local copy.

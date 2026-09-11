@@ -26,8 +26,10 @@ drum score reader/
 │   ├── state.js        ← 4. The data model. Every other file reads from here
 │   ├── layout.js       ← 5. Bar position math (pixel coords)
 │   ├── score.js        ← 6. Rendering — turns state into SVG via VexFlow
-│   └── input.js        ← 7. All editing logic — keyboard, keypad, bar rules
-└── js/menu.js          ← 8. Side menu (bars-per-line setting only)
+│   ├── bar.js          ← 7. Pure editing rules — capacity, place, dot, duration, cursor moves
+│   └── input.js        ← 7. Wires keyboard + keypad to bar.js and stores results in state
+├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
+└── test/bar.test.mjs   ← Node tests for bar.js — run with `npm test`
 ```
 
 ---
@@ -247,7 +249,14 @@ VexFlow draws flags on 8th and 16th notes when it draws the voice. `generateBeam
 
 ---
 
-## 7. `js/input.js` — All Editing Logic
+## 7. `js/bar.js` + `js/input.js` — Editing Logic
+
+The rules below live in **`js/bar.js`** as pure functions: each takes a bar (or the bars
+array and cursor) and returns a new one, never touching `state`, the DOM, or `render()`.
+A refused edit (bar full, would overflow) returns the **same object** it was given, so
+`input.js` can skip the re-render. `input.js` only maps keys to these functions and stores
+the result in `state`. Because `bar.js` has no browser dependencies, `npm test` runs its
+rules in Node (`js/package.json` marks `js/` as ES modules for Node; the browser ignores it).
 
 ### Helper functions (read these first)
 
