@@ -41,15 +41,18 @@ function placeNote(drumKey) {
 
   if (idx < bar.notes.length) {
     const existing = bar.notes[idx];
-    if (!existing.isRest && existing.vexKey === def.vexKey) {
+    const sameNote = !existing.isRest &&
+      existing.vexKey === def.vexKey &&
+      (existing.noteType ?? 'n') === def.noteType;
+    if (sameNote) {
       // Case 1: same drum note → toggle off to rest, preserve duration + dotted
       bar.notes = bar.notes.map((n, i) =>
-        i === idx ? { ...n, isRest: true, vexKey: 'b/4', stemDir: 0 } : n
+        i === idx ? { ...n, isRest: true, vexKey: 'b/4', stemDir: 0, noteType: 'n' } : n
       );
     } else {
       // Case 2: rest or different note → replace with drum note, preserve duration + dotted
       bar.notes = bar.notes.map((n, i) =>
-        i === idx ? { ...n, isRest: false, vexKey: def.vexKey, stemDir: def.stemDir } : n
+        i === idx ? { ...n, isRest: false, vexKey: def.vexKey, stemDir: def.stemDir, noteType: def.noteType } : n
       );
     }
   } else {
@@ -69,9 +72,10 @@ function placeNote(drumKey) {
     bar.notes = [...bar.notes, {
       duration: dur,
       dotted,
-      vexKey:  def.vexKey,
-      stemDir: def.stemDir,
-      isRest:  false,
+      vexKey:   def.vexKey,
+      stemDir:  def.stemDir,
+      noteType: def.noteType,
+      isRest:   false,
     }];
   }
 

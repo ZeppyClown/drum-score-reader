@@ -50,11 +50,19 @@ export const DRUM_KEYS = new Set(['0','1','2','3','4','5','6','7','8','9','.']);
 // Each key on the numpad maps to a drum sound definition:
 //   vexKey:    the VexFlow pitch string used to position the notehead on the staff
 //              (percussion stave uses treble-clef positions visually)
+//   noteType:  VexFlow notehead type: 'n' = normal, 'x' = x-head, 'cx' = circle-x
 //   stemDir:   1 = stem goes up, -1 = stem goes down
 //   cursorPos: which vertical slot (1-10) the cursor snaps to after placing this note
-//
-// Only snare ('8') is defined so far. Other keys (0,1,2,3,4,5,6,7,9) need
-// entries added here before they will produce notes.
+//              (maps to stave pixel: getYForLine(4) - cursorPos * 5px)
 export const DRUM_DEFS = {
-  '8': { vexKey: 'c/5', stemDir:  1, cursorPos: 5 },  // snare
+  '0': { vexKey: 'c/4', noteType: 'n',  stemDir: -1, cursorPos: 1  },  // bass drum
+  '1': { vexKey: 'a/5', noteType: 'x',  stemDir:  1, cursorPos: 9  },  // crash
+  '2': { vexKey: 'e/5', noteType: 'n',  stemDir:  1, cursorPos: 7  },  // hi tom
+  '3': { vexKey: 'd/5', noteType: 'n',  stemDir:  1, cursorPos: 6  },  // mid tom
+  '4': { vexKey: 'f/5', noteType: 'cx', stemDir:  1, cursorPos: 8  },  // hi-hat open (circle-x)
+  '5': { vexKey: 'c/5', noteType: 'x',  stemDir:  1, cursorPos: 5  },  // side stick
+  '6': { vexKey: 'a/4', noteType: 'n',  stemDir: -1, cursorPos: 3  },  // floor tom
+  '7': { vexKey: 'f/5', noteType: 'x',  stemDir:  1, cursorPos: 8  },  // hi-hat closed
+  '8': { vexKey: 'c/5', noteType: 'n',  stemDir:  1, cursorPos: 5  },  // snare
+  '9': { vexKey: 'b/5', noteType: 'x',  stemDir:  1, cursorPos: 10 },  // ride
 };

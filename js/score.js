@@ -54,6 +54,7 @@ function buildTickables(bar) {
         clef:           'percussion',
         keys:           [note.vexKey],
         duration:       dur,
+        type:           note.noteType ?? 'n',
         stem_direction: note.stemDir,
       });
     }
