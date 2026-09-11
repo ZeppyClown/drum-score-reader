@@ -15,12 +15,15 @@ Format:
 }
 """
 
-import os
+import argparse
 import json
+from pathlib import Path
+
 import guitarpro
 
-GP5_DIR  = "/Volumes/T9/drum score reader/reflow_gp5"
-OUT_DIR  = "/Volumes/T9/drum score reader/labels"
+ML_DIR = Path(__file__).resolve().parents[2]
+DEFAULT_SOURCE_DIR = ML_DIR / "data" / "reflow_gp5"
+DEFAULT_OUTPUT_DIR = ML_DIR / "data" / "labels"
 
 TICKS_PER_QUARTER = 960
 
@@ -178,9 +181,9 @@ def parse_measure(measure, bar_number: int, song_name: str) -> dict:
     return result
 
 
-def process_file(gp5_path: str, out_dir: str) -> tuple[int, int]:
+def process_file(gp5_path: Path, out_dir: Path) -> tuple[int, int]:
     """Parse one GP5 file. Returns (bars_written, bars_skipped)."""
-    song_name = os.path.splitext(os.path.basename(gp5_path))[0]
+    song_name = gp5_path.stem
     written = skipped = 0
 
     try:
@@ -196,7 +199,7 @@ def process_file(gp5_path: str, out_dir: str) -> tuple[int, int]:
 
     for bar_idx, measure in enumerate(drum_track.measures):
         bar_number = bar_idx + 1
-        out_path = os.path.join(out_dir, f"{song_name}_bar{bar_number:03d}.json")
+        out_path = out_dir / f"{song_name}_bar{bar_number:03d}.json"
 
         label = parse_measure(measure, bar_number, song_name)
         if not label["beats"]:
@@ -211,15 +214,36 @@ def process_file(gp5_path: str, out_dir: str) -> tuple[int, int]:
 
 
 def main():
-    os.makedirs(OUT_DIR, exist_ok=True)
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        "--source-dir",
+        type=Path,
+        default=DEFAULT_SOURCE_DIR,
+        help=f"directory containing GP5 files (default: {DEFAULT_SOURCE_DIR})",
+    )
+    ap.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+        help=f"directory for label JSON files (default: {DEFAULT_OUTPUT_DIR})",
+    )
+    args = ap.parse_args()
 
-    files = sorted(f for f in os.listdir(GP5_DIR) if f.endswith(".gp5"))
+    source_dir = args.source_dir.expanduser().resolve()
+    output_dir = args.output_dir.expanduser().resolve()
+    if not source_dir.is_dir():
+        ap.error(f"source directory does not exist: {source_dir}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    files = sorted(source_dir.glob("*.gp5"))
+    if not files:
+        print(f"No .gp5 files found in {source_dir}")
+        return
     total_written = total_skipped = 0
 
-    for i, fname in enumerate(files, 1):
-        path = os.path.join(GP5_DIR, fname)
-        print(f"[{i}/{len(files)}] {fname}")
-        written, skipped = process_file(path, OUT_DIR)
+    for i, path in enumerate(files, 1):
+        print(f"[{i}/{len(files)}] {path.name}")
+        written, skipped = process_file(path, output_dir)
         print(f"  {written} bars written, {skipped} skipped")
         total_written += written
         total_skipped += skipped

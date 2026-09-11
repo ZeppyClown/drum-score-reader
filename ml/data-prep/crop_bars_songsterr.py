@@ -43,12 +43,10 @@ import fitz
 import numpy as np
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-ROOT      = Path(__file__).parent
-PDF_DIR   = ROOT / 'songsterr' / 'pdf'
-LABEL_DIR = ROOT / 'labels'
-OUT_IMG   = ROOT / 'dataset' / 'images'
-OUT_LBL   = ROOT / 'dataset' / 'labels'
-DEBUG_DIR = ROOT / 'dataset' / 'debug'
+ML_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_PDF_DIR = ML_DIR / 'data' / 'songsterr' / 'pdf'
+DEFAULT_LABEL_DIR = ML_DIR / 'data' / 'labels'
+DEFAULT_OUTPUT_DIR = ML_DIR / 'data' / 'dataset'
 
 DPI   = 150
 SCALE = DPI / 72
@@ -113,12 +111,12 @@ def _normalise_title(name: str) -> str:
     return s
 
 
-def build_name_map() -> dict[str, list[Path]]:
+def build_name_map(label_dir: Path) -> dict[str, list[Path]]:
     """
     Returns { normalised_title: [label_bar_paths...] } for every GP7-parsed label group.
     """
     groups: dict[str, list[Path]] = {}
-    for lbl in sorted(LABEL_DIR.glob('*_bar*.json')):
+    for lbl in sorted(label_dir.glob('*_bar*.json')):
         stem = lbl.stem                     # e.g. "Rush Tom Sawyer Drum Tab_bar003"
         song_stem = re.sub(r'_bar\d+$', '', stem)   # strip "_bar003"
         title = _normalise_title(song_stem)
@@ -302,11 +300,14 @@ def diagnose_pdf(pdf_path: Path) -> None:
 
 # ── Per-PDF processing ────────────────────────────────────────────────────────
 
-def process_pdf(pdf_path: Path, labels: list[Path],
+def process_pdf(pdf_path: Path, labels: list[Path], output_dir: Path,
                 dry_run: bool, save_debug: bool) -> dict:
     song_name = pdf_path.stem
     doc       = fitz.open(str(pdf_path))
     all_crops: list[np.ndarray] = []
+    out_img   = output_dir / 'images'
+    out_lbl   = output_dir / 'labels'
+    debug_dir = output_dir / 'debug'
 
     for page_idx, page in enumerate(doc):
         hlines         = extract_hlines(page)
@@ -319,9 +320,9 @@ def process_pdf(pdf_path: Path, labels: list[Path],
         all_crops.extend(crops)
 
         if save_debug:
-            DEBUG_DIR.mkdir(parents=True, exist_ok=True)
+            debug_dir.mkdir(parents=True, exist_ok=True)
             vis = make_debug_image(gray, staff_rows, bar_xs_per_row)
-            cv2.imwrite(str(DEBUG_DIR / f"{song_name}_p{page_idx + 1:02d}.png"), vis)
+            cv2.imwrite(str(debug_dir / f"{song_name}_p{page_idx + 1:02d}.png"), vis)
 
     doc.close()
 
@@ -330,14 +331,14 @@ def process_pdf(pdf_path: Path, labels: list[Path],
     ok       = n_crops == n_labels
 
     if not dry_run and ok:
-        OUT_IMG.mkdir(parents=True, exist_ok=True)
-        OUT_LBL.mkdir(parents=True, exist_ok=True)
+        out_img.mkdir(parents=True, exist_ok=True)
+        out_lbl.mkdir(parents=True, exist_ok=True)
         for i, (crop, lbl) in enumerate(zip(all_crops, labels)):
             # Use the PDF stem as the image name so spot_check.py can find the label
             name = f"{song_name}_bar{i + 1:03d}"
-            cv2.imwrite(str(OUT_IMG / f"{name}.png"), crop)
+            cv2.imwrite(str(out_img / f"{name}.png"), crop)
             # Copy label, renaming it to match the PDF-based image name
-            shutil.copy(lbl, OUT_LBL / f"{name}.json")
+            shutil.copy(lbl, out_lbl / f"{name}.json")
 
     return {'song': song_name, 'crops': n_crops, 'labels': n_labels, 'ok': ok}
 
@@ -353,17 +354,41 @@ def main() -> None:
     ap.add_argument('--song',       type=str,            help='process one PDF by song title (partial match)')
     ap.add_argument('--save-debug', action='store_true', help='save annotated debug pages')
     ap.add_argument('--diagnose',   action='store_true', help='print PDF structure for first matching PDF and exit')
+    ap.add_argument(
+        '--pdf-dir', type=Path, default=DEFAULT_PDF_DIR,
+        help=f'directory containing Songsterr PDFs (default: {DEFAULT_PDF_DIR})',
+    )
+    ap.add_argument(
+        '--label-dir', type=Path, default=DEFAULT_LABEL_DIR,
+        help=f'directory containing parsed labels (default: {DEFAULT_LABEL_DIR})',
+    )
+    ap.add_argument(
+        '--output-dir', type=Path, default=DEFAULT_OUTPUT_DIR,
+        help=f'dataset output directory (default: {DEFAULT_OUTPUT_DIR})',
+    )
     args = ap.parse_args()
 
-    name_map = build_name_map()
+    pdf_dir = args.pdf_dir.expanduser().resolve()
+    label_dir = args.label_dir.expanduser().resolve()
+    output_dir = args.output_dir.expanduser().resolve()
+    if not pdf_dir.is_dir():
+        ap.error(f'PDF directory does not exist: {pdf_dir}')
+    if not label_dir.is_dir():
+        ap.error(f'label directory does not exist: {label_dir}')
 
-    pdfs = sorted(PDF_DIR.glob('*.pdf'))
+    name_map = build_name_map(label_dir)
+
+    pdfs = sorted(pdf_dir.glob('*.pdf'))
     if args.song:
         query = args.song.lower()
         pdfs  = [p for p in pdfs if query in _normalise_title(p.stem)]
         if not pdfs:
             print(f"No PDF found matching: {args.song!r}")
             sys.exit(1)
+
+    if not pdfs:
+        print(f'No PDF files found in {pdf_dir}')
+        return
 
     if args.diagnose:
         diagnose_pdf(pdfs[0])
@@ -377,7 +402,13 @@ def main() -> None:
             results.append({'song': pdf.stem, 'crops': 0, 'labels': 0, 'ok': False, 'skip': True})
             continue
 
-        r = process_pdf(pdf, labels, dry_run=args.dry_run, save_debug=args.save_debug)
+        r = process_pdf(
+            pdf,
+            labels,
+            output_dir=output_dir,
+            dry_run=args.dry_run,
+            save_debug=args.save_debug,
+        )
         mark = '✓' if r['ok'] else '✗'
         print(f"  {mark}  {r['song'][:60]:<60}  crops={r['crops']}  labels={r['labels']}")
         results.append(r)
@@ -393,7 +424,7 @@ def main() -> None:
     print(f"  Matched         : {ok_count}")
     print(f"  Mismatched      : {fail_count}  (crop count ≠ label count)")
     if not args.dry_run:
-        print(f"  Pairs saved     : {total_bars} image+label pairs → dataset/")
+        print(f"  Pairs saved     : {total_bars} image+label pairs → {output_dir}")
 
     if fail_count:
         worst = sorted([r for r in processed if not r['ok']],

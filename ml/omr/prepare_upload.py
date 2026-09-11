@@ -1,37 +1,61 @@
 #!/usr/bin/env python3
-"""
-prepare_upload.py
+"""Package the prepared dataset for Google Drive upload.
 
-Zips the dataset folder ready for Google Drive upload.
-Run this locally before opening Colab.
-
-Usage: python ml/omr/prepare_upload.py
-Output: dataset.zip  (~same dir as this repo)
+Usage:
+  python ml/omr/prepare_upload.py
+  python ml/omr/prepare_upload.py --dataset-dir path/to/dataset --output path/to/dataset.zip
 """
 
+import argparse
 import zipfile
 from pathlib import Path
 
-ROOT     = Path(__file__).parent.parent.parent
-DATASET  = ROOT / 'dataset'
-OUT_ZIP  = ROOT / 'dataset.zip'
+ML_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_DATASET_DIR = ML_DIR / 'data' / 'dataset'
+DEFAULT_OUTPUT = ML_DIR / 'data' / 'dataset.zip'
 
-images = sorted((DATASET / 'images').glob('*.png'))
-labels = sorted((DATASET / 'labels').glob('*.json'))
 
-print(f'Packing {len(images)} images + {len(labels)} labels → {OUT_ZIP.name}')
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        '--dataset-dir', type=Path, default=DEFAULT_DATASET_DIR,
+        help=f'directory containing images/ and labels/ (default: {DEFAULT_DATASET_DIR})',
+    )
+    ap.add_argument(
+        '--output', type=Path, default=DEFAULT_OUTPUT,
+        help=f'ZIP output path (default: {DEFAULT_OUTPUT})',
+    )
+    args = ap.parse_args()
 
-with zipfile.ZipFile(OUT_ZIP, 'w', zipfile.ZIP_DEFLATED) as zf:
-    for f in images:
-        zf.write(f, f'dataset/images/{f.name}')
-    for f in labels:
-        zf.write(f, f'dataset/labels/{f.name}')
+    dataset_dir = args.dataset_dir.expanduser().resolve()
+    output = args.output.expanduser().resolve()
+    image_dir = dataset_dir / 'images'
+    label_dir = dataset_dir / 'labels'
+    if not image_dir.is_dir():
+        ap.error(f'image directory does not exist: {image_dir}')
+    if not label_dir.is_dir():
+        ap.error(f'label directory does not exist: {label_dir}')
 
-size_mb = OUT_ZIP.stat().st_size / 1_000_000
-print(f'Done. {OUT_ZIP}  ({size_mb:.1f} MB)')
-print()
-print('Next steps:')
-print('  1. Upload dataset.zip to Google Drive → MyDrive/drumhub/dataset.zip')
-print('  2. Open notebooks/omr_training.ipynb in Colab')
-print('  3. Runtime → Change runtime type → T4 GPU')
-print('  4. Run all cells')
+    images = sorted(image_dir.glob('*.png'))
+    labels = sorted(label_dir.glob('*.json'))
+    print(f'Packing {len(images)} images + {len(labels)} labels → {output}')
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
+        for path in images:
+            archive.write(path, f'dataset/images/{path.name}')
+        for path in labels:
+            archive.write(path, f'dataset/labels/{path.name}')
+
+    size_mb = output.stat().st_size / 1_000_000
+    print(f'Done. {output} ({size_mb:.1f} MB)')
+    print()
+    print('Next steps:')
+    print('  1. Upload dataset.zip to Google Drive → MyDrive/drumhub/dataset.zip')
+    print('  2. Open ml/notebooks/OMR Training After.ipynb in Colab')
+    print('  3. Runtime → Change runtime type → T4 GPU')
+    print('  4. Run all cells')
+
+
+if __name__ == '__main__':
+    main()

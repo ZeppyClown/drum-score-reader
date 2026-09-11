@@ -7,14 +7,16 @@ Output format matches parse_gp5.py exactly.
 Output: labels/<safe_name>_bar001.json
 """
 
+import argparse
 import json
-import os
 import zipfile
 import xml.etree.ElementTree as ET
 from fractions import Fraction
+from pathlib import Path
 
-GP7_DIR = "/Volumes/T9/drum score reader/songsterr/guitar_pro"
-OUT_DIR  = "/Volumes/T9/drum score reader/labels"
+ML_DIR = Path(__file__).resolve().parents[2]
+DEFAULT_SOURCE_DIR = ML_DIR / "data" / "songsterr" / "guitar_pro"
+DEFAULT_OUTPUT_DIR = ML_DIR / "data" / "labels"
 
 NOTE_VALUES: dict[str, Fraction] = {
     "Long":        Fraction(4, 1),
@@ -276,8 +278,8 @@ class GpifParser:
         }
 
 
-def process_file(gp_path: str, out_dir: str) -> int:
-    song_name = os.path.splitext(os.path.basename(gp_path))[0]
+def process_file(gp_path: Path, out_dir: Path) -> int:
+    song_name = gp_path.stem
 
     try:
         with zipfile.ZipFile(gp_path) as zf:
@@ -296,7 +298,7 @@ def process_file(gp_path: str, out_dir: str) -> int:
     written = 0
     for mb_idx in range(len(parser._master_bars)):
         bar_number = mb_idx + 1
-        out_path = os.path.join(out_dir, f"{song_name}_bar{bar_number:03d}.json")
+        out_path = out_dir / f"{song_name}_bar{bar_number:03d}.json"
         label = parser.parse_bar(drum_idx, mb_idx, song_name)
         with open(out_path, "w") as f:
             json.dump(label, f, indent=2)
@@ -306,16 +308,35 @@ def process_file(gp_path: str, out_dir: str) -> int:
 
 
 def main():
-    os.makedirs(OUT_DIR, exist_ok=True)
-    files = sorted(f for f in os.listdir(GP7_DIR) if f.endswith(".gp"))
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        "--source-dir",
+        type=Path,
+        default=DEFAULT_SOURCE_DIR,
+        help=f"directory containing GP7 .gp files (default: {DEFAULT_SOURCE_DIR})",
+    )
+    ap.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+        help=f"directory for label JSON files (default: {DEFAULT_OUTPUT_DIR})",
+    )
+    args = ap.parse_args()
+
+    source_dir = args.source_dir.expanduser().resolve()
+    output_dir = args.output_dir.expanduser().resolve()
+    if not source_dir.is_dir():
+        ap.error(f"source directory does not exist: {source_dir}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    files = sorted(source_dir.glob("*.gp"))
     if not files:
-        print(f"No .gp files found in {GP7_DIR}")
+        print(f"No .gp files found in {source_dir}")
         return
     total = 0
-    for i, fname in enumerate(files, 1):
-        path = os.path.join(GP7_DIR, fname)
-        print(f"[{i}/{len(files)}] {fname}")
-        n = process_file(path, OUT_DIR)
+    for i, path in enumerate(files, 1):
+        print(f"[{i}/{len(files)}] {path.name}")
+        n = process_file(path, output_dir)
         print(f"  {n} bars written")
         total += n
     print(f"\nDone. {total} label files written.")

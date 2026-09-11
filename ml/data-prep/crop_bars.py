@@ -41,12 +41,10 @@ import fitz          # PyMuPDF — pip install pymupdf
 import numpy as np
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-ROOT      = Path(__file__).parent
-PDF_DIR   = ROOT / 'reflow_pdf'
-LABEL_DIR = ROOT / 'labels'
-OUT_IMG   = ROOT / 'dataset' / 'images'
-OUT_LBL   = ROOT / 'dataset' / 'labels'
-DEBUG_DIR = ROOT / 'dataset' / 'debug'
+ML_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_PDF_DIR = ML_DIR / 'data' / 'reflow_pdf'
+DEFAULT_LABEL_DIR = ML_DIR / 'data' / 'labels'
+DEFAULT_OUTPUT_DIR = ML_DIR / 'data' / 'dataset'
 
 DPI   = 150
 SCALE = DPI / 72      # PDF points → pixels
@@ -264,9 +262,13 @@ def diagnose_pdf(pdf_path: Path) -> None:
 
 # ── Per-PDF processing ────────────────────────────────────────────────────────
 
-def process_pdf(pdf_path: Path, dry_run: bool, save_debug: bool) -> dict:
+def process_pdf(pdf_path: Path, label_dir: Path, output_dir: Path,
+                dry_run: bool, save_debug: bool) -> dict:
     song_name = pdf_path.stem
-    labels    = sorted(LABEL_DIR.glob(f"{song_name}_bar*.json"))
+    labels    = sorted(label_dir.glob(f"{song_name}_bar*.json"))
+    out_img   = output_dir / 'images'
+    out_lbl   = output_dir / 'labels'
+    debug_dir = output_dir / 'debug'
 
     if not labels:
         return {'song': song_name, 'crops': 0, 'labels': 0, 'ok': False, 'skip': True}
@@ -284,9 +286,9 @@ def process_pdf(pdf_path: Path, dry_run: bool, save_debug: bool) -> dict:
         all_crops.extend(crops)
 
         if save_debug:
-            DEBUG_DIR.mkdir(parents=True, exist_ok=True)
+            debug_dir.mkdir(parents=True, exist_ok=True)
             vis  = make_debug_image(gray, staff_rows, bar_xs_per_row)
-            cv2.imwrite(str(DEBUG_DIR / f"{song_name}_p{page_idx + 1:02d}.png"), vis)
+            cv2.imwrite(str(debug_dir / f"{song_name}_p{page_idx + 1:02d}.png"), vis)
 
     doc.close()
 
@@ -295,12 +297,12 @@ def process_pdf(pdf_path: Path, dry_run: bool, save_debug: bool) -> dict:
     ok       = n_crops == n_labels
 
     if not dry_run and ok:
-        OUT_IMG.mkdir(parents=True, exist_ok=True)
-        OUT_LBL.mkdir(parents=True, exist_ok=True)
+        out_img.mkdir(parents=True, exist_ok=True)
+        out_lbl.mkdir(parents=True, exist_ok=True)
         for i, (crop, lbl) in enumerate(zip(all_crops, labels)):
             name = f"{song_name}_bar{i + 1:03d}"
-            cv2.imwrite(str(OUT_IMG / f"{name}.png"), crop)
-            shutil.copy(lbl, OUT_LBL / lbl.name)
+            cv2.imwrite(str(out_img / f"{name}.png"), crop)
+            shutil.copy(lbl, out_lbl / lbl.name)
 
     return {'song': song_name, 'crops': n_crops, 'labels': n_labels, 'ok': ok, 'skip': False}
 
@@ -316,14 +318,38 @@ def main() -> None:
     ap.add_argument('--song',       type=str,            help='process one PDF by stem name')
     ap.add_argument('--save-debug', action='store_true', help='save annotated debug pages')
     ap.add_argument('--diagnose',   action='store_true', help='print PDF structure and exit')
+    ap.add_argument(
+        '--pdf-dir', type=Path, default=DEFAULT_PDF_DIR,
+        help=f'directory containing Reflow PDFs (default: {DEFAULT_PDF_DIR})',
+    )
+    ap.add_argument(
+        '--label-dir', type=Path, default=DEFAULT_LABEL_DIR,
+        help=f'directory containing parsed labels (default: {DEFAULT_LABEL_DIR})',
+    )
+    ap.add_argument(
+        '--output-dir', type=Path, default=DEFAULT_OUTPUT_DIR,
+        help=f'dataset output directory (default: {DEFAULT_OUTPUT_DIR})',
+    )
     args = ap.parse_args()
 
-    pdfs = sorted(PDF_DIR.glob('*.pdf'))
+    pdf_dir = args.pdf_dir.expanduser().resolve()
+    label_dir = args.label_dir.expanduser().resolve()
+    output_dir = args.output_dir.expanduser().resolve()
+    if not pdf_dir.is_dir():
+        ap.error(f'PDF directory does not exist: {pdf_dir}')
+    if not label_dir.is_dir():
+        ap.error(f'label directory does not exist: {label_dir}')
+
+    pdfs = sorted(pdf_dir.glob('*.pdf'))
     if args.song:
         pdfs = [p for p in pdfs if p.stem == args.song]
         if not pdfs:
             print(f"No PDF found: {args.song!r}")
             sys.exit(1)
+
+    if not pdfs:
+        print(f'No PDF files found in {pdf_dir}')
+        return
 
     if args.diagnose:
         diagnose_pdf(pdfs[0])
@@ -331,7 +357,13 @@ def main() -> None:
 
     results: list[dict] = []
     for pdf in pdfs:
-        r = process_pdf(pdf, dry_run=args.dry_run, save_debug=args.save_debug)
+        r = process_pdf(
+            pdf,
+            label_dir=label_dir,
+            output_dir=output_dir,
+            dry_run=args.dry_run,
+            save_debug=args.save_debug,
+        )
         if r.get('skip'):
             print(f"  -  {r['song']:<60}  (no labels — skipped)")
         else:
@@ -350,7 +382,7 @@ def main() -> None:
     print(f"  Matched         : {ok_count}")
     print(f"  Mismatched      : {fail_count}  (crop count ≠ label count)")
     if not args.dry_run:
-        print(f"  Pairs saved     : {total_bars} image+label pairs → dataset/")
+        print(f"  Pairs saved     : {total_bars} image+label pairs → {output_dir}")
 
     if fail_count:
         over  = [r for r in processed if not r['ok'] and r['crops'] > r['labels']]

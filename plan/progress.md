@@ -1,97 +1,185 @@
 # Project Progress Review
 
 Reviewed: 2026-09-11
-Baseline: `main` at `46357e9`
 
-This is a review checkpoint before feature implementation. No application code was changed in this pass.
+Baseline: `main` at `158b007` (`origin/main`)
 
-## Repository state
+Scope: the drum-score reader at the repository root and `ml/`; the unrelated untracked
+`ai-engineer-workshop-2026-project/` and `songsterr/` directories are excluded.
 
-- The parent Git repository is on `main` and has no tracked modifications.
-- `ai-engineer-workshop-2026-project/` is an untracked directory, not part of the current branch.
-- `songsterr/guitar_pro/SUSS Timesheet.pdf` is also untracked.
-- The original project is the Electron drum-score reader at the repository root.
+## Current status
 
-## Drum-score reader
+The plan consolidation itself is complete: `plan/README.md` is the authoritative plan,
+this file preserves the dated audit, and `model_training.md` and `score_editor.md` are
+archived pointers to Git history.
 
-### Done or present
+The product is still at the manual-editor and ML-preparation stage. The repository has a
+working VexFlow editing prototype, a paired training dataset, and model-training/export
+tooling, but none of the six delivery workstreams meets its exit criteria yet. In
+particular, image/PDF import, local inference, page segmentation, playback, and export do
+not exist in the Electron app.
 
-- Electron entry point and VexFlow score rendering are present.
-- Manual editing is present: ten drum-key mappings, cursor movement, duration changes, dotted notes, rests, bar-capacity checks, a draggable keypad, and bars-per-line layout.
-- The ML workspace contains 178 GP5 files, 179 PDFs, 23,819 parsed labels, 19,948 cropped images, and `ml/data/dataset.zip`.
-- The training notebook contains a two-phase MobileNetV3 training loop, song-level train/validation/test splitting, evaluation code, ONNX export code, ONNX verification code, and a benchmark script.
-- Browser JavaScript syntax checks successfully with Node's module parser.
+## Done or present
 
-### Number audit
+### Project planning
 
-The current packaged dataset counts reconcile:
+- [x] Consolidate the conflicting plans into `plan/README.md`.
+- [x] Preserve the progress audit as `plan/progress.md`.
+- [x] Archive the obsolete PaliGemma and Claude plans as historical pointers.
+- [x] Declare MobileNetV3-Small, ONNX, local inference, and VexFlow as the current
+  architecture.
 
-| Check | Result |
-|---|---:|
-| Training images | 19,948 |
-| Training labels in the ZIP | 19,948 |
-| Image/label entries in the ZIP | 39,896 |
-| ZIP total entries | 39,898, including two directory entries |
-| Notebook train bars | 15,709 |
-| Notebook validation bars | 2,315 |
-| Notebook test bars | 1,924 |
-| Split total | 19,948 |
-| Notebook songs | 212 train + 26 validation + 26 test = 264 |
+### Manual score editor
 
-The split is by song, so the bar proportions are not exactly 80/10/10. The bar counts are internally consistent.
+- [x] Electron entry point and VexFlow 5 score rendering are present.
+- [x] Manual entry supports ten drum-key mappings.
+- [x] Cursor navigation, duration changes, dotted notes, rests, and bar-capacity checks
+  are present.
+- [x] A draggable keypad and configurable two-to-eight bars per line are present.
+- [x] The current CommonJS entry point and browser ES modules pass syntax parsing.
 
-The 23,819 labels on disk are broader than the 19,948 image/label pairs packaged for training; 3,871 labels are outside that packaged pair set. This needs an explicit source/scope explanation before retraining.
+These are existing foundations, not completion of Workstream 3: there is no path from a
+model response into this editor yet.
 
-The current model contract is 14 drums × 32 beat positions = 448 drum outputs, plus 32 × 10 duration outputs = 320. The notebook's opening description still says 15 drums and 480 outputs. Its saved Phase 2 output also says 2,469,056 parameters, which belongs to an older drum-head configuration. The current 14-drum configuration is documented as 2,305,056 parameters. These stale notebook outputs must not be used as current metrics.
+### ML data and tooling foundations
 
-The local ONNX file is 283,541 bytes (about 277 KB), while the current architecture should produce roughly 8.8 MB of fp32 weights. It is not a valid shippable model. `omr_config.json`, `eval_results.json`, and benchmark results are absent.
+- [x] The workspace contains 178 GP5 source files, 179 Reflow PDFs, 314 GP7 files, and
+  119 Songsterr PDFs under `ml/data/`.
+- [x] `ml/data/labels/` contains 23,819 parsed labels.
+- [x] The unpacked packaged dataset contains 19,948 images and 19,948 labels.
+- [x] The checked-in `ml/data/dataset.zip` also contains 19,948 images and 19,948 labels.
+- [x] Image and label stems have zero mismatches in both the unpacked dataset and ZIP.
+- [x] The notebook uses a fixed seed (`42`) and a song-level split. Its saved audit counts
+  are 212 train songs / 15,709 bars, 26 validation songs / 2,315 bars, and 26 test songs /
+  1,924 bars.
+- [x] The notebook contains two-phase MobileNetV3 training, evaluation, ONNX export, and
+  numerical-verification code.
+- [x] `ml/omr/benchmark.py` contains fp32/int8 size, latency, and sequence-agreement
+  measurement code.
 
-### Blocked or not done
+The data and tooling above are inputs to Workstreams 1 and 2. They do not make those
+workstreams complete because the pipeline cannot currently be reproduced from its
+documented repository-relative locations and no valid evaluated model bundle is present.
 
-- No image/PDF import UI exists in the current Electron app.
-- No local model server, Electron-to-model bridge, or ONNX inference path exists.
-- Multi-bar import, imported-score editing, playback, PDF/MIDI/MusicXML export, and advanced notation are not implemented.
-- Current training metrics are not reproducible because the post-Phase-2 evaluation cell has no saved output and the available ONNX artifact is invalid.
-- The ML scripts are not aligned with the current on-disk layout:
-  - `ml/data-prep/parse/parse_gp5.py` and `parse_gp7.py` use old absolute paths.
-  - Both crop scripts resolve data relative to `ml/data-prep/`, although data is under `ml/data/`.
-  - Both spot-check scripts use the same outdated relative paths.
-  - `ml/omr/prepare_upload.py` looks for `dataset/` at the repository root, not `ml/data/dataset/`.
-- The older model plan names PaliGemma and still marks PDF slicing and pairing as incomplete, while the current notebook and model README describe a MobileNetV3 pipeline with packaged crops. The plans need to be consolidated.
-- The root package has only `npm start`; there are no automated tests, lint command, build command, or packaging workflow.
+## Delivery-plan progress
 
-## Cadence workshop project
+### Workstream 1 — Make data preparation reproducible: not complete
 
-This appears to be a separate full-stack course-platform project and is currently untracked.
+- [x] Replace stale paths in both parsers, both crop scripts, both spot-check scripts,
+  and `ml/omr/prepare_upload.py`.
+  All seven tools now derive their defaults from their own locations and consistently use
+  `ml/data/`; no machine-specific repository path remains.
+- [x] Add command-line source/output arguments with repository-relative defaults.
+  The parsers expose `--source-dir`/`--output-dir`, crop tools expose
+  `--pdf-dir`/`--label-dir`/`--output-dir`, spot checks expose
+  `--image-dir`/`--label-dir`/`--output`, and the packager exposes
+  `--dataset-dir`/`--output`.
+- [x] Run the repaired pipeline successfully on a small fixture or subset.
+  A two-song temporary run parsed and cropped 76 GP5/Reflow bars and 89 GP7/Songsterr
+  bars. Both spot-check tools ran headlessly, and the packager produced a ZIP containing
+  all 165 images and 165 matching labels.
+- [ ] Explain the 3,871 parsed labels not represented in the 19,948 packaged pairs.
+- [ ] Generate a repeatable manifest with song, source, bar, image, label, and split.
 
-### Done or present
+The path contract and small-subset pipeline are now proven. The existing full packaged
+image/label sets also match exactly and the notebook's split is deterministic by song.
+However, there is no manifest and the 3,871-label difference remains unexplained, so the
+workstream exit criteria are not yet met.
 
-- React Router, TypeScript, SQLite, Drizzle migrations, seed data, and route structure are present.
-- Course catalog/search/categories, course and lesson pages, enrollment, lesson progress, dashboard, video tracking, quizzes, purchases, PPP pricing, teams, coupons, and redemption are implemented.
-- Instructor course/module/lesson/quiz management and admin user/course/category management are implemented.
-- Eleven service/library test files are present, containing roughly 3,126 test lines.
+### Workstream 2 — Produce a valid model release: not complete
 
-### Not done
+- [ ] Remove stale 15-drum/480-output descriptions and the saved 2,469,056-parameter
+  Phase 2 output from the notebook.
+- [ ] Train or verifiably resume the current 14-drum model on the reconciled dataset.
+- [ ] Evaluate the model on the held-out test-song split.
+- [ ] Save reproducible `eval_results.json` metrics.
+- [ ] Export `omr.onnx` and `omr_config.json` together.
+- [ ] Verify ONNX/PyTorch numerical parity for the released artifacts.
+- [ ] Benchmark the released model on the target Mac and save
+  `benchmark_results.json`.
+- [ ] Version the checkpoint, ONNX file, config, evaluation, and benchmark as one release.
 
-- The requested gamification feature is not present: no points, levels/ranks, streaks, achievements, or quiz rewards exist in the schema, services, routes, or UI.
-- No leaderboard is needed; the brief explicitly excludes competitive features.
-- Dependencies are not installed in this directory, so tests, typechecking, and production build are currently unverified.
-- Authentication is demo-only: email-only login, a hardcoded development session secret, and existing signup emails silently log in.
-- Purchases are local database records; no payment-provider integration is present.
+The only local model artifacts found are `Finetuned Model.pt` (10,012,219 bytes) and
+`Checkpoints OMR.onnx` (283,541 bytes). The ONNX file is far below the approximately
+8.8 MB expected for this fp32 architecture. `omr_config.json`, `eval_results.json`, and
+`benchmark_results.json` are absent, so no model result is currently shippable or
+reproducible.
 
-## Recommended order after review
+### Workstream 3 — Integrate single-bar local inference: not started
 
-1. Fix and test ML data paths.
-2. Reproduce and validate the packaged image/label pairs.
-3. Retrain or confirm the current 14-drum model.
-4. Save evaluation results, the valid ONNX export, and its config together.
-5. Integrate inference into the score reader.
-6. Implement one feature at a time, with a separate commit and push for each completed slice.
+- [ ] PNG/JPEG file picker.
+- [ ] Long-lived local Python/ONNX inference service.
+- [ ] Shared preprocessing and decoding contract.
+- [ ] Validated `/predict` and error contract.
+- [ ] Electron service lifecycle management.
+- [ ] Canonical editable bar representation and model-event conversion.
+- [ ] Imported-bar rendering and editing.
+- [ ] Actionable import and inference errors.
 
-## Verification performed
+There is no FastAPI service, ONNX Runtime integration, Electron IPC bridge, import UI, or
+model-output conversion in the repository.
 
-- Counted source files and generated artifacts on disk.
-- Reconciled ZIP contents and notebook split totals.
-- Checked current model dimensions against the notebook's stale outputs.
-- Checked root JavaScript syntax with Node's module parser.
-- Inspected Git status; only the review file is intended to be committed from this pass.
+### Workstream 4 — Import complete pages and PDFs: not started
+
+- [ ] PDF page rendering.
+- [ ] Staff-system and bar-line detection for user imports.
+- [ ] Crop-review and correction UI.
+- [ ] Ordered multi-bar inference with progress and per-bar errors.
+- [ ] Partial-failure recovery and retry.
+
+The ML data-preparation crop scripts are offline dataset tools; they are not wired into the
+desktop app and do not provide the user-facing import workflow described by this
+workstream.
+
+### Workstream 5 — Playback: not started
+
+- [ ] Tempo, meter, and duration-to-time rules.
+- [ ] Bundled drum samples and drum-to-sample mapping.
+- [ ] Play, pause/stop, tempo, and start-position controls.
+- [ ] Active-event highlighting.
+
+No Web Audio implementation or sample assets are present.
+
+### Workstream 6 — Export: not started
+
+- [ ] PDF export.
+- [ ] MIDI export.
+- [ ] MusicXML export.
+- [ ] Fixture-based exporter tests for timing, simultaneous hits, rests, dotted notes,
+  and tuplets.
+
+There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
+
+## Cross-cutting work: not complete
+
+- [ ] Add tests for the canonical bar representation, capacity rules, model conversion,
+  and export timing.
+- [ ] Add `test`, `lint`, build, and packaging scripts. `package.json` currently exposes
+  only `npm start`.
+- [ ] Keep generated datasets and model weights out of Git. The live `ml/data/`
+  directories are ignored, but the 73,311,803-byte `ml/data/dataset.zip` is currently
+  tracked and needs an explicit retention/removal decision.
+- [ ] Save versioned manifests, configs, metrics, and reproducibility instructions.
+
+## Immediate next milestone
+
+Workstream 1 remains the next milestone. The path contract and small-subset proof are
+complete; the next implementation slice should generate the manifest and use it to
+account for the 3,871 unpackaged labels before retraining or exporting the model.
+
+## Verification performed for this review
+
+- Compared every delivery-plan task with the current root app and `ml/` source tree.
+- Recounted source data, parsed labels, unpacked pairs, and ZIP pairs.
+- Compared image and label stems in both packaged forms; each comparison had zero
+  mismatches.
+- Rechecked stale paths and stale notebook descriptions.
+- Exercised every data-preparation CLI with its repository-relative defaults or explicit
+  path overrides.
+- Ran a two-song end-to-end subset through both parsers, both crop tools, both spot-check
+  tools, and the ZIP packager; the result contained 165 matching image/label pairs.
+- Checked for model config, evaluation, benchmark, manifest, inference, playback, and
+  export artifacts or code.
+- Parsed `main.js` with Node and the browser modules with Acorn.
+- Confirmed `main` and `origin/main` both pointed to `158b007` before this progress-file
+  update, with only the two excluded directories untracked.

@@ -1,59 +1,88 @@
 #!/usr/bin/env python3
-"""
-spot_check.py
+"""Generate an HTML spot check for random Reflow bar image/label pairs.
 
-Opens 30 random bar images alongside their labels in the browser.
-No dependencies beyond the standard library — no OpenCV needed.
-
-Usage: python spot_check.py
+Usage:
+  python ml/data-prep/spot_check.py
+  python ml/data-prep/spot_check.py --count 10 --no-open
 """
 
+import argparse
 import json
 import random
 import webbrowser
 from pathlib import Path
 
-IMG_DIR = Path(__file__).parent / 'dataset' / 'images'
-LBL_DIR = Path(__file__).parent / 'dataset' / 'labels'
-OUT     = Path(__file__).parent / 'dataset' / 'spot_check.html'
+ML_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_DATASET_DIR = ML_DIR / 'data' / 'dataset'
+DEFAULT_IMAGE_DIR = DEFAULT_DATASET_DIR / 'images'
+DEFAULT_LABEL_DIR = DEFAULT_DATASET_DIR / 'labels'
+DEFAULT_OUTPUT = DEFAULT_DATASET_DIR / 'spot_check.html'
 
-imgs = sorted(IMG_DIR.glob('*.png'))
-if not imgs:
-    print("No images found. Run  python crop_bars.py  first.")
-    raise SystemExit
 
-sample = random.sample(imgs, min(30, len(imgs)))
-
-rows = []
-for img_path in sorted(sample):
-    lbl_path = LBL_DIR / (img_path.stem + '.json')
-    if not lbl_path.exists():
-        continue
-
-    data  = json.loads(lbl_path.read_text())
-    beats = data.get('beats', [])
-
-    beat_html = ''.join(
-        f'<tr><td>{b["beat"]}</td>'
-        f'<td>{b["duration"]}</td>'
-        f'<td>{", ".join(b["drums"])}</td></tr>'
-        for b in beats
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        '--image-dir', type=Path, default=DEFAULT_IMAGE_DIR,
+        help=f'directory containing bar images (default: {DEFAULT_IMAGE_DIR})',
     )
+    ap.add_argument(
+        '--label-dir', type=Path, default=DEFAULT_LABEL_DIR,
+        help=f'directory containing paired labels (default: {DEFAULT_LABEL_DIR})',
+    )
+    ap.add_argument(
+        '--output', type=Path, default=DEFAULT_OUTPUT,
+        help=f'HTML output path (default: {DEFAULT_OUTPUT})',
+    )
+    ap.add_argument('--count', type=int, default=30, help='maximum pairs to sample')
+    ap.add_argument('--no-open', action='store_true', help='write HTML without opening a browser')
+    args = ap.parse_args()
 
-    rows.append(f"""
-    <div class="card">
-      <img src="{img_path.resolve()}" alt="{img_path.stem}">
-      <div class="label">
-        <div class="name">{img_path.stem}</div>
-        <table>
-          <tr><th>Beat</th><th>Duration</th><th>Drums</th></tr>
-          {beat_html}
-        </table>
-      </div>
-    </div>
-    """)
+    if args.count < 1:
+        ap.error('--count must be at least 1')
 
-html = f"""<!DOCTYPE html>
+    image_dir = args.image_dir.expanduser().resolve()
+    label_dir = args.label_dir.expanduser().resolve()
+    output = args.output.expanduser().resolve()
+
+    if not image_dir.is_dir():
+        ap.error(f'image directory does not exist: {image_dir}')
+    if not label_dir.is_dir():
+        ap.error(f'label directory does not exist: {label_dir}')
+
+    images = sorted(image_dir.glob('*.png'))
+    if not images:
+        ap.error(f'no PNG images found in {image_dir}')
+
+    sample = random.sample(images, min(args.count, len(images)))
+    rows = []
+    for image_path in sorted(sample):
+        label_path = label_dir / f'{image_path.stem}.json'
+        if not label_path.exists():
+            continue
+
+        data = json.loads(label_path.read_text())
+        beats = data.get('beats', [])
+        beat_html = ''.join(
+            f'<tr><td>{beat["beat"]}</td>'
+            f'<td>{beat["duration"]}</td>'
+            f'<td>{", ".join(beat["drums"])}</td></tr>'
+            for beat in beats
+        )
+
+        rows.append(f"""
+        <div class="card">
+          <img src="{image_path.resolve().as_uri()}" alt="{image_path.stem}">
+          <div class="label">
+            <div class="name">{image_path.stem}</div>
+            <table>
+              <tr><th>Beat</th><th>Duration</th><th>Drums</th></tr>
+              {beat_html}
+            </table>
+          </div>
+        </div>
+        """)
+
+    html = f"""<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -80,7 +109,12 @@ html = f"""<!DOCTYPE html>
 </body>
 </html>"""
 
-OUT.write_text(html)
-webbrowser.open(str(OUT))
-print(f"Opened {OUT}")
-print(f"Run again to get a new random sample.")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(html)
+    if not args.no_open:
+        webbrowser.open(output.as_uri())
+    print(f'Wrote {output}')
+
+
+if __name__ == '__main__':
+    main()
