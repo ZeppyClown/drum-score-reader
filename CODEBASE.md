@@ -26,6 +26,7 @@ drum score reader/
 │   ├── state.js        ← 4. The data model. Every other file reads from here
 │   ├── layout.js       ← 5. Bar position math (pixel coords)
 │   ├── score.js        ← 6. Rendering — turns state into SVG via VexFlow
+│   ├── notation.js     ← 6. Drum names → VexFlow keys, noteheads, stem direction (pure)
 │   ├── bar.js          ← 7. Pure editing rules — capacity, place, dot, duration, cursor moves
 │   └── input.js        ← 7. Wires keyboard + keypad to bar.js and stores results in state
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
@@ -103,16 +104,22 @@ Dotted notes = 1.5 × base ticks (e.g. dotted crotchet = 6 ticks).
 ### Drum definitions
 
 ```js
-DRUM_DEFS = {
-  '8': { vexKey: 'c/5', stemDir: 1, cursorPos: 5 },  // snare
-  // add more keys here as new drum sounds are added
+DRUMS = {
+  snare:     { vexKey: 'c/5', head: 'n', stemDir: 1, cursorPos: 5 },
+  ride_bell: { vexKey: 'b/5', head: 'h', stemDir: 1, cursorPos: 10 },  // diamond
+  // ... one entry for each of the 14 drums the OMR model reads
 }
+KEY_DRUMS       = { '8': 'snare', '9': 'ride', ... }        // keys 0–9
+SHIFT_KEY_DRUMS = { '9': 'ride_bell', '0': 'hi_hat_pedal', ... }  // Shift + 0/4/6/9
 ```
 
-Each entry maps a keyboard key to:
+`DRUMS` is keyed by the **OMR model's drum names**, so imported notes need no translation.
+A test (`test/notation.test.mjs`) fails if this list drifts from `ml/omr/training_contract.py`.
+Each entry holds:
 - `vexKey` — VexFlow pitch string (controls where the notehead sits on the staff)
+- `head` — notehead shape: `'n'` normal, `'x'` x-head, `'cx'` circle-x, `'h'` diamond, `'tu'` triangle
 - `stemDir` — `1` = stem up, `-1` = stem down
-- `cursorPos` — which vertical slot (1–10) the cursor snaps to after placing this note
+- `cursorPos` — which vertical slot (1–10) the cursor snaps to after placing this drum
 
 ### Layout constants
 
@@ -156,11 +163,13 @@ bar = {
 {
   duration: 'q',      // VexFlow duration string — '16' | '8' | 'q' | 'h' | 'w'
   dotted:   false,    // boolean — extends the note by half its value
-  vexKey:   'c/5',    // VexFlow pitch string — controls notehead position on staff
-  stemDir:  1,        // 1 = stem up, -1 = stem down
-  isRest:   false,    // true = rest, false = drum hit
+  drums:    ['kick', 'hi_hat_closed'],  // DRUMS names; several = chord, [] = rest
 }
 ```
+
+Staff position, notehead shape, and stem direction are **not stored** — `notation.js`
+derives them from `drums` at render time. A chord's stem points down only if every drum
+in it is a stem-down drum (kick, floor toms, hi-hat pedal).
 
 ### `state.cursor`
 
@@ -227,8 +236,9 @@ Converts `bar.notes` to VexFlow `StaveNote` objects. One-to-one mapping, same or
 // For a rest:
 new StaveNote({ clef: 'percussion', keys: ['b/4'], duration: dur + 'r' })
 
-// For a drum hit:
-new StaveNote({ clef: 'percussion', keys: [note.vexKey], duration: dur, stem_direction: note.stemDir })
+// For a drum hit or chord: one key per drum, each with its own notehead code
+new StaveNote({ clef: 'percussion', keys: noteKeys(note), duration: dur, stem_direction: noteStemDir(note) })
+// noteKeys({ drums: ['snare', 'hi_hat_closed'] }) → ['c/5', 'f/5/x']
 
 // Dotted notes need this called after construction (VexFlow 5 requirement):
 Dot.buildAndAttach([sn], { all: true })
@@ -281,21 +291,21 @@ if (barTicks(bar) + change > BAR_TICKS) return;  // block the edit
 
 ### CRUD — Note Operations
 
-#### CREATE a note — `placeNote(drumKey)`
+#### CREATE a note or chord — `toggleDrum(bar, index, drumId)`
 
-Triggered by pressing a drum key (0–9 on keyboard or keypad click).
+Triggered by pressing a drum key (0–9, or Shift + 0/4/6/9, on keyboard or keypad click).
 
 ```
 Is there already a note at cursor.noteIndex?
-├── YES, same drum hit  →  toggle OFF (convert to rest, keep duration + dotted)
-├── YES, rest or diff   →  replace with new drum hit (keep duration + dotted)
-└── NO (index past end) →  create new note
-                              inherit duration + dotted from previous note
-                              if inherited duration overflows bar → use fitDuration
-                              if bar is already full → do nothing
+├── YES, drum already in its chord  →  remove it (last drum removed → rest, same length)
+├── YES, drum not in its chord      →  add it to the chord (a rest becomes a hit)
+└── NO (index past end)             →  create new note with just this drum
+                                          inherit duration + dotted from previous note
+                                          if inherited duration overflows bar → use fitDuration
+                                          if bar is already full → do nothing
 ```
 
-After placing, `cursor.position` snaps to `DRUM_DEFS[key].cursorPos`.
+After placing, `cursor.position` snaps to `DRUMS[drumId].cursorPos`.
 
 #### READ a note
 
@@ -326,9 +336,10 @@ Triggered by `-` (shorter) or `+` (longer)
 4. Update note.duration
 ```
 
-**Convert note ↔ rest — via `placeNote` or `Backspace`**
+**Convert note ↔ rest — via `toggleDrum` or `Backspace`**
 
-`placeNote` can convert a rest into a drum hit and vice versa (toggle).
+`toggleDrum` turns a rest into a hit by adding a drum, and a hit into a rest by removing
+its last drum.
 
 `Backspace` on a drum hit converts it to a rest (preserves duration + dotted so bar tick count stays the same).
 
@@ -381,7 +392,8 @@ Changes `cursor.position` (1–10). Does not touch any notes. `render()` moves t
 
 | Key | Action |
 |---|---|
-| `0`–`9` | Place drum note (defined in `DRUM_DEFS`) |
+| `0`–`9` | Add/remove that drum in the chord at the cursor (`KEY_DRUMS`) |
+| `Shift` + `0` `4` `6` `9` | Hi-hat pedal, half-open hi-hat, floor tom 2, ride bell (`SHIFT_KEY_DRUMS`); Shift-click on the keypad works too |
 | `.` | Toggle dot on current note |
 | `-` | Shorten duration (one step) |
 | `+` | Lengthen duration (one step) |
@@ -429,13 +441,17 @@ Screen updates
 
 ## Adding a New Drum Sound
 
+The editor's drums must match the OMR model's drum list, so a new drum starts in
+`ml/omr/training_contract.py` (and needs a retrained model) — `npm test` fails until
+both lists agree.
+
 1. Open `js/constants.js`
-2. Add an entry to `DRUM_DEFS`:
+2. Add an entry to `DRUMS`, using the model's drum name:
    ```js
-   '7': { vexKey: 'a/5', stemDir: 1, cursorPos: 8 },  // hi-hat closed
+   cowbell: { vexKey: 'a/5', head: 'tu', stemDir: 1, cursorPos: 9 },
    ```
-3. Look up the correct `vexKey` in VexFlow's pitch reference — format is `note/octave` e.g. `'a/5'`, `'e/5'`, `'c/5'`
-4. That's it. The key `7` will now place notes, toggle, navigate, and render correctly with no other changes.
+3. Give it a key in `KEY_DRUMS` or `SHIFT_KEY_DRUMS`, and a label in the keypad in `index.html`
+4. Look up the correct `vexKey` in VexFlow's pitch reference — format is `note/octave` e.g. `'a/5'`, `'e/5'`, `'c/5'`. No two drums may share both position and head.
 
 ---
 

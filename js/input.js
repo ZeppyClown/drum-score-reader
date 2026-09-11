@@ -1,8 +1,8 @@
-import { DRUM_KEYS, DRUM_DEFS, POSITIONS } from './constants.js';
+import { DRUM_KEYS, DRUMS, KEY_DRUMS, SHIFT_KEY_DRUMS, POSITIONS } from './constants.js';
 import { state } from './state.js';
 import { render } from './score.js';
 import {
-  placeDrum, toggleDot, changeDuration, backspaceAt, moveRight, moveLeft,
+  toggleDrum, toggleDot, changeDuration, backspaceAt, moveRight, moveLeft,
 } from './bar.js';
 
 // ── Wiring between user input and the pure bar rules ─────────────────────────
@@ -19,31 +19,37 @@ function updateCurrentBar(edit) {
   return true;
 }
 
-// ── Place / toggle a drum note at the cursor's current position ───────────────
-// drumKey: the key the user pressed (e.g. '8' for snare)
-function placeNote(drumKey) {
-  const def = DRUM_DEFS[drumKey];
-  if (!def) return;  // key has no drum definition yet
-  if (!updateCurrentBar((bar, idx) => placeDrum(bar, idx, def))) return;  // bar full
-  state.cursor.position = def.cursorPos;
+// ── Add or remove a drum in the chord at the cursor's current position ────────
+function placeDrum(drumId) {
+  if (!updateCurrentBar((bar, idx) => toggleDrum(bar, idx, drumId))) return;  // bar full
+  state.cursor.position = DRUMS[drumId].cursorPos;
   render();
 }
 
 // ── Shared handler for all drum key presses ───────────────────────────────────
-function handleDrumKey(key) {
+// key: '0'-'9' or '.'; shift: true selects the extra drums in SHIFT_KEY_DRUMS.
+function handleDrumKey(key, shift = false) {
   if (key === '.') {
     if (updateCurrentBar(toggleDot)) render();
     return;
   }
+  const drumId = (shift ? SHIFT_KEY_DRUMS : KEY_DRUMS)[key];
+  if (!drumId) return;  // nothing assigned to this key (or this Shift combination)
   const cell = document.querySelector(`#keypad [data-key="${key}"]`);
   if (cell) {
     cell.classList.add('pressed');
     setTimeout(() => cell.classList.remove('pressed'), 120);
   }
-  placeNote(key);
+  placeDrum(drumId);
 }
 
-// ── Backspace: delete a rest, or turn a drum hit into a rest ──────────────────
+// Shift changes e.key on the number row ('4' becomes '$'), so read the physical key.
+function shiftedDigit(e) {
+  const match = e.shiftKey && /^(?:Digit|Numpad)(\d)$/.exec(e.code);
+  return match ? match[1] : null;
+}
+
+// ── Backspace: delete a rest, or turn a hit or chord into a rest ──────────────
 function handleBackspace() {
   const cur = state.cursor;
   const { bar, removedRest } = backspaceAt(state.bars[cur.barIndex], cur.noteIndex);
@@ -57,6 +63,8 @@ export function initKeyboard() {
   document.addEventListener('keydown', (e) => {
     if (e.repeat) return;
 
+    const digit = shiftedDigit(e);
+    if (digit) { handleDrumKey(digit, true); return; }
     if (DRUM_KEYS.has(e.key)) { handleDrumKey(e.key); return; }
     if (e.key === '-') { if (updateCurrentBar((b, i) => changeDuration(b, i, -1))) render(); return; }
     if (e.key === '+') { if (updateCurrentBar((b, i) => changeDuration(b, i, 1)))  render(); return; }
@@ -109,7 +117,8 @@ export function initKeypad() {
     keypadHandle.style.cursor = 'grab';
   });
 
+  // Shift-click a keypad cell to enter its extra drum.
   keypad.querySelectorAll('.key-cell').forEach(cell => {
-    cell.addEventListener('click', () => handleDrumKey(cell.dataset.key));
+    cell.addEventListener('click', (e) => handleDrumKey(cell.dataset.key, e.shiftKey));
   });
 }

@@ -8,10 +8,11 @@
 //   Each note = {
 //     duration: VexFlow duration string — '16' | '8' | 'q' | 'h' | 'w'
 //     dotted:   true if the note is dotted (duration × 1.5)
-//     vexKey:   VexFlow pitch string, e.g. 'c/5' for snare positioning on staff
-//     stemDir:  1 = stem up, -1 = stem down
-//     isRest:   true if this slot is a rest rather than a drum hit
+//     drums:    drum names from DRUMS in constants.js, e.g. ['kick', 'hi_hat_closed'].
+//               Several names are a chord; an empty array is a rest.
 //   }
+//   Staff position, notehead shape, and stem direction are derived from the drum
+//   names at render time (notation.js), so they are never stored on the note.
 //
 // cursor:
 //   barIndex:  which bar the cursor is in (0-based index into state.bars)

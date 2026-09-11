@@ -218,6 +218,14 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
   and no mutation of input). A 27-step keyboard/keypad script drove the real Electron app
   before and after the move and produced identical rendered SVG at every step. Model
   conversion and export timing are not covered yet.
+  The note model now matches the OMR model's vocabulary (Victor's 2026-09-11 decisions):
+  a note stores `drums`, a list of model drum names, so one note can be a chord and an
+  empty list is a rest. All 14 model drums are in the editor — the 4 new ones via
+  Shift+0/4/6/9 — and pressing a drum toggles it in the chord. 23 Node tests pass,
+  including a check that the editor's drum list matches `training_contract.py`. A
+  19-step keyboard/Shift/keypad script in the real app produced the expected drums and
+  notehead count at every step on two consecutive runs; an earlier run showed one
+  unexplained extra drum that did not reproduce. 32nd notes and triplets are next.
 - [ ] Add `test`, `lint`, build, and packaging scripts. `npm test` now runs the editor
   rule tests; lint, build, and packaging scripts do not exist yet.
 - [x] Keep generated datasets and model weights out of Git. The regenerated local dataset

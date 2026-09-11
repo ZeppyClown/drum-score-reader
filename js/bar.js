@@ -3,13 +3,18 @@
 // file reads or writes `state`, touches the DOM, or calls render(), so the rules
 // can be tested in Node. input.js decides what to call and stores the result.
 //
+// A note is { duration, dotted, drums }. `drums` lists drum names from DRUMS in
+// constants.js; several names make a chord, and an empty list is a rest.
+//
 // When an edit is not allowed (bar full, overflow, nothing at the index) the
 // function returns the SAME object it was given, so callers can skip render().
 
 import { DURATIONS, DUR_TICKS, BAR_TICKS } from './constants.js';
 
-// A rest always sits on the middle line and has no stem.
-const REST_FIELDS = { isRest: true, vexKey: 'b/4', stemDir: 0 };
+// A rest is a note with no drums. It keeps its duration so later notes keep their timing.
+export function isRest(note) {
+  return note.drums.length === 0;
+}
 
 // Ticks consumed by a single note (1.5× base if dotted).
 export function noteTicks(note) {
@@ -34,19 +39,18 @@ function replaceNote(bar, index, note) {
   return { ...bar, notes: bar.notes.map((n, i) => (i === index ? note : n)) };
 }
 
-// ── Place / toggle a drum note at index ──────────────────────────────────────
-//   1. Same drum note → toggle it off (rest, keep duration + dotted)
-//   2. Different note or a rest → replace with the new drum (keep duration + dotted)
-//   3. Past the end → append, inheriting the previous duration + dot if it fits
-export function placeDrum(bar, index, def) {
+// ── Toggle a drum at index ───────────────────────────────────────────────────
+//   1. Existing note (hit or rest) → add the drum to its chord, or remove it if
+//      it is already there. Removing the last drum leaves a rest of the same length.
+//   2. Past the end → append a note with just this drum, inheriting the previous
+//      duration + dot if it fits.
+export function toggleDrum(bar, index, drumId) {
   if (index < bar.notes.length) {
-    const existing = bar.notes[index];
-    const sameNote = !existing.isRest &&
-      existing.vexKey === def.vexKey &&
-      (existing.noteType ?? 'n') === def.noteType;
-    return replaceNote(bar, index, sameNote
-      ? { ...existing, ...REST_FIELDS, noteType: 'n' }
-      : { ...existing, isRest: false, vexKey: def.vexKey, stemDir: def.stemDir, noteType: def.noteType });
+    const note  = bar.notes[index];
+    const drums = note.drums.includes(drumId)
+      ? note.drums.filter(d => d !== drumId)
+      : [...note.drums, drumId];
+    return replaceNote(bar, index, { ...note, drums });
   }
 
   const remaining = BAR_TICKS - barTicks(bar);
@@ -62,10 +66,7 @@ export function placeDrum(bar, index, def) {
     notes: [...bar.notes, {
       duration: fits ? prevDur : fitDuration(remaining),
       dotted:   fits ? prevDotted : false,
-      vexKey:   def.vexKey,
-      stemDir:  def.stemDir,
-      noteType: def.noteType,
-      isRest:   false,
+      drums:    [drumId],
     }],
   };
 }
@@ -101,13 +102,13 @@ export function changeDuration(bar, index, delta) {
 
 // ── Backspace at index ───────────────────────────────────────────────────────
 // A rest is deleted (removedRest: true, so the cursor steps back).
-// A drum hit becomes a rest of the same length, so later notes keep their timing.
+// A hit or chord becomes a rest of the same length, so later notes keep their timing.
 export function backspaceAt(bar, index) {
   if (index >= bar.notes.length) return { bar, removedRest: false };
-  if (bar.notes[index].isRest) {
+  if (isRest(bar.notes[index])) {
     return { bar: { ...bar, notes: bar.notes.filter((_, i) => i !== index) }, removedRest: true };
   }
-  return { bar: replaceNote(bar, index, { ...bar.notes[index], ...REST_FIELDS }), removedRest: false };
+  return { bar: replaceNote(bar, index, { ...bar.notes[index], drums: [] }), removedRest: false };
 }
 
 // ── Cursor movement ──────────────────────────────────────────────────────────
@@ -119,7 +120,7 @@ export function moveRight(bars, cursor) {
     cursor: { ...cursor, barIndex: cursor.barIndex + 1, noteIndex: 0 },
   });
 
-  if (!bar.notes.some(n => !n.isRest)) return toNextBar();  // empty or rest-only bar
+  if (bar.notes.every(isRest)) return toNextBar();  // empty or rest-only bar
   if (cursor.noteIndex < bar.notes.length - 1) {
     return { bars, cursor: { ...cursor, noteIndex: cursor.noteIndex + 1 } };
   }
@@ -132,7 +133,7 @@ export function moveRight(bars, cursor) {
   const rest    = {
     duration: DUR_TICKS[prevDur] <= remaining ? prevDur : fitDuration(remaining),
     dotted:   false,
-    ...REST_FIELDS,
+    drums:    [],
   };
   return {
     bars:   bars.map((b, i) => (i === cursor.barIndex ? { ...b, notes: [...b.notes, rest] } : b)),

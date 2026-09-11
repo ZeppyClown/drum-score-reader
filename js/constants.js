@@ -44,25 +44,44 @@ export const BAR_TICKS = 16;
 // ── Keys that trigger drum notes ──────────────────────────────────────────────
 // The numpad keys 0-9 and '.' are all intercepted for drum input.
 // '.' is special — it toggles a dot on the current note rather than placing one.
+// Shift + 0, 4, 6 or 9 enters the four extra drums (see SHIFT_KEY_DRUMS).
 export const DRUM_KEYS = new Set(['0','1','2','3','4','5','6','7','8','9','.']);
 
 // ── Drum definitions ──────────────────────────────────────────────────────────
-// Each key on the numpad maps to a drum sound definition:
-//   vexKey:    the VexFlow pitch string used to position the notehead on the staff
+// One entry per drum the OMR model reads, keyed by the model's own drum name, so
+// imported notes need no translation. A note lists these names in `note.drums`.
+//   vexKey:    VexFlow pitch string that positions the notehead on the staff
 //              (percussion stave uses treble-clef positions visually)
-//   noteType:  VexFlow notehead type: 'n' = normal, 'x' = x-head, 'cx' = circle-x
-//   stemDir:   1 = stem goes up, -1 = stem goes down
-//   cursorPos: which vertical slot (1-10) the cursor snaps to after placing this note
+//   head:      notehead shape: 'n' normal, 'x' x-head, 'cx' circle-x,
+//              'h' diamond, 'tu' triangle
+//   stemDir:   1 = stem up, -1 = stem down (a chord is stem-down only if every drum is)
+//   cursorPos: which vertical slot (1-10) the cursor snaps to after placing this drum
 //              (maps to stave pixel: getYForLine(4) - cursorPos * 5px)
-export const DRUM_DEFS = {
-  '0': { vexKey: 'c/4', noteType: 'n',  stemDir: -1, cursorPos: 1  },  // bass drum
-  '1': { vexKey: 'a/5', noteType: 'x',  stemDir:  1, cursorPos: 9  },  // crash
-  '2': { vexKey: 'e/5', noteType: 'n',  stemDir:  1, cursorPos: 7  },  // hi tom
-  '3': { vexKey: 'd/5', noteType: 'n',  stemDir:  1, cursorPos: 6  },  // mid tom
-  '4': { vexKey: 'f/5', noteType: 'cx', stemDir:  1, cursorPos: 8  },  // hi-hat open (circle-x)
-  '5': { vexKey: 'c/5', noteType: 'x',  stemDir:  1, cursorPos: 5  },  // side stick
-  '6': { vexKey: 'a/4', noteType: 'n',  stemDir: -1, cursorPos: 3  },  // floor tom
-  '7': { vexKey: 'f/5', noteType: 'x',  stemDir:  1, cursorPos: 8  },  // hi-hat closed
-  '8': { vexKey: 'c/5', noteType: 'n',  stemDir:  1, cursorPos: 5  },  // snare
-  '9': { vexKey: 'b/5', noteType: 'x',  stemDir:  1, cursorPos: 10 },  // ride
+export const DRUMS = {
+  kick:             { vexKey: 'c/4', head: 'n',  stemDir: -1, cursorPos: 1  },  // bass drum
+  hi_hat_pedal:     { vexKey: 'd/4', head: 'x',  stemDir: -1, cursorPos: 1  },
+  floor_tom_2:      { vexKey: 'g/4', head: 'n',  stemDir: -1, cursorPos: 2  },  // low floor tom
+  floor_tom_1:      { vexKey: 'a/4', head: 'n',  stemDir: -1, cursorPos: 3  },
+  snare:            { vexKey: 'c/5', head: 'n',  stemDir:  1, cursorPos: 5  },
+  snare_rim:        { vexKey: 'c/5', head: 'x',  stemDir:  1, cursorPos: 5  },  // side stick
+  tom_mid:          { vexKey: 'd/5', head: 'n',  stemDir:  1, cursorPos: 6  },
+  tom_hi:           { vexKey: 'e/5', head: 'n',  stemDir:  1, cursorPos: 7  },
+  hi_hat_closed:    { vexKey: 'f/5', head: 'x',  stemDir:  1, cursorPos: 8  },
+  hi_hat_open_half: { vexKey: 'f/5', head: 'tu', stemDir:  1, cursorPos: 8  },  // triangle
+  hi_hat_open_full: { vexKey: 'f/5', head: 'cx', stemDir:  1, cursorPos: 8  },  // circle-x
+  crash:            { vexKey: 'a/5', head: 'x',  stemDir:  1, cursorPos: 9  },
+  ride:             { vexKey: 'b/5', head: 'x',  stemDir:  1, cursorPos: 10 },
+  ride_bell:        { vexKey: 'b/5', head: 'h',  stemDir:  1, cursorPos: 10 },  // diamond
+};
+
+// Number / keypad key → drum (the original 10-key layout).
+export const KEY_DRUMS = {
+  '0': 'kick',     '1': 'crash',            '2': 'tom_hi',
+  '3': 'tom_mid',  '4': 'hi_hat_open_full', '5': 'snare_rim',
+  '6': 'floor_tom_1', '7': 'hi_hat_closed', '8': 'snare', '9': 'ride',
+};
+
+// Shift + key → the extra drum related to that key's drum.
+export const SHIFT_KEY_DRUMS = {
+  '0': 'hi_hat_pedal', '4': 'hi_hat_open_half', '6': 'floor_tom_2', '9': 'ride_bell',
 };

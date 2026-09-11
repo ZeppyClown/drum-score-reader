@@ -1,6 +1,8 @@
 import { STAVE_X, STAVE_Y0, ROW_HEIGHT, SPACE } from './constants.js';
 import { state } from './state.js';
 import { barRow, barCol, barY, cursorCentreY } from './layout.js';
+import { isRest } from './bar.js';
+import { noteKeys, noteStemDir } from './notation.js';
 
 // Destructure the VexFlow classes we need from the global VexFlow object.
 // VexFlow is loaded as a CJS bundle via <script> in index.html, so it's a global.
@@ -39,7 +41,8 @@ function getBarX(i, widths) {
 //
 // For rests: duration string gets 'r' appended (e.g. 'qr' = crotchet rest).
 //            key is always 'b/4' which centres the rest on the middle line.
-// For drum notes: key is the vexKey from DRUM_DEFS, stem_direction from stemDir.
+// For drum notes: one key per drum in the chord, each carrying its own notehead
+//            shape (see notation.js), and one shared stem from noteStemDir().
 // In VexFlow 5 the `dots` constructor option was removed — we must call
 // Dot.buildAndAttach() after construction to attach the dot modifier visually.
 // Notes are already in order (the array IS the sequence), so no sorting needed.
@@ -47,15 +50,14 @@ function buildTickables(bar) {
   return bar.notes.map(note => {
     const dur = note.duration ?? 'q';
     let sn;
-    if (note.isRest) {
-      sn = new StaveNote({ clef: 'percussion', keys: ['b/4'], duration: dur + 'r' });
+    if (isRest(note)) {
+      sn = new StaveNote({ clef: 'percussion', keys: noteKeys(note), duration: dur + 'r' });
     } else {
       sn = new StaveNote({
         clef:           'percussion',
-        keys:           [note.vexKey],
+        keys:           noteKeys(note),
         duration:       dur,
-        type:           note.noteType ?? 'n',
-        stem_direction: note.stemDir,
+        stem_direction: noteStemDir(note),
       });
     }
     if (note.dotted) {
