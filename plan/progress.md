@@ -101,7 +101,7 @@ remains explicitly excluded until a non-blank source PDF is available.
   Phase 2 output from the notebook. The notebook now consistently documents the current
   14-drum / 448-logit contract, and the obsolete Phase 2 execution output and count are
   cleared so its invalid metrics cannot be mistaken for a current run.
-- [ ] Train or verifiably resume the current 14-drum model on the reconciled dataset.
+- [x] Train or verifiably resume the current 14-drum model on the reconciled dataset.
   The obsolete local checkpoint has a 608-output drum head (19 drums), so it cannot
   resume the 448-output model. The replacement split also puts 23 old training songs
   into test and 16 into validation; a fresh training run is required for a clean evaluation.
@@ -120,10 +120,14 @@ remains explicitly excluded until a non-blank source PDF is available.
   A two-batch GPU rehearsal completed head-only training, stopped at the epoch boundary,
   resumed its checkpoint in a new process, and completed full-model fine-tuning. Its
   artifacts are explicitly marked as smoke-test artifacts and are not a model release.
-  The non-smoke MPS run `baseline-14drum-v1` is now in progress: head epochs 1 and 2 of
-  15 have completed. Epoch 2 recorded train loss 0.43042 and validation loss 0.44688;
-  epoch 3 is underway. Fine-tuning has not started, and no completion marker or release
-  checkpoint has been produced yet.
+  The non-smoke MPS run `baseline-14drum-v1` finished on 2026-09-12: all 15 head epochs
+  and all 25 fine-tune epochs completed, and `training_complete.json` records
+  `finetune_best.pt` (sha256 5f7ef189…) with `smoke: false` and `evaluated_on_test: false`.
+  Best validation loss 0.4036 at fine-tune epoch 23; the final epoch recorded train loss
+  0.1786 against validation loss 0.4042, so the train/validation gap seen in the earlier
+  19-drum run is still present. Validation exact-drum-bar accuracy was 0.074. These are
+  validation numbers from training, not held-out test metrics: no evaluation, ONNX export,
+  benchmark, or release bundle exists yet.
 - [ ] Evaluate the model on the held-out test-song split.
 - [ ] Save reproducible `eval_results.json` metrics.
 - [ ] Export `omr.onnx` and `omr_config.json` together.
@@ -273,10 +277,10 @@ Rests still encode silence and ghost dynamics still fold into the base drum. The
 parsers' earlier onset quantization and voice merging are not reversed by filtering.
 This is target compatibility, not a claim of lossless original-notation support. Model
 metrics must disclose the subset and the 359 excluded bars from the original test split.
-Training is in progress on MPS in the ignored `baseline-14drum-v1` run directory; only the
-head-phase epoch-1 and epoch-2 metrics are currently available. Do not treat these interim artifacts
-as a release until all epochs finish and the completion marker, evaluation, export, and
-benchmark checks pass.
+Training finished on 2026-09-12 in the ignored `baseline-14drum-v1` run directory, with a
+non-smoke completion marker. Do not treat the checkpoint as a release until the evaluation,
+export, benchmark, and release-bundle checks pass; report only held-out test metrics, and
+disclose the supported-subset scope and the 359 excluded bars from the original test split.
 
 ## Verification performed for this review
 
