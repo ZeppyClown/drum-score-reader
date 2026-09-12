@@ -1,8 +1,9 @@
 # Project Progress Review
 
-Reviewed: 2026-09-11
+Reviewed: 2026-09-13 (first written 2026-09-11)
 
-Baseline: `main` at `fe46637` (`origin/main`); this review records the current working-tree state
+Baseline: `main` at `58a69c4` (`origin/main`); the working tree is clean apart from the
+unrelated untracked directories below
 
 Scope: the drum-score reader at the repository root and `ml/`; the unrelated untracked
 `ai-engineer-workshop-2026-project/` and `songsterr/` directories are excluded.
@@ -13,11 +14,16 @@ The plan consolidation itself is complete: `plan/README.md` is the authoritative
 this file preserves the dated audit, and `model_training.md` and `score_editor.md` are
 archived pointers to Git history.
 
-The product is at the manual-editor and model-training stage. Workstream 1 is complete
-with a reproducible 23,660-pair replacement dataset and an explicit 159-label exclusion
-for the blank `The Trees` source. The remaining five delivery workstreams are incomplete;
-image/PDF import, local inference, page segmentation, playback, and export do not exist
-in the Electron app.
+Workstream 1 is complete with a reproducible 23,660-pair replacement dataset and an
+explicit 159-label exclusion for the blank `The Trees` source. The first 14-drum training
+run finished on 2026-09-12, so Workstream 2 now waits on evaluation, export, benchmark,
+and the release bundle rather than on training. The Python half of Workstream 3 exists
+(local inference service and prediction-to-bar conversion, both tested against a randomly
+initialized model); the Electron app still has no import UI, no service lifecycle, and no
+page import, playback, or export. Workstreams 4 to 6 have not started.
+
+Current test suites, all passing: 46 Node tests (`npm test`), 16 service tests
+(`backend/`), and 33 ML tests (`ml/omr/`).
 
 ## Done or present
 
@@ -32,14 +38,14 @@ in the Electron app.
 ### Manual score editor
 
 - [x] Electron entry point and VexFlow 5 score rendering are present.
-- [x] Manual entry supports ten drum-key mappings.
-- [x] Cursor navigation, duration changes, dotted notes, rests, and bar-capacity checks
-  are present.
+- [x] Manual entry covers all 14 model drums (10 keys plus Shift+0/4/6/9) and chords.
+- [x] Cursor navigation, duration changes from 32nds to semibreves, dotted notes,
+  triplets, rests, and bar-capacity checks are present.
 - [x] A draggable keypad and configurable two-to-eight bars per line are present.
 - [x] The current CommonJS entry point and browser ES modules pass syntax parsing.
 
-These are existing foundations, not completion of Workstream 3: there is no path from a
-model response into this editor yet.
+These are existing foundations, not completion of Workstream 3: `js/import.js` converts a
+model response into an editor bar, but nothing in the app calls it yet.
 
 ### ML data and tooling foundations
 
@@ -116,7 +122,8 @@ remains explicitly excluded until a non-blank source PDF is available.
   code, dataset, model, runtime, or training configuration differs.
   `ml/omr/evaluate.py` now verifies a non-smoke completion marker, checkpoint hash,
   dataset/model provenance, and the unchanged test-song split before computing the
-  documented held-out metrics. Its three focused tests pass; no real-run metrics exist yet.
+  documented held-out metrics, and reports an unfinished run in plain words rather than a
+  missing-file traceback. Its four focused tests pass; no real-run metrics exist yet.
   A two-batch GPU rehearsal completed head-only training, stopped at the epoch boundary,
   resumed its checkpoint in a new process, and completed full-model fine-tuning. Its
   artifacts are explicitly marked as smoke-test artifacts and are not a model release.
@@ -149,10 +156,12 @@ remains explicitly excluded until a non-blank source PDF is available.
 
 The historical model artifacts are `Finetuned Model.pt` (10,012,219 bytes) and
 `Checkpoints OMR.onnx` (283,541 bytes); the ONNX file is far below the approximately
-8.8 MB expected for this fp32 architecture. The current run has only in-progress
-checkpoints and history under the ignored `ml/data/training/runs/baseline-14drum-v1/`.
-`omr_config.json`, `eval_results.json`, and `benchmark_results.json` are absent, so no
-model result is currently shippable or reproducible.
+8.8 MB expected for this fp32 architecture. The finished run holds `finetune_best.pt`,
+`heads_best.pt`, `last.pt`, `history.json`, `run_config.json`, `provenance.json`, and
+`training_complete.json` under the ignored `ml/data/training/runs/baseline-14drum-v1/`.
+`omr_config.json`, `eval_results.json`, `export_results.json`, and
+`benchmark_results.json` are still absent, and neither `ml/releases/` nor
+`ml/data/releases/` exists, so no model result is currently shippable or reproducible.
 
 ### Workstream 3 — Integrate single-bar local inference: in progress (Python side)
 
@@ -172,7 +181,7 @@ proves the contract and error handling, not recognition quality.
   `GET /health` and multipart `POST /predict` return ordered `{position, duration, drums}`
   notes (position is the 32nd-note slot, so rests between hits survive import);
   errors use one envelope with codes for oversized, unsupported, corrupt, or missing
-  images and invalid model output. 15 backend tests pass, and a live run on port 8799
+  images and invalid model output. 16 backend tests pass, and a live run on port 8799
   answered `/health`, a real bar image, a text file (415), and a missing field (422).
 - [ ] Electron service lifecycle management.
 - [x] Canonical editable bar representation and model-event conversion.
@@ -228,7 +237,9 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
   `js/bar.js`, with 15 Node tests (placing, dots, durations, backspace, cursor moves,
   and no mutation of input). A 27-step keyboard/keypad script drove the real Electron app
   before and after the move and produced identical rendered SVG at every step. Model
-  conversion and export timing are not covered yet.
+  conversion is covered too: 14 tests for `js/import.js` (grooves, rests from gaps,
+  shortened overlaps, dotted notes, triplet grouping and merges, validation errors) and a
+  check that its duration names match `training_contract.py`. Export timing is not covered.
   The note model now matches the OMR model's vocabulary (Victor's 2026-09-11 decisions):
   a note stores `drums`, a list of model drum names, so one note can be a chord and an
   empty list is a rest. All 14 model drums are in the editor — the 4 new ones via
@@ -257,9 +268,11 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 ## Immediate next milestone
 
-Workstream 2 is the next milestone. Let the fresh current 14-drum run finish on the
-supported 19,942-bar subset, then evaluate it and save the checkpoint, ONNX, config,
-evaluation, and benchmark as one reproducible release. `The Trees` can be restored in a
+Workstream 2 is the next milestone. Training on the supported 19,942-bar subset is done;
+what remains is `evaluate.py`, `export.py`, `benchmark.py` (on a quiet machine), and
+`release.py` to save the checkpoint, ONNX, config, evaluation, and benchmark as one
+reproducible release, then a decision on whether the measured accuracy is good enough to
+build the import UI on. `The Trees` can be restored in a
 later dataset version when a complete 159-bar PDF becomes available.
 
 The user selected a strict supported subset for the first training release. The complete
@@ -360,8 +373,10 @@ disclose the supported-subset scope and the 359 excluded bars from the original 
 - Checked for model config, evaluation, benchmark, manifest, inference, playback, and
   export artifacts or code.
 - Parsed `main.js` with Node and the browser modules with Acorn.
-- Confirmed the fresh non-smoke run created `run_config.json`, `provenance.json`,
-  `heads_best.pt`, `last.pt`, and `history.json`; `history.json` currently contains head
-  epochs 1 and 2 while epoch 3 runs, and no `training_complete.json` exists yet.
+- Confirmed the finished non-smoke run's artifacts and its 40 recorded epochs (15 head,
+  25 fine-tune), and that `training_complete.json` names `finetune_best.pt` with
+  `smoke: false` and `evaluated_on_test: false`.
+- Re-ran all three suites for this review: 46 Node, 16 service, and 33 ML tests pass.
+- Confirmed no evaluation, export, benchmark, or release artifacts exist yet.
 - Confirmed the only unrelated untracked paths are `ai-engineer-workshop-2026-project/`
   and `songsterr/`; they remain excluded from all staging.
