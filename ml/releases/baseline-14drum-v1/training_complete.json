@@ -1,0 +1,7 @@
+{
+  "checkpoint": "finetune_best.pt",
+  "checkpoint_sha256": "5f7ef189d2eb425cc41308c0a16933ed272dd713c8211f3b72b60793198e44de",
+  "training_manifest_sha256": "ae6ba432a1d85af241f4183bca793ba9176f7e9bc4cd26b372fcf947f896df22",
+  "smoke": false,
+  "evaluated_on_test": false
+}

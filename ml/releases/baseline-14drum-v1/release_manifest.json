@@ -1,0 +1,43 @@
+{
+  "release": "baseline-14drum-v1",
+  "git_commit": "3cef34f7ffe6cbddc088f19df46e001a34a9a3b1",
+  "created_at": "2026-09-12T17:24:35.473923+00:00",
+  "files": {
+    "omr_finetuned.pt": {
+      "sha256": "5f7ef189d2eb425cc41308c0a16933ed272dd713c8211f3b72b60793198e44de",
+      "bytes": 9352763
+    },
+    "omr.onnx": {
+      "sha256": "4e17d837a303db55412102d030aa9a318075d7728aca879d3f053a781e7f99f9",
+      "bytes": 9230019
+    },
+    "omr_config.json": {
+      "sha256": "0109a9d73894653727b96a582f099407da70d53ffd9a58aec6e98c47b79dc3fc",
+      "bytes": 857
+    },
+    "eval_results.json": {
+      "sha256": "1ef6b38d3cdd02dc02df28de764e9ca14a1eb102da72d6099437694467b6850a",
+      "bytes": 6017
+    },
+    "export_results.json": {
+      "sha256": "7bf947ae56602b1b3fb0f06b365d129d601b572b27c2e48142b945000c10c3cd",
+      "bytes": 1207
+    },
+    "benchmark_results.json": {
+      "sha256": "345d0b3e03e49d8d6c56fbb001e82578194a9acc220f17c694d5dc7bffaa0e68",
+      "bytes": 1903
+    },
+    "run_config.json": {
+      "sha256": "23c7473eda3a595406e29d81abdac0f774f05bfe3c8aadf5201f79e74bff1268",
+      "bytes": 749
+    },
+    "history.json": {
+      "sha256": "b92054db67ef38dc4e8e0852de3df11131bed87d4d4d205cca88af2cad13dc2b",
+      "bytes": 13905
+    },
+    "training_complete.json": {
+      "sha256": "e099a3860a8d38b524f874874a9eedb191f09d6a0b6f2d20cc852682c507fe3d",
+      "bytes": 276
+    }
+  }
+}

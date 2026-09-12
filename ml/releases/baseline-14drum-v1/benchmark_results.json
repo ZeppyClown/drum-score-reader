@@ -1,0 +1,75 @@
+{
+  "hardware": {
+    "machine": "arm64",
+    "processor": "arm",
+    "platform": "macOS-14.4.1-arm64-arm-64bit",
+    "python": "3.12.5",
+    "onnxruntime": "1.27.0",
+    "cpu_count": 8,
+    "intra_op_threads": 1
+  },
+  "config_path": "ml/data/training/runs/baseline-14drum-v1/omr_config.json",
+  "model_sha256": "4e17d837a303db55412102d030aa9a318075d7728aca879d3f053a781e7f99f9",
+  "variants": {
+    "fp32": {
+      "path": "ml/data/training/runs/baseline-14drum-v1/omr.onnx",
+      "size_mb": 8.802,
+      "latency": {
+        "CPUExecutionProvider": {
+          "runs": 200,
+          "mean_ms": 19.896,
+          "p50_ms": 16.442,
+          "p95_ms": 39.62,
+          "p99_ms": 115.258,
+          "min_ms": 12.337,
+          "max_ms": 124.201
+        },
+        "CoreMLExecutionProvider": {
+          "runs": 200,
+          "mean_ms": 21.483,
+          "p50_ms": 19.846,
+          "p95_ms": 26.602,
+          "p99_ms": 51.842,
+          "min_ms": 17.476,
+          "max_ms": 177.696
+        }
+      }
+    },
+    "int8": {
+      "path": "ml/data/training/runs/baseline-14drum-v1/omr.int8.onnx",
+      "size_mb": 2.365,
+      "latency": {
+        "CPUExecutionProvider": {
+          "runs": 200,
+          "mean_ms": 43.003,
+          "p50_ms": 42.496,
+          "p95_ms": 50.041,
+          "p99_ms": 59.479,
+          "min_ms": 37.122,
+          "max_ms": 117.518
+        },
+        "CoreMLExecutionProvider": {
+          "runs": 200,
+          "mean_ms": 70.09,
+          "p50_ms": 62.863,
+          "p95_ms": 91.094,
+          "p99_ms": 318.971,
+          "min_ms": 54.777,
+          "max_ms": 467.061
+        }
+      }
+    }
+  },
+  "int8_vs_fp32": {
+    "bars": 200,
+    "bars_with_notes": 160,
+    "sequence_match": 0,
+    "sequence_match_rate": 0.0,
+    "slot_disagreement_rate": 0.056596,
+    "meaningful": true
+  },
+  "summary": {
+    "size_reduction_x": 3.72,
+    "p95_speedup_x": 0.79
+  }
+}

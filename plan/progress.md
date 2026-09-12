@@ -15,9 +15,11 @@ this file preserves the dated audit, and `model_training.md` and `score_editor.m
 archived pointers to Git history.
 
 Workstream 1 is complete with a reproducible 23,660-pair replacement dataset and an
-explicit 159-label exclusion for the blank `The Trees` source. The first 14-drum training
-run finished on 2026-09-12, so Workstream 2 now waits on evaluation, export, benchmark,
-and the release bundle rather than on training. The Python half of Workstream 3 exists
+explicit 159-label exclusion for the blank `The Trees` source. Workstream 2 is now complete
+too: the first 14-drum run finished on 2026-09-12 and was evaluated, exported, benchmarked,
+and bundled as `baseline-14drum-v1` on 2026-09-13. Its held-out sequence accuracy is 12.5%,
+which is a reproducible baseline rather than a shippable result, so whether to build the
+import UI on this model is an open product decision. The Python half of Workstream 3 exists
 (local inference service and prediction-to-bar conversion, both tested against a randomly
 initialized model); the Electron app still has no import UI, no service lifecycle, and no
 page import, playback, or export. Workstreams 4 to 6 have not started.
@@ -101,7 +103,7 @@ label is paired, the split is deterministic by song, and targeted visual checks 
 ordinary, dense, narrow, wrapped, miniature-rest, and aliased-source bars. `The Trees`
 remains explicitly excluded until a non-blank source PDF is available.
 
-### Workstream 2 — Produce a valid model release: not complete
+### Workstream 2 — Produce a valid model release: complete
 
 - [x] Remove stale 15-drum/480-output descriptions and the saved 2,469,056-parameter
   Phase 2 output from the notebook. The notebook now consistently documents the current
@@ -135,33 +137,51 @@ remains explicitly excluded until a non-blank source PDF is available.
   19-drum run is still present. Validation exact-drum-bar accuracy was 0.074. These are
   validation numbers from training, not held-out test metrics: no evaluation, ONNX export,
   benchmark, or release bundle exists yet.
-- [ ] Evaluate the model on the held-out test-song split.
-- [ ] Save reproducible `eval_results.json` metrics.
-- [ ] Export `omr.onnx` and `omr_config.json` together.
-  `ml/omr/export.py` is ready: it refuses smoke, unfinished, or unevaluated runs and never
-  overwrites existing artifacts, then writes the ONNX file, config, and
-  `export_results.json` together. Seven focused tests pass against a randomly initialized
-  model (8.78 MB export, 2,305,056 parameters); no trained model has been exported yet.
-- [ ] Verify ONNX/PyTorch numerical parity for the released artifacts.
-  The export step enforces a 1e-4 logit tolerance on random probes and 64 held-out test
-  bars, plus identical decoded note sequences; it has not yet run on a real checkpoint.
-- [ ] Benchmark the released model on the target Mac and save
+- [x] Evaluate the model on the held-out test-song split.
+  2,184 bars from 28 songs, split by song, on CPU in about three minutes. Sequence accuracy
+  0.125, exact-bar accuracy 0.125, cell accuracy 0.967, duration accuracy at hits 0.897,
+  with 1,994 of 2,184 bars predicting at least one note. Kick 0.941, snare 0.879, and
+  closed hi-hat 0.874 per-drum F1; toms, ride, ride bell, and open hi-hats all below 0.55
+  with heavy false positives (tom_mid 439 false-positive bars against 115 real ones).
+  Dotted eighths are read as plain eighths 103 times out of 118.
+- [x] Save reproducible `eval_results.json` metrics.
+  Records the checkpoint hash, dataset manifest hashes, subset scope, metric definitions,
+  torch version, and platform alongside the numbers.
+- [x] Export `omr.onnx` and `omr_config.json` together.
+  9,230,019 bytes against 9,220,224 expected for 2,305,056 fp32 parameters.
+- [x] Verify ONNX/PyTorch numerical parity for the released artifacts.
+  The first attempt failed its own gate: max logit difference 6.87e-04 against a fixed
+  1e-4 tolerance, and nothing was written. Investigation on 96 real test bars showed logits
+  spanning -23.8 to 7.6, a max difference of 9.7e-04 (about 4e-5 of that scale), zero of
+  43,008 hit/no-hit decisions changed, and 96 of 96 bars decoding identically — float32
+  rounding, which grows with logit magnitude, not a broken export. The check is now scaled
+  to the largest logit (1e-4 relative) and additionally refuses any flipped hit decision or
+  differently decoded bar. Released parity: 9.73e-04 against 2.41e-03 allowed, 0 flips,
+  64/64 bars identical. Note that the closest slot sat 1.3e-04 from the threshold, so a
+  borderline slot could in principle flip on another image; such slots are near-coin-flip
+  predictions anyway.
+- [x] Benchmark the released model on the target Mac and save
   `benchmark_results.json`.
-  `benchmark_results.json` now records the SHA-256 of the ONNX file it measured.
-- [ ] Version the checkpoint, ONNX file, config, evaluation, and benchmark as one release.
-  `ml/omr/release.py` is ready: it cross-checks checkpoint, ONNX, config, evaluation,
-  export, benchmark, and dataset hashes, then writes weights to the ignored
-  `ml/data/releases/<name>/` and JSON evidence to the versioned `ml/releases/<name>/`.
-  Eight focused tests pass on stand-in artifacts; no release exists yet.
+  M1, onnxruntime 1.27, one intra-op thread: fp32 8.80 MB, CPU p50 16.4 ms / p95 39.6 ms,
+  CoreML p50 19.9 ms / p95 26.6 ms. int8 is 3.72x smaller but 1.26x slower at p95 and
+  decoded a different note list on all 200 sampled bars (5.66% of slots disagreeing), so
+  only fp32 is usable. `benchmark_results.json` records the SHA-256 of the ONNX it measured.
+- [x] Version the checkpoint, ONNX file, config, evaluation, and benchmark as one release.
+  `baseline-14drum-v1`: weights and JSON in the ignored `ml/data/releases/baseline-14drum-v1/`,
+  and the JSON evidence plus `release_manifest.json` (per-file SHA-256 and size) versioned in
+  `ml/releases/baseline-14drum-v1/`.
 
-The historical model artifacts are `Finetuned Model.pt` (10,012,219 bytes) and
-`Checkpoints OMR.onnx` (283,541 bytes); the ONNX file is far below the approximately
-8.8 MB expected for this fp32 architecture. The finished run holds `finetune_best.pt`,
-`heads_best.pt`, `last.pt`, `history.json`, `run_config.json`, `provenance.json`, and
-`training_complete.json` under the ignored `ml/data/training/runs/baseline-14drum-v1/`.
-`omr_config.json`, `eval_results.json`, `export_results.json`, and
-`benchmark_results.json` are still absent, and neither `ml/releases/` nor
-`ml/data/releases/` exists, so no model result is currently shippable or reproducible.
+The historical artifacts `Finetuned Model.pt` (10,012,219 bytes) and `Checkpoints OMR.onnx`
+(283,541 bytes) are superseded; the latter is far below the approximately 8.8 MB expected
+for this fp32 architecture and `export.py` would now reject it on size. Every current
+result is reproducible from `ml/releases/baseline-14drum-v1/`, and the exit criteria hold:
+ONNX matches PyTorch within the documented tolerance with no decision or decoding
+differences, inference on real test bars returns non-empty plausible sequences, and the
+bundle contains the ONNX file, config, evaluation, and benchmark.
+
+The open question is quality, not process: 12.5% of held-out bars are read exactly right.
+No release threshold was ever declared, and the plan says to set one from measured error
+patterns — that decision is now due.
 
 ### Workstream 3 — Integrate single-bar local inference: in progress (Python side)
 
@@ -268,11 +288,14 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 
 ## Immediate next milestone
 
-Workstream 2 is the next milestone. Training on the supported 19,942-bar subset is done;
-what remains is `evaluate.py`, `export.py`, `benchmark.py` (on a quiet machine), and
-`release.py` to save the checkpoint, ONNX, config, evaluation, and benchmark as one
-reproducible release, then a decision on whether the measured accuracy is good enough to
-build the import UI on. `The Trees` can be restored in a
+Workstream 2 is done. The next milestone is a decision on `baseline-14drum-v1`'s 12.5%
+sequence accuracy: either accept it as the baseline behind an import screen that expects
+correction, or spend the next round on accuracy first. The evaluation points at one cheap
+experiment before more data — the rare drums are over-predicted because training weights
+positives by rarity, so lowering that weighting or tuning a per-drum threshold on the
+validation split should raise precision without retraining from scratch. After that
+decision, Workstream 3 continues in Electron: the file picker, service lifecycle, imported
+bar rendering, and import errors. `The Trees` can be restored in a
 later dataset version when a complete 159-bar PDF becomes available.
 
 The user selected a strict supported subset for the first training release. The complete
@@ -376,7 +399,10 @@ disclose the supported-subset scope and the 359 excluded bars from the original 
 - Confirmed the finished non-smoke run's artifacts and its 40 recorded epochs (15 head,
   25 fine-tune), and that `training_complete.json` names `finetune_best.pt` with
   `smoke: false` and `evaluated_on_test: false`.
-- Re-ran all three suites for this review: 46 Node, 16 service, and 33 ML tests pass.
-- Confirmed no evaluation, export, benchmark, or release artifacts exist yet.
+- Re-ran all three suites for this review: 46 Node, 16 service, and 35 ML tests pass
+  (two new export tests cover the scaled parity tolerance and a flipped hit decision).
+- Ran the full release sequence on 2026-09-13: evaluate, export, benchmark, release.
+  Investigated the export's parity failure on 96 real test bars before changing its
+  tolerance, and confirmed the released artifacts cross-check against each other.
 - Confirmed the only unrelated untracked paths are `ai-engineer-workshop-2026-project/`
   and `songsterr/`; they remain excluded from all staging.

@@ -20,11 +20,12 @@ A computer vision model that reads **drum sheet music** from images.
 
 Give it a cropped image of one bar of drum notation, and it outputs an ordered list of notes — which drums are hit and how long each note lasts — ready to feed into a music renderer or drum machine.
 
-> **Status: the performance numbers are pending a re-run.** The architecture and data
-> sections below describe the current 14-drum configuration in
-> `notebooks/OMR Training After.ipynb`. The metrics previously published here came from an
-> earlier 19-drum run and do **not** describe this model — see
-> [Superseded metrics](#superseded-metrics) for why, and what has to be re-run.
+> **Status: first measured release, `baseline-14drum-v1` (2026-09-13).** Trained locally on
+> an M1 Mac (MPS) on the strict 19,942-bar supported subset, evaluated on 28 held-out
+> songs, exported, benchmarked, and bundled. Every figure below comes from
+> `ml/releases/baseline-14drum-v1/`. Accuracy is a baseline, not a shippable result: read
+> [Performance](#performance) before building on it. Older figures from a 19-drum run are
+> retained only in [Superseded metrics](#superseded-metrics).
 
 ---
 
@@ -65,21 +66,22 @@ Always read dimensions and class names from `omr_config.json` rather than hardco
 The config is the contract between training and inference: if the drum list changes, only
 the config changes.
 
-**The artifacts are not in this repository.** `ml/data/` is gitignored, so a fresh clone
-contains the code but no weights. Local downloaded copies currently live in
-`ml/data/songsterr/guitar_pro/`, hand-renamed on download:
+**The weights are not in this repository.** `ml/data/` is gitignored, so a fresh clone has
+the code and the evidence but no model. The current release lives in two places:
 
-| Documented name    | Local copy             | Size    |
-| ------------------ | ---------------------- | ------- |
-| `omr_finetuned.pt` | `Finetuned Model.pt`   | 10.0 MB |
-| `omr.onnx`         | `Checkpoints OMR.onnx` | 284 KB  |
-| `omr_config.json`  | *not downloaded*       | —       |
+| Location | Holds | In Git? |
+| --- | --- | --- |
+| `ml/data/releases/baseline-14drum-v1/` | `omr_finetuned.pt` (9.35 MB), `omr.onnx` (9.23 MB), and all the JSON below | no (ignored) |
+| `ml/releases/baseline-14drum-v1/` | `omr_config.json`, `eval_results.json`, `export_results.json`, `benchmark_results.json`, `run_config.json`, `history.json`, `training_complete.json`, `release_manifest.json` | yes |
 
-> ⚠️ **The local `.onnx` copy is broken, not merely suspect.** A reference export of this
-> exact architecture measures **8.78 MB**. The file on disk is 284 KB — about 1/31st of
-> that, and too small even for the three head layers alone. Re-export before using it for
-> anything, and quote no model size from it. Notebook cell 14a now checks this
-> automatically, so it cannot happen again unnoticed.
+`release_manifest.json` lists the SHA-256 and size of every file, so a copied bundle can be
+checked against it. `ml/omr/release.py` refuses to bundle unless the completion marker,
+evaluation, export, config, and benchmark all name the same checkpoint, ONNX file, and
+training dataset.
+
+> ⚠️ **The older `ml/data/songsterr/guitar_pro/Checkpoints OMR.onnx` (284 KB) is broken**,
+> about 1/31st of the ~8.8 MB this fp32 architecture needs. Ignore it; `export.py` now
+> fails loudly on a file that size.
 
 ---
 
@@ -190,23 +192,63 @@ retrain — the head resizes itself from `N_DRUMS`.
 
 ## Performance
 
-**No current numbers.** Cell 15 (`13b. Re-evaluate after Phase 2`) has no saved output in
-the committed notebook, so nothing here is reproducible from the repository as it stands.
-Re-run that cell and record its output before quoting any figure anywhere.
+Measured by `ml/omr/evaluate.py` on **2,184 bars from 28 songs held out of training**,
+split by song. Reproducible from `ml/releases/baseline-14drum-v1/eval_results.json`.
 
-When re-run, cell 15 reports:
+| Metric | Value | What it measures |
+| --- | --- | --- |
+| **Sequence accuracy** | **12.5%** | The ordered left-to-right list of (drums, duration) events matches. **This is what the product ships** |
+| Exact-bar accuracy | 12.5% | Every slot in the 448-slot grid correct |
+| Cell accuracy | 96.7% | Per-slot correctness. Dominated by empty slots, so it reads high and means little |
+| Duration accuracy (at hits) | 89.7% | Note length, scored only where the ground truth has a hit |
 
-| Metric | What it measures |
-| --- | --- |
-| Exact-bar accuracy | Every slot in the 448-slot grid correct. Very strict, and low by construction |
-| Cell accuracy | Per-slot correctness. Dominated by empty slots, so it reads high and means little |
-| **Sequence accuracy** | The ordered left-to-right list of (drums, duration) events matches, ignoring beat-slot position. **This is the metric that reflects what the product ships** |
-| Per-drum F1 | One score per drum, computed at bar level |
-| Duration accuracy | Measured at hit positions only, plus a per-duration breakdown with counts |
+The model predicted at least one note in 1,994 of 2,184 bars, so the low sequence accuracy
+is wrong notes, not silence.
 
-Sequence accuracy is the one to lead with. The output contract is an ordered note list, so
-it scores the model the way it is actually consumed — cell accuracy flatters it and
-exact-bar accuracy punishes it for slot-level noise that never reaches the output.
+**Read this as a baseline, not a shippable result.** Roughly one bar in eight is read
+perfectly. Kick, snare, and closed hi-hat are usable; everything else over-fires.
+
+### Per-drum F1 (bar-level presence)
+
+| Drum | F1 | Bars containing it | False positives |
+| --- | --- | --- | --- |
+| kick | 0.941 | 1744 | 125 |
+| snare | 0.879 | 1597 | 313 |
+| hi_hat_closed | 0.874 | 947 | 164 |
+| crash | 0.696 | 632 | 237 |
+| snare_rim | 0.647 | 139 | 108 |
+| hi_hat_pedal | 0.612 | 118 | 136 |
+| ride | 0.539 | 188 | 286 |
+| ride_bell | 0.522 | 104 | 182 |
+| hi_hat_open_half | 0.514 | 195 | 187 |
+| floor_tom_1 | 0.388 | 144 | 375 |
+| floor_tom_2 | 0.382 | 69 | 177 |
+| tom_mid | 0.314 | 115 | 439 |
+| tom_hi | 0.208 | 73 | 409 |
+| hi_hat_open_full | 0.105 | 27 | 45 |
+
+The false-positive column is the story: the model finds the rare drums (tom_hi recall is
+56/73) but claims them in hundreds of bars that do not contain them. Training weights
+positives by their rarity, which buys recall at the cost of precision. Lowering that
+weighting, or raising the 0.5 threshold per drum, is the cheapest next experiment.
+
+### Duration accuracy by class (at ground-truth hits)
+
+| Duration | Accuracy | Support |
+| --- | --- | --- |
+| eighth | 0.942 | 9498 |
+| quarter | 0.891 | 1061 |
+| sixteenth | 0.854 | 4385 |
+| triplet_eighth | 0.953 | 148 |
+| triplet_sixteenth | 0.819 | 177 |
+| whole | 0.938 | 16 |
+| thirty_second | 0.525 | 356 |
+| dotted_eighth | 0.127 | 118 |
+| half | 0.000 | 6 |
+| dotted_quarter | 0.000 | 1 |
+
+Common durations are solid. Dotted eighths are read as plain eighths almost every time
+(15/118), and the long notes have too little support to judge.
 
 ### Superseded metrics
 
@@ -257,16 +299,20 @@ Two deliberate choices in how it scores:
   agree perfectly, so the script counts how many bars decoded to any notes at all and
   marks the comparison `NOT MEANINGFUL` when almost none did.
 
-**Expect int8 to be slower here.** On an M-series Mac (macOS 14.4, onnxruntime 1.27, one
-thread) a dynamically quantised build came out 3.75× smaller but roughly 2.5× *slower* on
-CPU than fp32 — the fp32 path hits optimised kernels the `MatMulInteger` path does not.
-CoreML was slower than CPU for both, this model being far too small to pay back the
-dispatch overhead.
+### Measured for `baseline-14drum-v1`
 
-Those figures come from a **reference export of the architecture, not the trained
-checkpoint** — size and latency depend on the graph and its shapes, not on what the
-weights contain, so they carry over. Output agreement does not: re-measure that against
-real weights before quoting it.
+M1 Mac, macOS 14.4, onnxruntime 1.27, one intra-op thread, one bar per call:
+
+| Build | Size | CPU p50 | CPU p95 | CoreML p50 | CoreML p95 |
+| --- | --- | --- | --- | --- | --- |
+| fp32 | 8.80 MB | 16.4 ms | 39.6 ms | 19.9 ms | 26.6 ms |
+| int8 | 2.37 MB | 42.5 ms | 50.0 ms | 62.9 ms | 91.1 ms |
+
+**Ship fp32.** At ~16 ms per bar, a 100-bar page reads in under two seconds. int8 is 3.7×
+smaller but 1.26× slower at p95 — the fp32 path hits optimised kernels the `MatMulInteger`
+path does not — and, worse, **it changes the output**: across 200 real bars int8 decoded a
+different note list every time (0/200 identical, 5.66% of slots disagreeing). Quantisation
+is not free for this model; do not use the int8 build without retraining for it.
 
 ---
 
@@ -401,8 +447,11 @@ An existing release name is never overwritten.
 `export.py` needs `pip install onnx onnxscript`. It refuses smoke runs, unfinished runs,
 checkpoints without a matching `eval_results.json`, and existing export artifacts. Before
 publishing, it checks the file on disk: size must match the fp32 parameter count (the
-historical 284 KB file fails), logits must match PyTorch within 1e-4 on random probes and
-64 held-out test bars, and every bar must decode to the same note sequence. It writes
+historical 284 KB file fails); on random probes and 64 held-out test bars the ONNX logits
+must stay within 1e-4 of PyTorch's *relative to the largest logit* (float32 rounding grows
+with the numbers involved, so a fixed absolute limit would pass an untrained model and
+fail a trained one), no slot may cross the hit/no-hit threshold, and every bar must decode
+to the same note sequence. It writes
 `omr.onnx`, `omr_config.json` (the notebook's keys plus input/output names, ImageNet
 normalization, and `MODEL_SHA256`), and `export_results.json` with the verification
 evidence and checkpoint/dataset hashes.
@@ -411,25 +460,37 @@ evidence and checkpoint/dataset hashes.
 
 ## Limitations
 
-Carried over from the earlier run — expectations to re-confirm, not measured results for
-the current model.
+Measured on the `baseline-14drum-v1` test split unless stated otherwise.
 
-- **Tom confusion:** floor_tom_1 vs floor_tom_2 differ only by vertical staff position, which global average pooling handles poorly.
-- **Ride vs crash confusion:** both are x-noteheads on high staff lines and are confused at moderate rates.
-- **Rare drums:** several classes were dropped outright for having too few examples; the remaining rare ones are still the weakest.
-- **Non-standard notation:** unusual time signatures, grace notes and multi-voice complexity may degrade accuracy.
-- **Overfitting:** the earlier run had train loss 0.205 against val loss 0.492. More diverse songs should close the gap.
+- **Over-firing on rare drums:** the toms, ride, ride bell, and open hi-hats are claimed in
+  far more bars than contain them (tom_mid: 439 false positives against 115 real bars).
+  This, not missed notes, is what keeps sequence accuracy at 12.5%.
+- **Tom confusion:** floor_tom_1 vs floor_tom_2 and tom_hi vs tom_mid differ only by
+  vertical staff position, which global average pooling handles poorly. All four are below
+  F1 0.40.
+- **Ride vs crash:** both are x-noteheads high on the staff; crash reaches F1 0.70, ride
+  only 0.54 with 286 false positives.
+- **Dotted eighths:** read as plain eighths 103 times out of 118.
+- **Long notes barely tested:** half notes (6) and dotted quarters (1) have too little
+  support in the test split to judge.
+- **Overfitting:** this run ended at train loss 0.179 against validation loss 0.404 — the
+  same gap as the earlier 19-drum run. More songs remains the main fix.
+- **Non-standard notation:** unusual time signatures, grace notes, and multi-voice
+  complexity are outside the supported subset and untested.
+- **int8 quantisation changes the output** (see [Benchmarking](#benchmarking-on-device)).
 
 ---
 
 ## Roadmap
 
-- [ ] Re-run the Phase 2 evaluation, then cell 13c to write `eval_results.json`, and paste
-      the markdown it prints into [Performance](#performance)
-- [ ] Re-export `omr.onnx` with `omr/export.py` (or notebook cell 14a) — both fail loudly
-      if the file is the wrong size or drifts from PyTorch
-- [ ] Run `omr/benchmark.py` against the re-exported model and record the numbers here,
-      including the int8 agreement rate, which the reference export could not establish
+- [x] Evaluate on the held-out test songs and record the numbers in
+      [Performance](#performance) — `baseline-14drum-v1`, 2026-09-13
+- [x] Export `omr.onnx` with `omr/export.py` — fails loudly on the wrong size, a logit
+      drift beyond scale, a flipped hit decision, or a differently decoded bar
+- [x] Run `omr/benchmark.py` on the target Mac and record the numbers, including the int8
+      agreement rate (0/200 — int8 is not usable as exported)
+- [ ] Cut the false positives on rare drums: lower the rarity weighting in the loss, or
+      tune a per-drum threshold on the validation split (cheapest next experiment)
 - [ ] Add more training songs (target: 500+) to reduce overfitting
 - [ ] Replace global average pool with spatially-aware pooling to better distinguish toms
 - [ ] Add rest detection to output silent positions explicitly

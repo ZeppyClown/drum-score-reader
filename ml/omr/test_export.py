@@ -6,8 +6,11 @@ from pathlib import Path
 import torch
 from PIL import Image, ImageDraw
 
-from export import (check_size, evaluated_checkpoint, export_onnx, inference_config,
-                    refuse_existing, verify_export)
+import numpy as np
+
+from export import (PARITY_TOLERANCE, check_parity, check_size, evaluated_checkpoint,
+                    export_onnx, inference_config, logit_tolerance, refuse_existing,
+                    verify_export)
 from omr_model import DrumOMRModel
 from training_contract import DRUMS, DURATIONS, sha256_file
 
@@ -53,9 +56,34 @@ class ExportTests(unittest.TestCase):
         result = verify_export(self.model, self.onnx, self.images)
         self.assertEqual(result['size']['parameters'], 2_305_056)
         for parity in result['parity'].values():
-            self.assertLessEqual(parity['max_abs_logit_diff'], 1e-4)
+            self.assertLessEqual(parity['max_abs_logit_diff'], parity['allowed_logit_diff'])
+            self.assertEqual(parity['decision_flips'], 0)
             self.assertEqual(parity['identical_sequences'], parity['bars'])
         self.assertEqual(result['parity']['held_out_bars']['bars'], 3)
+
+    def test_the_allowed_difference_follows_the_size_of_the_logits(self):
+        small = [np.zeros((1, 448), dtype=np.float32)]
+        large = [np.full((1, 448), -30, dtype=np.float32)]
+        self.assertEqual(logit_tolerance(small), PARITY_TOLERANCE)
+        self.assertEqual(logit_tolerance(large), PARITY_TOLERANCE * 30)
+
+    def test_a_flipped_hit_decision_fails_even_when_the_difference_is_tiny(self):
+        config = inference_config()
+        images = torch.zeros(1, 3, config['IMG_H'], config['IMG_W'])
+        with torch.inference_mode():
+            drums, durations = (output.numpy() for output in self.model(images))
+
+        class NudgedSession:
+            """Returns PyTorch's own logits with one slot nudged across the threshold."""
+
+            def run(self, _names, _inputs):
+                nudged = drums.copy()
+                slot = int(np.abs(nudged[0]).argmin())
+                nudged[0, slot] = -nudged[0, slot] + np.sign(nudged[0, slot] or 1) * 1e-6
+                return [nudged, durations]
+
+        with self.assertRaisesRegex(ValueError, 'hit/no-hit decisions'):
+            check_parity(self.model, NudgedSession(), [images], config)
 
     def test_truncated_export_is_rejected(self):
         tiny = self.root / 'tiny.onnx'

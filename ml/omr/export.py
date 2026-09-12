@@ -4,13 +4,21 @@ python3 ml/omr/export.py --run-dir ml/data/training/runs/baseline-14drum-v1
 
 Run ml/omr/evaluate.py first. Export refuses smoke runs, unevaluated checkpoints, and
 existing artifacts, then verifies the file on disk before publishing it: fp32 size,
-PyTorch/ONNX logit parity on random probes and real held-out bars, and identical decoded
-note sequences. omr.onnx, omr_config.json, and export_results.json are written together.
+PyTorch/ONNX logit parity on random probes and real held-out bars, no flipped hit
+decisions, and identical decoded note sequences. omr.onnx, omr_config.json, and
+export_results.json are written together.
+
+Logit parity is measured against the size of the logits themselves. Float32 rounding
+differences grow with the numbers involved, so a fixed absolute limit would pass an
+untrained model (logits near zero) and fail a trained one for the same relative error.
+The decisive checks are the two below it: a slot that changes side of the threshold, or a
+bar that decodes differently, fails the export no matter how small the logit difference.
 """
 
 import argparse
 import datetime
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -26,7 +34,7 @@ from training_contract import (BEAT_GRID, DRUMS, DURATIONS, IMG_H, IMG_W, THRESH
 
 ML_DIR = Path(__file__).resolve().parents[1]
 OPSET = 18
-PARITY_TOLERANCE = 1e-4
+PARITY_TOLERANCE = 1e-4  # allowed logit difference, relative to the largest logit
 INPUT_NAME = 'image'
 OUTPUT_NAMES = ['drum_logits', 'dur_logits']
 ARTIFACTS = ('omr.onnx', 'omr_config.json', 'export_results.json')
@@ -71,26 +79,39 @@ def load_bars(image_paths):
     return torch.stack(tensors)
 
 
+def logit_tolerance(outputs):
+    """Allowed absolute difference, scaled to the size of the logits themselves."""
+    scale = max(1.0, max(float(np.abs(output).max()) for output in outputs))
+    return PARITY_TOLERANCE * scale
+
+
 def check_parity(model, session, batches, config):
-    """Compare ONNX with PyTorch on logits and on the product-facing note sequences."""
-    worst, bars, same, nonempty = 0.0, 0, 0, 0
+    """Compare ONNX with PyTorch on logits, hit decisions, and decoded note sequences."""
+    # sigmoid(x) > t  <=>  x > log(t / (1 - t)): the line a slot must not cross.
+    decision = math.log(config['THRESHOLD'] / (1 - config['THRESHOLD']))
+    worst, allowed, bars, same, nonempty, flips = 0.0, 0.0, 0, 0, 0, 0
     with torch.inference_mode():
         for images in batches:
             expected = [output.numpy() for output in model(images)]
             actual = session.run(OUTPUT_NAMES, {INPUT_NAME: images.numpy()})
             worst = max(worst, *(float(np.abs(a - e).max()) for a, e in zip(actual, expected)))
+            allowed = max(allowed, logit_tolerance(expected))
+            flips += int(((expected[0] > decision) != (actual[0] > decision)).sum())
             for i in range(len(images)):
                 sequence = decode(expected[0][i:i + 1], expected[1][i:i + 1], config)
                 same += sequence == decode(actual[0][i:i + 1], actual[1][i:i + 1], config)
                 nonempty += bool(sequence)
                 bars += 1
-    if worst > PARITY_TOLERANCE:
-        raise ValueError(f'ONNX output differs from PyTorch by {worst:.2e} '
-                         f'(tolerance {PARITY_TOLERANCE:.0e})')
+    if worst > allowed:
+        raise ValueError(f'ONNX output differs from PyTorch by {worst:.2e}, more than the '
+                         f'{allowed:.2e} allowed at this logit scale')
+    if flips:
+        raise ValueError(f'ONNX changed {flips} hit/no-hit decisions against PyTorch')
     if same != bars:
         raise ValueError(f'ONNX decoded {bars - same} of {bars} bars differently from PyTorch')
-    return {'bars': bars, 'max_abs_logit_diff': worst, 'identical_sequences': same,
-            'nonempty_sequences': nonempty, 'tolerance': PARITY_TOLERANCE}
+    return {'bars': bars, 'max_abs_logit_diff': worst, 'allowed_logit_diff': allowed,
+            'decision_flips': flips, 'identical_sequences': same,
+            'nonempty_sequences': nonempty, 'relative_tolerance': PARITY_TOLERANCE}
 
 
 def verify_export(model, onnx_path, image_paths, batch_size=16):

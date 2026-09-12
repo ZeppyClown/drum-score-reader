@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-09-12T17:22:58.593325+00:00",
+  "export_source_sha256": "66250e4d2fde2283309a695d008b30804b7ee1565438341f90467eb5912eee27",
+  "opset": 18,
+  "torch_version": "2.8.0",
+  "onnxruntime_version": "1.27.0",
+  "checkpoint": "finetune_best.pt",
+  "checkpoint_sha256": "5f7ef189d2eb425cc41308c0a16933ed272dd713c8211f3b72b60793198e44de",
+  "onnx_sha256": "4e17d837a303db55412102d030aa9a318075d7728aca879d3f053a781e7f99f9",
+  "training_manifest_sha256": "ae6ba432a1d85af241f4183bca793ba9176f7e9bc4cd26b372fcf947f896df22",
+  "size": {
+    "parameters": 2305056,
+    "onnx_bytes": 9230019,
+    "expected_fp32_bytes": 9220224
+  },
+  "parity": {
+    "random_probes": {
+      "bars": 2,
+      "max_abs_logit_diff": 0.0006866455078125,
+      "allowed_logit_diff": 0.01120326385498047,
+      "decision_flips": 0,
+      "identical_sequences": 2,
+      "nonempty_sequences": 2,
+      "relative_tolerance": 0.0001
+    },
+    "held_out_bars": {
+      "bars": 64,
+      "max_abs_logit_diff": 0.000972747802734375,
+      "allowed_logit_diff": 0.002407944679260254,
+      "decision_flips": 0,
+      "identical_sequences": 64,
+      "nonempty_sequences": 56,
+      "relative_tolerance": 0.0001
+    }
+  }
+}

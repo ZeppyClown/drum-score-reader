@@ -1,0 +1,52 @@
+{
+  "DRUMS": [
+    "hi_hat_closed",
+    "snare",
+    "kick",
+    "ride",
+    "crash",
+    "hi_hat_open_half",
+    "hi_hat_open_full",
+    "hi_hat_pedal",
+    "floor_tom_1",
+    "floor_tom_2",
+    "tom_mid",
+    "tom_hi",
+    "ride_bell",
+    "snare_rim"
+  ],
+  "DURATIONS": [
+    "whole",
+    "half",
+    "dotted_quarter",
+    "quarter",
+    "dotted_eighth",
+    "eighth",
+    "sixteenth",
+    "thirty_second",
+    "triplet_eighth",
+    "triplet_sixteenth"
+  ],
+  "N_BEATS": 32,
+  "N_DRUMS": 14,
+  "N_DURATIONS": 10,
+  "IMG_H": 128,
+  "IMG_W": 384,
+  "THRESHOLD": 0.5,
+  "INPUT_NAME": "image",
+  "OUTPUT_NAMES": [
+    "drum_logits",
+    "dur_logits"
+  ],
+  "IMAGENET_MEAN": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "IMAGENET_STD": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "MODEL_SHA256": "4e17d837a303db55412102d030aa9a318075d7728aca879d3f053a781e7f99f9"
+}

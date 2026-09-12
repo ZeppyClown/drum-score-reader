@@ -1,0 +1,202 @@
+{
+  "generated_at": "2026-09-12T17:18:56.539469+00:00",
+  "git_commit": "3cef34f7ffe6cbddc088f19df46e001a34a9a3b1",
+  "evaluation_source_sha256": "5ac5d0a0b0d1515d3788403e0c10c839dadaeeba73ab6e10391077860e9a94aa",
+  "checkpoint": "finetune_best.pt",
+  "checkpoint_sha256": "5f7ef189d2eb425cc41308c0a16933ed272dd713c8211f3b72b60793198e44de",
+  "device": "cpu",
+  "torch_version": "2.8.0",
+  "platform": "macOS-14.4.1-arm64-arm-64bit",
+  "threshold": 0.5,
+  "dataset": {
+    "scope": "strict supported subset",
+    "training_manifest_sha256": "ae6ba432a1d85af241f4183bca793ba9176f7e9bc4cd26b372fcf947f896df22",
+    "source_manifest_sha256": "85f15472934569f143b8913fe33c6ee4ab90ada15c928d45fca73a7f3af1cc5d",
+    "test_songs": 28,
+    "test_bars": 2184,
+    "test_source_bars": 2543,
+    "test_excluded_bars": 359
+  },
+  "metric_definitions": {
+    "sequence_accuracy": "Ordered (drums, duration) hit events; silent slots omitted, as in the notebook.",
+    "exact_bar_accuracy": "Every drum grid cell matches; durations scored separately.",
+    "per_drum_f1": "Per-bar presence of each drum, matching the notebook definition.",
+    "duration_accuracy_at_hits": "Duration correctness at ground-truth hit positions only."
+  },
+  "metrics": {
+    "sequence_accuracy": 0.125,
+    "exact_bar_accuracy": 0.12545788288116455,
+    "cell_accuracy": 0.9670073986053467,
+    "duration_accuracy_at_hits": 0.8965495228767395,
+    "per_drum_f1": {
+      "hi_hat_closed": 0.8743667679837892,
+      "snare": 0.8794367849809328,
+      "kick": 0.9413763806287171,
+      "ride": 0.539291217257319,
+      "crash": 0.6961740435108777,
+      "hi_hat_open_half": 0.5136186770428015,
+      "hi_hat_open_full": 0.10526315789473684,
+      "hi_hat_pedal": 0.6120218579234973,
+      "floor_tom_1": 0.38819875776397517,
+      "floor_tom_2": 0.3815789473684211,
+      "tom_mid": 0.3135464231354642,
+      "tom_hi": 0.20817843866171004,
+      "ride_bell": 0.5219638242894057,
+      "snare_rim": 0.6465753424657534
+    },
+    "per_drum_counts": {
+      "hi_hat_closed": {
+        "f1": 0.8743667679837892,
+        "true_positive_bars": 863,
+        "false_positive_bars": 164,
+        "false_negative_bars": 84,
+        "support_bars": 947
+      },
+      "snare": {
+        "f1": 0.8794367849809328,
+        "true_positive_bars": 1499,
+        "false_positive_bars": 313,
+        "false_negative_bars": 98,
+        "support_bars": 1597
+      },
+      "kick": {
+        "f1": 0.9413763806287171,
+        "true_positive_bars": 1662,
+        "false_positive_bars": 125,
+        "false_negative_bars": 82,
+        "support_bars": 1744
+      },
+      "ride": {
+        "f1": 0.539291217257319,
+        "true_positive_bars": 175,
+        "false_positive_bars": 286,
+        "false_negative_bars": 13,
+        "support_bars": 188
+      },
+      "crash": {
+        "f1": 0.6961740435108777,
+        "true_positive_bars": 464,
+        "false_positive_bars": 237,
+        "false_negative_bars": 168,
+        "support_bars": 632
+      },
+      "hi_hat_open_half": {
+        "f1": 0.5136186770428015,
+        "true_positive_bars": 132,
+        "false_positive_bars": 187,
+        "false_negative_bars": 63,
+        "support_bars": 195
+      },
+      "hi_hat_open_full": {
+        "f1": 0.10526315789473684,
+        "true_positive_bars": 4,
+        "false_positive_bars": 45,
+        "false_negative_bars": 23,
+        "support_bars": 27
+      },
+      "hi_hat_pedal": {
+        "f1": 0.6120218579234973,
+        "true_positive_bars": 112,
+        "false_positive_bars": 136,
+        "false_negative_bars": 6,
+        "support_bars": 118
+      },
+      "floor_tom_1": {
+        "f1": 0.38819875776397517,
+        "true_positive_bars": 125,
+        "false_positive_bars": 375,
+        "false_negative_bars": 19,
+        "support_bars": 144
+      },
+      "floor_tom_2": {
+        "f1": 0.3815789473684211,
+        "true_positive_bars": 58,
+        "false_positive_bars": 177,
+        "false_negative_bars": 11,
+        "support_bars": 69
+      },
+      "tom_mid": {
+        "f1": 0.3135464231354642,
+        "true_positive_bars": 103,
+        "false_positive_bars": 439,
+        "false_negative_bars": 12,
+        "support_bars": 115
+      },
+      "tom_hi": {
+        "f1": 0.20817843866171004,
+        "true_positive_bars": 56,
+        "false_positive_bars": 409,
+        "false_negative_bars": 17,
+        "support_bars": 73
+      },
+      "ride_bell": {
+        "f1": 0.5219638242894057,
+        "true_positive_bars": 101,
+        "false_positive_bars": 182,
+        "false_negative_bars": 3,
+        "support_bars": 104
+      },
+      "snare_rim": {
+        "f1": 0.6465753424657534,
+        "true_positive_bars": 118,
+        "false_positive_bars": 108,
+        "false_negative_bars": 21,
+        "support_bars": 139
+      }
+    },
+    "per_duration": {
+      "whole": {
+        "support": 16,
+        "correct": 15,
+        "accuracy": 0.9375
+      },
+      "half": {
+        "support": 6,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "dotted_quarter": {
+        "support": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "quarter": {
+        "support": 1061,
+        "correct": 945,
+        "accuracy": 0.8906691800188501
+      },
+      "dotted_eighth": {
+        "support": 118,
+        "correct": 15,
+        "accuracy": 0.1271186440677966
+      },
+      "eighth": {
+        "support": 9498,
+        "correct": 8943,
+        "accuracy": 0.941566645609602
+      },
+      "sixteenth": {
+        "support": 4385,
+        "correct": 3744,
+        "accuracy": 0.8538198403648802
+      },
+      "thirty_second": {
+        "support": 356,
+        "correct": 187,
+        "accuracy": 0.5252808988764045
+      },
+      "triplet_eighth": {
+        "support": 148,
+        "correct": 141,
+        "accuracy": 0.9527027027027027
+      },
+      "triplet_sixteenth": {
+        "support": 177,
+        "correct": 145,
+        "accuracy": 0.8192090395480226
+      }
+    },
+    "nonempty_prediction_bars": 1994,
+    "test_bars": 2184
+  }
+}

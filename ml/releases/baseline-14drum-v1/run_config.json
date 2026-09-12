@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "seed": 42,
+  "batch_size": 32,
+  "epochs": 15,
+  "finetune_epochs": 25,
+  "learning_rate": 0.0003,
+  "duration_weight": 0.5,
+  "smoke_batches": 0,
+  "random_init": false,
+  "training_manifest_sha256": "ae6ba432a1d85af241f4183bca793ba9176f7e9bc4cd26b372fcf947f896df22",
+  "training_contract_sha256": "427977863e26791602de2df1108e1429faf3f28e7dcd8ba60f9cbfeaf6363778",
+  "model_source_sha256": "561ccc0d39cf0ae68e60e1e79585c9cab5c8475ff883a6cee98a8b1093416d92",
+  "trainer_sha256": "935fb014c516e0e2ed7bcc5e4d01eac218bf4949e432a1b1f973b102a65b1c8a",
+  "torch_version": "2.8.0",
+  "torchvision_version": "0.23.0",
+  "numpy_version": "2.4.6",
+  "pillow_version": "10.4.0",
+  "device": "mps",
+  "workers": 2,
+  "threads": 4
+}
