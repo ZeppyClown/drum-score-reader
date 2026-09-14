@@ -1,0 +1,797 @@
+{
+ "reportVersion": 1,
+ "runAt": "2026-09-14T17:56:34.920Z",
+ "commit": "03347af",
+ "set": {
+  "name": "heldout",
+  "source": "songsterr-test-split",
+  "hash": "0c7dea3e4d8675702f059dffef4784184686c05488b63ecf7194962b367ba38d",
+  "bars": 30
+ },
+ "providers": {
+  "luna": {
+   "model": "gpt-5.6-luna",
+   "effort": "high",
+   "summary": {
+    "bars": 30,
+    "answered": 21,
+    "errors": 9,
+    "errorRate": 30,
+    "exactBars": 3.3,
+    "onsetF1": 86.6,
+    "drumHitF1": 30.4,
+    "durationAccuracy": 80.6,
+    "latencyMs": {
+     "p50": 144299,
+     "p95": 231769
+    },
+    "tokens": {
+     "input": 18516,
+     "output": 260327
+    },
+    "estimatedCostUsd": 0.3161
+   },
+   "results": [
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar001",
+     "ms": 11861,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 0,
+       "predicted": 0,
+       "matched": 0
+      },
+      "drumHits": {
+       "truth": 0,
+       "predicted": 0,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 0,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 838,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 984,
+      "output_tokens_details": {
+       "reasoning_tokens": 933
+      },
+      "total_tokens": 1822
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar002",
+     "ms": 110391,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 1,
+       "predicted": 2,
+       "matched": 0
+      },
+      "drumHits": {
+       "truth": 3,
+       "predicted": 3,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 0,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 856,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 13059,
+      "output_tokens_details": {
+       "reasoning_tokens": 12948
+      },
+      "total_tokens": 13915
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar003",
+     "ms": 12023,
+     "error": "The visible bar is cut off at the left edge. Crop wider to include the preceding barline and the full staff so the complete bar can be read."
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar004",
+     "ms": 144299,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 3,
+       "predicted": 4,
+       "matched": 3
+      },
+      "drumHits": {
+       "truth": 9,
+       "predicted": 6,
+       "matched": 2
+      },
+      "durations": {
+       "compared": 3,
+       "matched": 3
+      }
+     },
+     "usage": {
+      "input_tokens": 874,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 11664,
+      "output_tokens_details": {
+       "reasoning_tokens": 11550
+      },
+      "total_tokens": 12538
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar006",
+     "ms": 92120,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 8,
+       "matched": 4
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": {
+      "input_tokens": 880,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 9067,
+      "output_tokens_details": {
+       "reasoning_tokens": 8937
+      },
+      "total_tokens": 9947
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar007",
+     "ms": 12866,
+     "error": "The visible bar is cut off at the left edge. Crop wider to include its left barline and the complete staff."
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar008",
+     "ms": 18064,
+     "error": "No complete bar is readable because the left barline is cut off. Crop wider to the left to include the barline before the visible notation."
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar021",
+     "ms": 63297,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 1,
+       "predicted": 1,
+       "matched": 1
+      },
+      "drumHits": {
+       "truth": 2,
+       "predicted": 2,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 1,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 850,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 6277,
+      "output_tokens_details": {
+       "reasoning_tokens": 6214
+      },
+      "total_tokens": 7127
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar022",
+     "ms": 5290,
+     "error": "No complete readable 4/4 bar is visible. Please provide a wider, higher-resolution crop showing the full staff system and both barlines around each bar."
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar025",
+     "ms": 136118,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 1,
+       "predicted": 1,
+       "matched": 1
+      },
+      "drumHits": {
+       "truth": 2,
+       "predicted": 2,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 1,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 862,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 9413,
+      "output_tokens_details": {
+       "reasoning_tokens": 9322
+      },
+      "total_tokens": 10275
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar026",
+     "ms": 93662,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 1,
+       "predicted": 1,
+       "matched": 1
+      },
+      "drumHits": {
+       "truth": 3,
+       "predicted": 2,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 1,
+       "matched": 1
+      }
+     },
+     "usage": {
+      "input_tokens": 862,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 7683,
+      "output_tokens_details": {
+       "reasoning_tokens": 7621
+      },
+      "total_tokens": 8545
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar027",
+     "ms": 130395,
+     "error": "No complete barline-to-barline 4/4 bar is visible; the staff continues to the right edge without a closing barline. Crop or extend the image to include the next barline, then resubmit."
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar028",
+     "ms": 109579,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 24,
+       "predicted": 22,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 922,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 10711,
+      "output_tokens_details": {
+       "reasoning_tokens": 10358
+      },
+      "total_tokens": 11633
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar029",
+     "ms": 58450,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 24,
+       "predicted": 16,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 922,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 5456,
+      "output_tokens_details": {
+       "reasoning_tokens": 5139
+      },
+      "total_tokens": 6378
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar030",
+     "ms": 157792,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 13,
+       "predicted": 13,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 13,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 9
+      }
+     },
+     "usage": {
+      "input_tokens": 898,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 14091,
+      "output_tokens_details": {
+       "reasoning_tokens": 13840
+      },
+      "total_tokens": 14989
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar031",
+     "ms": 140420,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 880,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 14929,
+      "output_tokens_details": {
+       "reasoning_tokens": 14725
+      },
+      "total_tokens": 15809
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar032",
+     "ms": 144486,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 9,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 12,
+       "matched": 6
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 7
+      }
+     },
+     "usage": {
+      "input_tokens": 880,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 12095,
+      "output_tokens_details": {
+       "reasoning_tokens": 11912
+      },
+      "total_tokens": 12975
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar033",
+     "ms": 231769,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 9,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 12,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 7
+      }
+     },
+     "usage": {
+      "input_tokens": 880,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 19709,
+      "output_tokens_details": {
+       "reasoning_tokens": 19532
+      },
+      "total_tokens": 20589
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar034",
+     "ms": 176533,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 13,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 9,
+       "matched": 4
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 3
+      }
+     },
+     "usage": {
+      "input_tokens": 898,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 14042,
+      "output_tokens_details": {
+       "reasoning_tokens": 13850
+      },
+      "total_tokens": 14940
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar035",
+     "ms": 118363,
+     "error": "The only visible 4/4 bar is cut off at the right edge and was skipped. Crop farther right to include its closing barline."
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar036",
+     "ms": 171248,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 9,
+       "predicted": 9,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 13,
+       "matched": 7
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 6
+      }
+     },
+     "usage": {
+      "input_tokens": 880,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 15404,
+      "output_tokens_details": {
+       "reasoning_tokens": 15200
+      },
+      "total_tokens": 16284
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar037",
+     "ms": 173059,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 9,
+       "predicted": 2,
+       "matched": 2
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 3,
+       "matched": 2
+      },
+      "durations": {
+       "compared": 2,
+       "matched": 2
+      }
+     },
+     "usage": {
+      "input_tokens": 880,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 16865,
+      "output_tokens_details": {
+       "reasoning_tokens": 16607
+      },
+      "total_tokens": 17745
+     },
+     "note": "4 bars returned"
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar038",
+     "ms": 160479,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 13,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 13,
+       "matched": 11
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 3
+      }
+     },
+     "usage": {
+      "input_tokens": 898,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 14636,
+      "output_tokens_details": {
+       "reasoning_tokens": 14442
+      },
+      "total_tokens": 15534
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar039",
+     "ms": 101874,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 886,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 8996,
+      "output_tokens_details": {
+       "reasoning_tokens": 8804
+      },
+      "total_tokens": 9882
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar040",
+     "ms": 201062,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 12,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 886,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 16146,
+      "output_tokens_details": {
+       "reasoning_tokens": 15947
+      },
+      "total_tokens": 17032
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar041",
+     "ms": 266185,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 2,
+       "matched": 2
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 4,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 2,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 886,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 22345,
+      "output_tokens_details": {
+       "reasoning_tokens": 22142
+      },
+      "total_tokens": 23231
+     },
+     "note": "3 bars returned"
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar042",
+     "ms": 178985,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 13,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 16,
+       "matched": 15
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 3
+      }
+     },
+     "usage": {
+      "input_tokens": 898,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 16755,
+      "output_tokens_details": {
+       "reasoning_tokens": 16553
+      },
+      "total_tokens": 17653
+     },
+     "note": ""
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar043",
+     "ms": 5539,
+     "error": "The image is too tightly cropped to identify a complete bar; please provide the full staff line, including the barlines on both sides and all drum notation."
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar044",
+     "ms": 5274,
+     "error": "No complete readable bar is visible. Please provide a wider crop containing the full drum notation, including barlines and all notes."
+    },
+    {
+     "id": "2112 Drum Tab by Rush _ Songsterr Tabs with Rhythm_bar045",
+     "ms": 4054,
+     "error": "No complete readable bar is visible. Please provide a wider crop including the full staff and both barlines (the current image is cut off at the left/right edges)."
+    }
+   ]
+  }
+ }
+}

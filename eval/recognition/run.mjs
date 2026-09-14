@@ -3,7 +3,7 @@
 //
 //   node eval/recognition/run.mjs --providers local,luna,gemini [--set synthetic|heldout] [--limit 20]
 //        [--luna-effort high|medium] [--gemini-model gemini-3.6-flash-high] [--concurrency 3]
-//        [--luna-price 0.2,1.2] [--no-write]
+//        [--luna-price 0.2,1.2] [--no-write] [--resume]
 //
 // Sets:
 //   synthetic — eval/recognition/synthetic: bars DrumHub rendered from its own original catalogue.
@@ -14,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import os from 'node:os';
 import { createRequire } from 'node:module';
 import { execSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -107,9 +108,17 @@ function geminiProvider({ model, set }) {
   return {
     name: 'gemini', model, concurrency: 2,
     run: item => new Promise((resolve, reject) => {
-      const prompt = `${PROMPT}\n\nThe image to transcribe is the file ${item.image}. Open it and look at it before answering.`;
-      const child = spawn('agy', ['-p', prompt, '--add-dir', path.dirname(item.image), '--model', model, '--mode', 'plan',
-        '--output-format', 'json', '--json-schema', schemaFile, '--print-timeout', '5m'], { stdio: ['ignore', 'pipe', 'pipe'] });
+      // agy is an agent that can read files, so each image is copied alone, under a neutral
+      // name, into an empty folder that is also its working directory. Otherwise it could open
+      // synthetic/manifest.json (the answers) or read hints from the file name.
+      const workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'drumhub-gemini-'));
+      const image = path.join(workDir, 'bar.png');
+      fs.copyFileSync(item.image, image);
+      const cleanup = () => fs.rmSync(workDir, { recursive: true, force: true });
+      const prompt = `${PROMPT}\n\nThe image to transcribe is the file ${image}. Open it and look at it before answering. Do not open any other file.`;
+      const child = spawn('agy', ['-p', prompt, '--add-dir', workDir, '--model', model, '--mode', 'plan',
+        '--output-format', 'json', '--json-schema', schemaFile, '--print-timeout', '5m'], { cwd: workDir, stdio: ['ignore', 'pipe', 'pipe'] });
+      child.on('close', cleanup);
       let out = ''; let err = '';
       child.stdout.on('data', chunk => { out += chunk; });
       child.stderr.on('data', chunk => { err += chunk; });
@@ -131,18 +140,29 @@ function geminiProvider({ model, set }) {
 
 // ── Running and scoring ───────────────────────────────────────────────────────
 
-async function runProvider(provider, items) {
-  const results = [];
-  const queue = [...items];
+// Each result is also appended to reports/.progress-<set>-<provider>.jsonl as it arrives, so a
+// run that is stopped part-way keeps its work; --resume skips bars that already have a score.
+async function runProvider(provider, items, { progressFile = null, resume = false } = {}) {
+  const earlier = resume && progressFile && fs.existsSync(progressFile)
+    ? fs.readFileSync(progressFile, 'utf8').split('\n').filter(Boolean).map(line => JSON.parse(line))
+      .filter(r => r.score && items.some(item => item.id === r.id))
+    : [];
+  if (progressFile && !resume) fs.rmSync(progressFile, { force: true });
+  const results = [...new Map(earlier.map(r => [r.id, r])).values()];
+  const queue = items.filter(item => !results.some(r => r.id === item.id));
+  const keep = result => {
+    results.push(result);
+    if (progressFile) fs.appendFileSync(progressFile, `${JSON.stringify(result)}\n`);
+  };
   await Promise.all(Array.from({ length: provider.concurrency }, async () => {
     while (queue.length) {
       const item = queue.shift();
       const started = Date.now();
       try {
         const out = await provider.run(item);
-        results.push({ id: item.id, ms: Date.now() - started, score: compareBar(item.truth, out.notes), usage: out.usage ?? null, note: out.note ?? '' });
+        keep({ id: item.id, ms: Date.now() - started, score: compareBar(item.truth, out.notes), usage: out.usage ?? null, note: out.note ?? '' });
       } catch (error) {
-        results.push({ id: item.id, ms: Date.now() - started, error: error.message.slice(0, 300) });
+        keep({ id: item.id, ms: Date.now() - started, error: error.message.slice(0, 300) });
       }
       process.stdout.write(`\r  ${provider.name}: ${results.length}/${items.length}   `);
     }
@@ -191,7 +211,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     if (!provider) throw new Error(`Unknown provider ${name}`);
     if (flag('concurrency')) provider.concurrency = Number(flag('concurrency'));
     console.log(`${provider.name} (${provider.model}${provider.effort ? `, ${provider.effort}` : ''}) on ${items.length} ${set.name} bars`);
-    const results = await runProvider(provider, items);
+    const progressFile = path.join(HERE, 'reports', `.progress-${set.name}-${name}.jsonl`);
+    const results = await runProvider(provider, items, { progressFile, resume: args.includes('--resume') });
     await provider.close?.();
     const summary = summarize(results, name === 'luna' ? { inputPrice, outputPrice } : {});
     report.providers[name] = { model: provider.model, effort: provider.effort ?? null, summary, results };

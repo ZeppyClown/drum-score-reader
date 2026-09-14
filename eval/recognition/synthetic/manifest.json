@@ -1,0 +1,3823 @@
+{
+ "manifestVersion": 1,
+ "source": "drumhub-synthetic",
+ "createdAt": "2026-09-14",
+ "note": "One-bar images rendered by DrumHub from its original exercise and fill catalogue. Synthetic; safe for developer benchmarks with any provider.",
+ "items": [
+  {
+   "id": "steady-rock-eighths",
+   "image": "images/steady-rock-eighths.png",
+   "sha256": "3f13724022d9796043e133e143ccaa9fad0daf3ce10f83365876cc27f2c42b19",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rock-quarter-pulse",
+   "image": "images/rock-quarter-pulse.png",
+   "sha256": "03bd203097dce08245adbd24896bafd09a2cbdaca01df82d731971564c286887",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "quarter",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "quarter",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "quarter",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "quarter",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pop-half-time-backbeat",
+   "image": "images/pop-half-time-backbeat.png",
+   "sha256": "bdd07d3cff20bc120264854ec90b57a37ed2a9bd63064e5e7d870923f6737d15",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kick-on-the-and",
+   "image": "images/kick-on-the-and.png",
+   "sha256": "43cc5f2a555f8330fe2e03e5700cb99efbbccce689a91d392cda288f1914ca60",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "open-hat-breaths",
+   "image": "images/open-hat-breaths.png",
+   "sha256": "e430f7a5887a573d9efae779fdf4f205131fabf3baa7147ef61f8e4df26bb478",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_open_half"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_open_half"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rests-in-the-groove",
+   "image": "images/rests-in-the-groove.png",
+   "sha256": "c0b5845530f7375490b0e1bd15e98b776d4231e8265baddce4dc8b48500d2602",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pop-backbeat-eighths",
+   "image": "images/pop-backbeat-eighths.png",
+   "sha256": "3f13724022d9796043e133e143ccaa9fad0daf3ce10f83365876cc27f2c42b19",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dotted-eighth-pulse",
+   "image": "images/dotted-eighth-pulse.png",
+   "sha256": "7ab9a398f508401869a1ffb553a7b905fdc7ac094603b031f4b1c774f4abdbab",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "dotted_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "dotted_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "dotted_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "dotted_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sixteenth-hat-grid",
+   "image": "images/sixteenth-hat-grid.png",
+   "sha256": "02df140f4f43f4da99200ad61da0b6eea8fbfd28e990c044ac188dd140fa5099",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sixteenth-kick-steps",
+   "image": "images/sixteenth-kick-steps.png",
+   "sha256": "5d78350425cc93a8397646a62b365e18829f97ea7d0d0056447e51f61df50ad7",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "snare-on-e-and-a",
+   "image": "images/snare-on-e-and-a.png",
+   "sha256": "9359099564f31e5cead272c4875d8e14e15f86f2f5bc5ed31c63ad265d7c4579",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rim-click-spaces",
+   "image": "images/rim-click-spaces.png",
+   "sha256": "5ce9ac0d37b432d1dae32ee4bb0428d35d253bff768ab7fc1617e6226190b2e6",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare_rim"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare_rim"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "open-and-closed-sixteenths",
+   "image": "images/open-and-closed-sixteenths.png",
+   "sha256": "9ae302dac1362dadd1406a9b3468367355b6e236244b33bef0127afec77e48c6",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_open_half"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_open_half"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sixteenth-rest-grid",
+   "image": "images/sixteenth-rest-grid.png",
+   "sha256": "9ef2062f553b171e9baf7514a62bfb424f456bc4b0395295c0eb8793c35ad02d",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "funk-pocket-sixteenths",
+   "image": "images/funk-pocket-sixteenths.png",
+   "sha256": "ed523054a89e61e296c2179a421e820fd6ba84b32be2fe1f4a7543d6518bb48f",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "straight-triplet-rock",
+   "image": "images/straight-triplet-rock.png",
+   "sha256": "a394e3e42c5e9896bb6b456646449f4d6dfdde29def5c4706697796e49f35738",
+   "kind": "exercise",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 3,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 5,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 11,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 13,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 19,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 21,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 27,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 29,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "triplet-kick-conversation",
+   "image": "images/triplet-kick-conversation.png",
+   "sha256": "da20840b4075ee5a1a2f18fbbfc84710762c0599352477c50b822774ff8b0290",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 3,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 5,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 11,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 13,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 19,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 21,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 27,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 29,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "shuffle-rest-answers",
+   "image": "images/shuffle-rest-answers.png",
+   "sha256": "85dcd831b5c98db09fc74bbe0ff415c0db6263ed90fbb912a999f45519fe31a3",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 5,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 13,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 21,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 29,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "triplet-snare-shift",
+   "image": "images/triplet-snare-shift.png",
+   "sha256": "46dea858ae1f53efcde8e3210e828f8fbe2a2fd8da67eca0ba1c5acbbcb1af46",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 3,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 5,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 11,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 13,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 19,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 21,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 27,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 29,
+     "duration": "triplet_eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "latin-foot-and-hand",
+   "image": "images/latin-foot-and-hand.png",
+   "sha256": "3f13724022d9796043e133e143ccaa9fad0daf3ce10f83365876cc27f2c42b19",
+   "kind": "exercise",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "latin-bell-sixteenths",
+   "image": "images/latin-bell-sixteenths.png",
+   "sha256": "26ba0cf7f59525ee8f6f235ddd41967077788fcef5c0285655665f8d363db7d3",
+   "kind": "exercise",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "kick",
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell",
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "kick",
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "kick",
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell",
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "kick",
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "metal-double-kick-grid",
+   "image": "images/metal-double-kick-grid.png",
+   "sha256": "62b214aa0ddc10902c835a1542aff91bb194d6c500b62292a7c8438904c6df6f",
+   "kind": "exercise",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "metal-stop-start",
+   "image": "images/metal-stop-start.png",
+   "sha256": "65efc4a8d56112bfd5189b6cc637ba0734deaabe2ddb548444f28dcfef061440",
+   "kind": "exercise",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tom-groove-movement",
+   "image": "images/tom-groove-movement.png",
+   "sha256": "015d86c8ecfe61459f7757ef526c7ab7fa914521f21287e97f8ffbda67804404",
+   "kind": "exercise",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "kick",
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "snare",
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_2",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crash-downbeat-transitions",
+   "image": "images/crash-downbeat-transitions.png",
+   "sha256": "eb122d1a3885d250be8904c0b65d3d5871488f15184cd95756fc03bebbdee014",
+   "kind": "exercise",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "crash",
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "hi_hat_closed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-quarter-snare-line",
+   "image": "images/fill-quarter-snare-line.png",
+   "sha256": "ae37ddacce0d553f9ba55de83759efcba58e858a5a478ab496d33ffb0e9d326c",
+   "kind": "fill",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "quarter",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "quarter",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "quarter",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "quarter",
+     "drums": [
+      "snare"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-eighth-snare-roll",
+   "image": "images/fill-eighth-snare-roll.png",
+   "sha256": "c65e0b0bfb35a92c1cba6084decb7866e3f6dc35f7c409b0b7329646e5c2ada8",
+   "kind": "fill",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-eighth-tom-descent",
+   "image": "images/fill-eighth-tom-descent.png",
+   "sha256": "8b726780a3e7e2a4a097556635f4e97d3ac46920541b2c66978a032068c56299",
+   "kind": "fill",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-eighth-tom-ascent",
+   "image": "images/fill-eighth-tom-ascent.png",
+   "sha256": "1022b7014b8cb090ea5f2872ef3e50fd5a5e1aa19ec56ce29b3fd5b06e0447b2",
+   "kind": "fill",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-sixteenth-snare-run",
+   "image": "images/fill-sixteenth-snare-run.png",
+   "sha256": "d195a101fe638bd587c7f3236182698413bd982158e896ceca413cfb2b1937b3",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-sixteenth-tom-descent",
+   "image": "images/fill-sixteenth-tom-descent.png",
+   "sha256": "a884773cb1464f87c2c70b8e5d885214da7b01fea2f47818c60a0b6264f318f5",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-sixteenth-tom-snare",
+   "image": "images/fill-sixteenth-tom-snare.png",
+   "sha256": "7a13d48921e8620c62ece13b481532ddcc4186cc18cccf70daefb254ac1051c5",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-kick-snare-punctuation",
+   "image": "images/fill-kick-snare-punctuation.png",
+   "sha256": "32fc6f81e7bfc722cdf1d4d07ea0b47253973f762a721cc04cf3fc29713d9d25",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "kick",
+      "snare"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "kick",
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "kick",
+      "snare"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "kick",
+      "snare"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "crash",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-triplet-snare",
+   "image": "images/fill-triplet-snare.png",
+   "sha256": "7c5c5f5c72e81495531bcaeada418145f5197dadaea67dbbd286deb1d8cb941d",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 3,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 5,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 11,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 13,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 19,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 21,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 27,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 29,
+     "duration": "triplet_eighth",
+     "drums": [
+      "snare"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-triplet-tom-turn",
+   "image": "images/fill-triplet-tom-turn.png",
+   "sha256": "a324ae9a5b109de57441b2476564a341df7ddf90f304ed566841201e651fee95",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "triplet_eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 3,
+     "duration": "triplet_eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 5,
+     "duration": "triplet_eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "triplet_eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 11,
+     "duration": "triplet_eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 13,
+     "duration": "triplet_eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "triplet_eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 19,
+     "duration": "triplet_eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 21,
+     "duration": "triplet_eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "triplet_eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 27,
+     "duration": "triplet_eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 29,
+     "duration": "triplet_eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-rest-then-snare",
+   "image": "images/fill-rest-then-snare.png",
+   "sha256": "c44743e0e62bcd08273e5cf3357e75f6eed6ce79b9f9d93872d85d24e0b57e68",
+   "kind": "fill",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "quarter",
+     "drums": [
+      "crash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-dotted-snare-pair",
+   "image": "images/fill-dotted-snare-pair.png",
+   "sha256": "e273dd91f670c225a4b6fa63928623352cbd5cfa7b40151357b905f61b4cddaa",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "dotted_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "dotted_eighth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "dotted_eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "dotted_eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "crash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-dotted-kick-tom",
+   "image": "images/fill-dotted-kick-tom.png",
+   "sha256": "9b6aaf0f7e4340df7eb9a88cb9c15f789cf12d88a60914f82c8295454d56f4f2",
+   "kind": "fill",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "dotted_eighth",
+     "drums": [
+      "kick",
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "dotted_eighth",
+     "drums": [
+      "kick",
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "dotted_eighth",
+     "drums": [
+      "floor_tom_1",
+      "kick"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "dotted_eighth",
+     "drums": [
+      "floor_tom_2",
+      "kick"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "crash",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-crash-downbeat",
+   "image": "images/fill-crash-downbeat.png",
+   "sha256": "cf5c61eb46f9a13dc56eb9e38e64a95c962be9e6d52e296a046437d9bfc5898b",
+   "kind": "fill",
+   "level": "beginner",
+   "notes": [
+    {
+     "position": 8,
+     "duration": "quarter",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "quarter",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "quarter",
+     "drums": [
+      "crash",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-tom-cascade-crash",
+   "image": "images/fill-tom-cascade-crash.png",
+   "sha256": "8405f7980ba983da09ecad38caf122ff47c89c1bbc59848344813bf5f13b5957",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "crash"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-floor-tom-landing",
+   "image": "images/fill-floor-tom-landing.png",
+   "sha256": "dd534267d5284c02dcf0069f4102453c5786cf1da4fc04f2bda1df30eed94bbb",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "crash",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-rim-tom-dialogue",
+   "image": "images/fill-rim-tom-dialogue.png",
+   "sha256": "528535773e37d49c000db8ba03b4c387672f2b36e658d83940399286faddbfed",
+   "kind": "fill",
+   "level": "intermediate",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "eighth",
+     "drums": [
+      "snare_rim"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "eighth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "eighth",
+     "drums": [
+      "snare_rim"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "eighth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "eighth",
+     "drums": [
+      "snare_rim"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "eighth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "eighth",
+     "drums": [
+      "snare_rim"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "eighth",
+     "drums": [
+      "crash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-latin-bell-turn",
+   "image": "images/fill-latin-bell-turn.png",
+   "sha256": "676a0baadfcb64d9e50095a85501a5fb5db01a7b83bd9626bfb881249496743c",
+   "kind": "fill",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "ride_bell"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "crash",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-metal-double-kick",
+   "image": "images/fill-metal-double-kick.png",
+   "sha256": "621c81c21ec606f18a474c298b015a7a531cdfbaff5327fd4c20e25ac9b96c3d",
+   "kind": "fill",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 2,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 4,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 6,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 12,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 14,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 20,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 22,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "snare"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "kick"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "crash",
+      "kick"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fill-stop-start",
+   "image": "images/fill-stop-start.png",
+   "sha256": "7f18e3f5de49ab0672195e1ecaeaaa5c1f0ddfacd9e4bfa6385e159074d00d71",
+   "kind": "fill",
+   "level": "advanced",
+   "notes": [
+    {
+     "position": 0,
+     "duration": "sixteenth",
+     "drums": [
+      "kick",
+      "snare"
+     ]
+    },
+    {
+     "position": 8,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 10,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 16,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_1"
+     ]
+    },
+    {
+     "position": 18,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 24,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_hi"
+     ]
+    },
+    {
+     "position": 26,
+     "duration": "sixteenth",
+     "drums": [
+      "tom_mid"
+     ]
+    },
+    {
+     "position": 28,
+     "duration": "sixteenth",
+     "drums": [
+      "floor_tom_2"
+     ]
+    },
+    {
+     "position": 30,
+     "duration": "sixteenth",
+     "drums": [
+      "crash",
+      "kick"
+     ]
+    }
+   ]
+  }
+ ]
+}

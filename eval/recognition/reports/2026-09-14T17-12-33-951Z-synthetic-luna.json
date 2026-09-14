@@ -1,0 +1,1539 @@
+{
+ "reportVersion": 1,
+ "runAt": "2026-09-14T17:12:33.951Z",
+ "commit": "14f2713",
+ "set": {
+  "name": "synthetic",
+  "source": "drumhub-synthetic",
+  "hash": "151f4e84606019e4282f1efed0aa5adbb7b7cd4a3d6f4983a28c21ed7ffa6a51",
+  "bars": 45
+ },
+ "providers": {
+  "luna": {
+   "model": "gpt-5.6-luna",
+   "effort": "high",
+   "summary": {
+    "bars": 45,
+    "answered": 44,
+    "errors": 1,
+    "errorRate": 2.2,
+    "exactBars": 51.1,
+    "onsetF1": 97.7,
+    "drumHitF1": 84.3,
+    "durationAccuracy": 97.3,
+    "latencyMs": {
+     "p50": 89454,
+     "p95": 156944
+    },
+    "tokens": {
+     "input": 51450,
+     "output": 348206
+    },
+    "estimatedCostUsd": 0.4281
+   },
+   "results": [
+    {
+     "id": "crash-downbeat-transitions",
+     "ms": 63091,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 5884,
+      "output_tokens_details": {
+       "reasoning_tokens": 5696
+      },
+      "total_tokens": 6965
+     },
+     "note": ""
+    },
+    {
+     "id": "dotted-eighth-pulse",
+     "ms": 91684,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 14,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 2
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 8485,
+      "output_tokens_details": {
+       "reasoning_tokens": 8286
+      },
+      "total_tokens": 9566
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-crash-downbeat",
+     "ms": 9509,
+     "error": "No complete bar is readable: the staff has no visible ending barline and the notation is cut off at the right edge. Crop to include the full staff through the next barline."
+    },
+    {
+     "id": "fill-dotted-kick-tom",
+     "ms": 195346,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 13,
+       "matched": 6
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 17242,
+      "output_tokens_details": {
+       "reasoning_tokens": 17051
+      },
+      "total_tokens": 18323
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-dotted-snare-pair",
+     "ms": 102416,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 11425,
+      "output_tokens_details": {
+       "reasoning_tokens": 11216
+      },
+      "total_tokens": 12506
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-eighth-snare-roll",
+     "ms": 34917,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 3277,
+      "output_tokens_details": {
+       "reasoning_tokens": 3106
+      },
+      "total_tokens": 4358
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-eighth-tom-ascent",
+     "ms": 61053,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 4843,
+      "output_tokens_details": {
+       "reasoning_tokens": 4660
+      },
+      "total_tokens": 5924
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-eighth-tom-descent",
+     "ms": 31625,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 2628,
+      "output_tokens_details": {
+       "reasoning_tokens": 2445
+      },
+      "total_tokens": 3709
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-floor-tom-landing",
+     "ms": 94752,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 9,
+       "predicted": 9,
+       "matched": 9
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 6838,
+      "output_tokens_details": {
+       "reasoning_tokens": 6656
+      },
+      "total_tokens": 7919
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-kick-snare-punctuation",
+     "ms": 31158,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 13,
+       "matched": 13
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 2654,
+      "output_tokens_details": {
+       "reasoning_tokens": 2473
+      },
+      "total_tokens": 3735
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-latin-bell-turn",
+     "ms": 104749,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 17,
+       "predicted": 17,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 9425,
+      "output_tokens_details": {
+       "reasoning_tokens": 9117
+      },
+      "total_tokens": 10722
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-metal-double-kick",
+     "ms": 109719,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 17,
+       "predicted": 17,
+       "matched": 17
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 14
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 8216,
+      "output_tokens_details": {
+       "reasoning_tokens": 7928
+      },
+      "total_tokens": 9513
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-quarter-snare-line",
+     "ms": 12147,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": {
+      "input_tokens": 980,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1137,
+      "output_tokens_details": {
+       "reasoning_tokens": 1034
+      },
+      "total_tokens": 2117
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-rest-then-snare",
+     "ms": 89454,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 5,
+       "predicted": 5,
+       "matched": 5
+      },
+      "drumHits": {
+       "truth": 5,
+       "predicted": 5,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 5,
+       "matched": 5
+      }
+     },
+     "usage": {
+      "input_tokens": 1023,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 10888,
+      "output_tokens_details": {
+       "reasoning_tokens": 10766
+      },
+      "total_tokens": 11911
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-rim-tom-dialogue",
+     "ms": 156944,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 12998,
+      "output_tokens_details": {
+       "reasoning_tokens": 12784
+      },
+      "total_tokens": 14079
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-sixteenth-snare-run",
+     "ms": 105051,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 8020,
+      "output_tokens_details": {
+       "reasoning_tokens": 7721
+      },
+      "total_tokens": 9317
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-sixteenth-tom-descent",
+     "ms": 44839,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 3914,
+      "output_tokens_details": {
+       "reasoning_tokens": 3591
+      },
+      "total_tokens": 5211
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-sixteenth-tom-snare",
+     "ms": 134636,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 12139,
+      "output_tokens_details": {
+       "reasoning_tokens": 11828
+      },
+      "total_tokens": 13436
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-stop-start",
+     "ms": 108234,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 9,
+       "predicted": 9,
+       "matched": 9
+      },
+      "drumHits": {
+       "truth": 11,
+       "predicted": 12,
+       "matched": 10
+      },
+      "durations": {
+       "compared": 9,
+       "matched": 9
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 9011,
+      "output_tokens_details": {
+       "reasoning_tokens": 8804
+      },
+      "total_tokens": 10308
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-tom-cascade-crash",
+     "ms": 124198,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 15
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 10673,
+      "output_tokens_details": {
+       "reasoning_tokens": 10358
+      },
+      "total_tokens": 11970
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-triplet-snare",
+     "ms": 34499,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1196,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1193
+      },
+      "output_tokens": 3289,
+      "output_tokens_details": {
+       "reasoning_tokens": 3030
+      },
+      "total_tokens": 4485
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-triplet-tom-turn",
+     "ms": 33384,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1196,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1193
+      },
+      "output_tokens": 2865,
+      "output_tokens_details": {
+       "reasoning_tokens": 2588
+      },
+      "total_tokens": 4061
+     },
+     "note": ""
+    },
+    {
+     "id": "funk-pocket-sixteenths",
+     "ms": 103963,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 24,
+       "predicted": 24,
+       "matched": 24
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 9829,
+      "output_tokens_details": {
+       "reasoning_tokens": 9496
+      },
+      "total_tokens": 11126
+     },
+     "note": ""
+    },
+    {
+     "id": "kick-on-the-and",
+     "ms": 58824,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 14,
+       "predicted": 14,
+       "matched": 14
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 4581,
+      "output_tokens_details": {
+       "reasoning_tokens": 4388
+      },
+      "total_tokens": 5662
+     },
+     "note": ""
+    },
+    {
+     "id": "latin-bell-sixteenths",
+     "ms": 101228,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 22,
+       "matched": 20
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 9605,
+      "output_tokens_details": {
+       "reasoning_tokens": 9276
+      },
+      "total_tokens": 10902
+     },
+     "note": ""
+    },
+    {
+     "id": "latin-foot-and-hand",
+     "ms": 76910,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 6921,
+      "output_tokens_details": {
+       "reasoning_tokens": 6732
+      },
+      "total_tokens": 8002
+     },
+     "note": ""
+    },
+    {
+     "id": "metal-double-kick-grid",
+     "ms": 143903,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 32,
+       "predicted": 32,
+       "matched": 30
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 11559,
+      "output_tokens_details": {
+       "reasoning_tokens": 11212
+      },
+      "total_tokens": 12856
+     },
+     "note": ""
+    },
+    {
+     "id": "metal-stop-start",
+     "ms": 290390,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 6
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 12,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 6,
+       "matched": 2
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 23642,
+      "output_tokens_details": {
+       "reasoning_tokens": 23308
+      },
+      "total_tokens": 24939
+     },
+     "note": "2 bars returned"
+    },
+    {
+     "id": "open-and-closed-sixteenths",
+     "ms": 108647,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 22,
+       "matched": 22
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 10171,
+      "output_tokens_details": {
+       "reasoning_tokens": 9840
+      },
+      "total_tokens": 11468
+     },
+     "note": ""
+    },
+    {
+     "id": "open-hat-breaths",
+     "ms": 80130,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 6405,
+      "output_tokens_details": {
+       "reasoning_tokens": 6214
+      },
+      "total_tokens": 7486
+     },
+     "note": ""
+    },
+    {
+     "id": "pop-backbeat-eighths",
+     "ms": 56399,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 5022,
+      "output_tokens_details": {
+       "reasoning_tokens": 4833
+      },
+      "total_tokens": 6103
+     },
+     "note": ""
+    },
+    {
+     "id": "pop-half-time-backbeat",
+     "ms": 52732,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 10,
+       "predicted": 10,
+       "matched": 9
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 6019,
+      "output_tokens_details": {
+       "reasoning_tokens": 5835
+      },
+      "total_tokens": 7100
+     },
+     "note": ""
+    },
+    {
+     "id": "rests-in-the-groove",
+     "ms": 92355,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 6
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 8925,
+      "output_tokens_details": {
+       "reasoning_tokens": 8804
+      },
+      "total_tokens": 10006
+     },
+     "note": ""
+    },
+    {
+     "id": "rim-click-spaces",
+     "ms": 125136,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 6,
+       "predicted": 8,
+       "matched": 6
+      },
+      "drumHits": {
+       "truth": 10,
+       "predicted": 12,
+       "matched": 10
+      },
+      "durations": {
+       "compared": 6,
+       "matched": 6
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 11366,
+      "output_tokens_details": {
+       "reasoning_tokens": 11175
+      },
+      "total_tokens": 12447
+     },
+     "note": ""
+    },
+    {
+     "id": "rock-quarter-pulse",
+     "ms": 86485,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": {
+      "input_tokens": 980,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 5903,
+      "output_tokens_details": {
+       "reasoning_tokens": 5786
+      },
+      "total_tokens": 6883
+     },
+     "note": ""
+    },
+    {
+     "id": "shuffle-rest-answers",
+     "ms": 67452,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 10,
+       "matched": 10
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1196,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1193
+      },
+      "output_tokens": 6413,
+      "output_tokens_details": {
+       "reasoning_tokens": 6214
+      },
+      "total_tokens": 7609
+     },
+     "note": ""
+    },
+    {
+     "id": "sixteenth-hat-grid",
+     "ms": 71020,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 22,
+       "matched": 22
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 6035,
+      "output_tokens_details": {
+       "reasoning_tokens": 5696
+      },
+      "total_tokens": 7332
+     },
+     "note": ""
+    },
+    {
+     "id": "sixteenth-kick-steps",
+     "ms": 76750,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 24,
+       "predicted": 24,
+       "matched": 24
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 7583,
+      "output_tokens_details": {
+       "reasoning_tokens": 7250
+      },
+      "total_tokens": 8880
+     },
+     "note": ""
+    },
+    {
+     "id": "sixteenth-rest-grid",
+     "ms": 110774,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 10,
+       "predicted": 5,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 14,
+       "predicted": 7,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 10072,
+      "output_tokens_details": {
+       "reasoning_tokens": 9840
+      },
+      "total_tokens": 11369
+     },
+     "note": "2 bars returned"
+    },
+    {
+     "id": "snare-on-e-and-a",
+     "ms": 79121,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 20,
+       "matched": 20
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1297,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1294
+      },
+      "output_tokens": 6510,
+      "output_tokens_details": {
+       "reasoning_tokens": 6187
+      },
+      "total_tokens": 7807
+     },
+     "note": ""
+    },
+    {
+     "id": "steady-rock-eighths",
+     "ms": 93641,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 8460,
+      "output_tokens_details": {
+       "reasoning_tokens": 8271
+      },
+      "total_tokens": 9541
+     },
+     "note": ""
+    },
+    {
+     "id": "straight-triplet-rock",
+     "ms": 20992,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1196,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1193
+      },
+      "output_tokens": 1833,
+      "output_tokens_details": {
+       "reasoning_tokens": 1552
+      },
+      "total_tokens": 3029
+     },
+     "note": ""
+    },
+    {
+     "id": "tom-groove-movement",
+     "ms": 129757,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 9
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1081,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1078
+      },
+      "output_tokens": 11459,
+      "output_tokens_details": {
+       "reasoning_tokens": 11233
+      },
+      "total_tokens": 12540
+     },
+     "note": ""
+    },
+    {
+     "id": "triplet-kick-conversation",
+     "ms": 39354,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 19,
+       "predicted": 19,
+       "matched": 19
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1196,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1193
+      },
+      "output_tokens": 3393,
+      "output_tokens_details": {
+       "reasoning_tokens": 3106
+      },
+      "total_tokens": 4589
+     },
+     "note": ""
+    },
+    {
+     "id": "triplet-snare-shift",
+     "ms": 119955,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 20,
+       "predicted": 20,
+       "matched": 18
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1196,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1193
+      },
+      "output_tokens": 10649,
+      "output_tokens_details": {
+       "reasoning_tokens": 10358
+      },
+      "total_tokens": 11845
+     },
+     "note": ""
+    }
+   ]
+  }
+ }
+}

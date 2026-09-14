@@ -1,0 +1,1073 @@
+{
+ "reportVersion": 1,
+ "runAt": "2026-09-14T17:55:36.178Z",
+ "commit": "03347af",
+ "set": {
+  "name": "synthetic",
+  "source": "drumhub-synthetic",
+  "hash": "151f4e84606019e4282f1efed0aa5adbb7b7cd4a3d6f4983a28c21ed7ffa6a51",
+  "bars": 45
+ },
+ "providers": {
+  "local": {
+   "model": "baseline-14drum-v1",
+   "effort": null,
+   "summary": {
+    "bars": 45,
+    "answered": 45,
+    "errors": 0,
+    "errorRate": 0,
+    "exactBars": 0,
+    "onsetF1": 67.9,
+    "drumHitF1": 22.2,
+    "durationAccuracy": 83.1,
+    "latencyMs": {
+     "p50": 30,
+     "p95": 38
+    },
+    "tokens": {
+     "input": 0,
+     "output": 0
+    },
+    "estimatedCostUsd": null
+   },
+   "results": [
+    {
+     "id": "crash-downbeat-transitions",
+     "ms": 25,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 9,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 13,
+       "matched": 4
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 7
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "dotted-eighth-pulse",
+     "ms": 32,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 9,
+       "matched": 5
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 11,
+       "matched": 4
+      },
+      "durations": {
+       "compared": 5,
+       "matched": 1
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-crash-downbeat",
+     "ms": 29,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 3,
+       "predicted": 7,
+       "matched": 1
+      },
+      "drumHits": {
+       "truth": 4,
+       "predicted": 7,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 1,
+       "matched": 1
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-dotted-kick-tom",
+     "ms": 33,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 29,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 55,
+       "matched": 7
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 4
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-dotted-snare-pair",
+     "ms": 30,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 24,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 25,
+       "matched": 4
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 4
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-eighth-snare-roll",
+     "ms": 25,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 12,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 12,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 7
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-eighth-tom-ascent",
+     "ms": 25,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 14,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 20,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 5
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-eighth-tom-descent",
+     "ms": 27,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 15,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 22,
+       "matched": 2
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 7
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-floor-tom-landing",
+     "ms": 30,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 13,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 9,
+       "predicted": 20,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 7
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-kick-snare-punctuation",
+     "ms": 24,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 14,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 27,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 6
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-latin-bell-turn",
+     "ms": 38,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 11,
+       "matched": 9
+      },
+      "drumHits": {
+       "truth": 17,
+       "predicted": 13,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 9,
+       "matched": 1
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-metal-double-kick",
+     "ms": 35,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 17,
+       "predicted": 14,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 9
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-quarter-snare-line",
+     "ms": 19,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 4,
+       "predicted": 16,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 4,
+       "predicted": 16,
+       "matched": 4
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-rest-then-snare",
+     "ms": 21,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 5,
+       "predicted": 9,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 5,
+       "predicted": 10,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-rim-tom-dialogue",
+     "ms": 26,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 11,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 14,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-sixteenth-snare-run",
+     "ms": 38,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 25,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 25,
+       "matched": 16
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-sixteenth-tom-descent",
+     "ms": 33,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 17,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 22,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-sixteenth-tom-snare",
+     "ms": 32,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 28,
+       "matched": 15
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 36,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 15,
+       "matched": 14
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-stop-start",
+     "ms": 36,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 9,
+       "predicted": 26,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 11,
+       "predicted": 31,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 6
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-tom-cascade-crash",
+     "ms": 37,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 17,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 22,
+       "matched": 2
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 14
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-triplet-snare",
+     "ms": 30,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 12,
+       "predicted": 27,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 27,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "fill-triplet-tom-turn",
+     "ms": 31,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 12,
+       "predicted": 25,
+       "matched": 9
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 31,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 9,
+       "matched": 3
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "funk-pocket-sixteenths",
+     "ms": 28,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 22,
+       "matched": 15
+      },
+      "drumHits": {
+       "truth": 24,
+       "predicted": 24,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 15,
+       "matched": 13
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "kick-on-the-and",
+     "ms": 27,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 11,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 14,
+       "predicted": 18,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "latin-bell-sixteenths",
+     "ms": 32,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 18,
+       "matched": 15
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 44,
+       "matched": 6
+      },
+      "durations": {
+       "compared": 15,
+       "matched": 15
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "latin-foot-and-hand",
+     "ms": 25,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 7
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "metal-double-kick-grid",
+     "ms": 30,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 21,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 32,
+       "predicted": 34,
+       "matched": 14
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "metal-stop-start",
+     "ms": 36,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 30,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 42,
+       "matched": 2
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 0
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "open-and-closed-sixteenths",
+     "ms": 32,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 20,
+       "matched": 13
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 28,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 13,
+       "matched": 11
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "open-hat-breaths",
+     "ms": 23,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 9,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 13,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "pop-backbeat-eighths",
+     "ms": 23,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 7
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "pop-half-time-backbeat",
+     "ms": 37,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 10,
+       "predicted": 9,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 7
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "rests-in-the-groove",
+     "ms": 29,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 4,
+       "predicted": 19,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 26,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 2
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "rim-click-spaces",
+     "ms": 26,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 6,
+       "predicted": 17,
+       "matched": 6
+      },
+      "drumHits": {
+       "truth": 10,
+       "predicted": 22,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 6,
+       "matched": 4
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "rock-quarter-pulse",
+     "ms": 21,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 4,
+       "predicted": 8,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 9,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "shuffle-rest-answers",
+     "ms": 35,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 23,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 40,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "sixteenth-hat-grid",
+     "ms": 32,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 13
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 22,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 13,
+       "matched": 11
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "sixteenth-kick-steps",
+     "ms": 28,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 22,
+       "matched": 15
+      },
+      "drumHits": {
+       "truth": 24,
+       "predicted": 29,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 15,
+       "matched": 13
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "sixteenth-rest-grid",
+     "ms": 30,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 10,
+       "predicted": 24,
+       "matched": 6
+      },
+      "drumHits": {
+       "truth": 14,
+       "predicted": 33,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 6,
+       "matched": 0
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "snare-on-e-and-a",
+     "ms": 26,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 18,
+       "matched": 9
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 32,
+       "matched": 4
+      },
+      "durations": {
+       "compared": 9,
+       "matched": 6
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "steady-rock-eighths",
+     "ms": 1026,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 7
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "straight-triplet-rock",
+     "ms": 30,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 12,
+       "predicted": 16,
+       "matched": 11
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 24,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 11,
+       "matched": 11
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "tom-groove-movement",
+     "ms": 27,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 16,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 31,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 6
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "triplet-kick-conversation",
+     "ms": 33,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 12,
+       "predicted": 22,
+       "matched": 11
+      },
+      "drumHits": {
+       "truth": 19,
+       "predicted": 39,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 11,
+       "matched": 11
+      }
+     },
+     "usage": null,
+     "note": ""
+    },
+    {
+     "id": "triplet-snare-shift",
+     "ms": 30,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 12,
+       "predicted": 17,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 20,
+       "predicted": 28,
+       "matched": 6
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": null,
+     "note": ""
+    }
+   ]
+  }
+ }
+}

@@ -37,3 +37,4 @@ __pycache__/
 .env.*
 eval/recognition/reports/.gemini-schema.json
 dist/
+eval/recognition/reports/.progress-*.jsonl
