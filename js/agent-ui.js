@@ -29,6 +29,10 @@ function showMode() {
     ? `Cloud help is on (adult mode): typed questions go to OpenAI ${status.model ?? ''}.`
     : 'Offline answers: worked out on this computer. Nothing is sent anywhere.';
   $('ask-cloud-toggle').textContent = status.cloudEnabled ? 'Turn off cloud help' : 'Turn on cloud help…';
+  const budget = status.budget;
+  $('ask-budget').textContent = budget && status.cloudEnabled
+    ? `Cloud spending this month: about US$${budget.spentUsd.toFixed(2)} of US$${budget.limitUsd.toFixed(2)}.${budget.lastError ? ` Last cloud problem: ${budget.lastError.message}` : ''}`
+    : '';
   $('ask-input').disabled = !status.cloudEnabled || busy;
   $('ask-input').placeholder = status.cloudEnabled
     ? 'Ask about this score, e.g. "What changes in bar 5?"'
@@ -91,6 +95,8 @@ async function ask(spec) {
   try {
     const { label, ...payload } = request;
     const answer = await window.agent.ask(payload);
+    const refreshed = await window.agent.status();
+    if (!refreshed.error) status = { ...status, ...refreshed };
     if (answer.canceled) { $('ask-status').textContent = 'Stopped.'; return; }
     if (answer.error) { $('ask-status').textContent = answer.error; return; }
     showAnswer(label, answer);

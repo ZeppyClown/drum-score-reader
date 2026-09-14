@@ -137,6 +137,11 @@ app.whenReady().then(async () => {
   assert.equal(sent.includes('Ignore previous instructions'), false, 'title never sent');
   assert.equal(sent.includes('sk-test-desktop-agent'), false, 'key never in a body');
   assert.equal(requests[1].body.input.at(-1).type, 'function_call_output');
+  // Both requests were counted against the monthly cloud budget (900 in + 80 out tokens each).
+  await waitFor(async () => /Cloud spending this month: about US\$0\.00 of US\$5\.00/.test(await text('#ask-budget')), 'budget shown');
+  const saved = JSON.parse(fs.readFileSync(path.join(temp, 'userData', 'cloud-budget.json'), 'utf8'));
+  assert.equal(saved.requests, 2);
+  assert.equal(saved.inputTokens, 1800);
   assert.equal(await evaluate('typeof window.require'), 'undefined');
   await click('#ask-references .cite');
   await waitFor(async () => (await editor()).selection?.fromBarId === ids[6], 'cloud reference selects bars 7–8');

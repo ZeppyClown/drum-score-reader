@@ -54,9 +54,10 @@ function outputText(body, task) {
 class OpenAiClient {
   // log(event) receives { attempt, status, ms } per HTTP attempt, then { response: { status,
   // incomplete, usage, outputTypes } } for the final body — never content or the key.
+  // budget: optional CloudBudget (desktop/cloud-budget.cjs) — check() before sending, record() after.
   constructor({ apiKey = process.env.OPENAI_API_KEY, fetchImpl = fetch, timeoutMs = 60000, maxAttempts = 3,
-    retryDelayMs = 1000, sleepImpl = sleep, randomImpl = Math.random, log = () => {} } = {}) {
-    Object.assign(this, { apiKey, fetchImpl, timeoutMs, maxAttempts, retryDelayMs, sleepImpl, randomImpl, log });
+    retryDelayMs = 1000, sleepImpl = sleep, randomImpl = Math.random, log = () => {}, budget = null } = {}) {
+    Object.assign(this, { apiKey, fetchImpl, timeoutMs, maxAttempts, retryDelayMs, sleepImpl, randomImpl, log, budget });
   }
 
   get configured() { return Boolean(this.apiKey); }
@@ -66,13 +67,18 @@ class OpenAiClient {
   // signal: optional AbortSignal; aborting rejects with "Canceled."
   async createResponse(body, { task = 'the request', setting = 'OPENAI_MODEL', signal } = {}) {
     try { return await this.send(body, task, setting, signal); }
-    catch (error) { throw new Error(redactSecret(error.message, this.apiKey)); }
+    catch (error) {
+      const message = redactSecret(error.message, this.apiKey);
+      if (this.budget && message !== 'Canceled.') this.budget.recordError(message);
+      throw new Error(message);
+    }
   }
 
   async send(body, task, setting, signal) {
     if (!this.apiKey) {
       throw new Error('OpenAI is not configured. Quit the app and restart it with OPENAI_API_KEY set.');
     }
+    this.budget?.check(body.model);
     const requestBody = JSON.stringify({ ...body, store: false });
     let result;
     for (let attempt = 1; attempt <= this.maxAttempts; attempt += 1) {
@@ -108,6 +114,8 @@ class OpenAiClient {
       }
       throw new Error(apiErrorMessage(response, result, body.model, setting));
     }
+    // Usage counts even when the reply was cut off or failed: those tokens are billed too.
+    if (this.budget) await this.budget.record(body.model, result.usage);
     this.log({ response: {
       status: result.status ?? null,
       incomplete: result.incomplete_details?.reason ?? null,

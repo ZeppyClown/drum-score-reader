@@ -35,3 +35,4 @@ __pycache__/
 # Local secrets (OpenAI key)
 .env
 .env.*
+eval/recognition/reports/.gemini-schema.json
