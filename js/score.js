@@ -100,6 +100,7 @@ export function render() {
   const ctx = vfRenderer.getContext();
 
   const staves = [];          // keep stave refs so we can look up cursor's stave later
+  noteXs = [];                // x of every note, per bar, for the playback highlight
   let cursorTickables = null; // VexFlow tickable objects for the bar the cursor is in
 
   state.bars.forEach((bar, i) => {
@@ -165,6 +166,7 @@ export function render() {
       // Remember the tickables for the bar the cursor is currently in,
       // so we can snap the cursor's x-position to the correct notehead below.
       if (i === state.cursor.barIndex) cursorTickables = tickables;
+      noteXs[i] = tickables.map(t => t.getAbsoluteX());
     }
   });
 
@@ -208,6 +210,24 @@ export function render() {
 // imported bars that still need review, blue for selected bars. barBoxes keeps each bar's box so clicks can
 // be mapped back to a bar (see barAt).
 let barBoxes = [];
+let noteXs = [];
+
+// Moves the playback highlight to { barIndex, noteIndex } (or removes it for null) without
+// redrawing the score, so it can follow the music note by note.
+export function showPlayhead(position) {
+  const svg = div.querySelector('svg');
+  let mark = svg?.querySelector('#score-playhead');
+  const box = position && barBoxes[position.barIndex];
+  const x = position && noteXs[position.barIndex]?.[position.noteIndex];
+  if (!svg || !box || !Number.isFinite(x)) { mark?.remove(); return; }
+  if (!mark) {
+    mark = document.createElementNS(SVG_NS, 'rect');
+    mark.setAttribute('id', 'score-playhead');
+    mark.setAttribute('class', 'score-playhead');
+    svg.insertBefore(mark, svg.firstChild);
+  }
+  Object.entries({ x: x - 7, y: box.y, width: 18, height: box.height, rx: 3 }).forEach(([k, v]) => mark.setAttribute(k, v));
+}
 
 function box(stave) {
   const top = stave.getYForLine(0) - 14;

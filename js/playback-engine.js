@@ -38,7 +38,9 @@ export class PlaybackEngine {
   constructor({
     audioContext, kit, lookAheadMs = DEFAULT_LOOK_AHEAD_MS,
     scheduleAheadSec = DEFAULT_SCHEDULE_AHEAD_SEC,
-    timers = { setInterval, clearInterval },
+    // Wrapped: browsers throw "Illegal invocation" when window.setInterval is called as
+    // a method of another object (this.timers.setInterval).
+    timers = { setInterval: (fn, ms) => setInterval(fn, ms), clearInterval: id => clearInterval(id) },
     now,
   }) {
     if (!audioContext || !kit) throw new TypeError('PlaybackEngine requires an audioContext and kit');

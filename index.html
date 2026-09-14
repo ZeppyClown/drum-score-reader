@@ -35,6 +35,9 @@
     <ul id="import-warnings" aria-label="Import adjustments"></ul>
   </section>
 
+  <!-- Playback bar (transport-ui.js fills it) -->
+  <div id="transport" aria-label="Playback"></div>
+
   <!-- Backdrop — closes the menu on outside click -->
   <div id="backdrop" class="hidden fixed top-10 inset-0 z-30"></div>
 
@@ -127,7 +130,7 @@
   <div id="score" class="fixed top-10 left-0 right-0 bottom-0 overflow-auto p-5"></div>
 
   <!-- Floating drum keypad -->
-  <div id="keypad" class="fixed z-50 rounded-xl shadow-2xl bg-gray-800 text-white select-none" style="top:206px;right:24px;width:152px;">
+  <div id="keypad" class="fixed z-50 rounded-xl shadow-2xl bg-gray-800 text-white select-none" style="top:252px;right:24px;width:152px;">
 
     <!-- Drag handle -->
     <div id="keypad-handle" class="px-3 py-2 border-b border-gray-700 cursor-grab flex items-center gap-2">

@@ -169,3 +169,21 @@ test('scheduled-event bookkeeping stays small during a long loop', async () => {
   assert.equal(played.length, new Set(played).size, 'nothing was scheduled twice after pruning');
   assert.ok(played.length > 190, `played ${played.length} hits over 100 seconds of looping`);
 });
+
+test('the default timers work when the global setInterval must be called unbound (as in a browser)', async () => {
+  const { PlaybackEngine } = await import('../js/playback-engine.js');
+  const { buildSchedule } = await import('../js/playback-schedule.js');
+  const realSet = globalThis.setInterval; const realClear = globalThis.clearInterval;
+  // Browser-like: calling these with any `this` other than the global object throws.
+  globalThis.setInterval = function (fn, ms) { if (this !== undefined && this !== globalThis) throw new TypeError('Illegal invocation'); return realSet(fn, ms); };
+  globalThis.clearInterval = function (id) { if (this !== undefined && this !== globalThis) throw new TypeError('Illegal invocation'); return realClear(id); };
+  try {
+    const kit = { output: null, play: () => {}, click: () => {} };
+    const bars = [{ barId: 'b', provenance: {}, notes: [{ eventId: 'e', duration: 'w', dotted: false, drums: ['crash'] }] }];
+    const engine = new PlaybackEngine({ audioContext: { currentTime: 0 }, kit });
+    assert.doesNotThrow(() => engine.start(buildSchedule(bars, { tempoBpm: 120, meter: { beats: 4, beatUnit: 4 }, fromBar: 1, toBar: 1 })));
+    assert.doesNotThrow(() => engine.stop());
+  } finally {
+    globalThis.setInterval = realSet; globalThis.clearInterval = realClear;
+  }
+});
