@@ -88,13 +88,17 @@ app.whenReady().then(async () => {
     assert.match(await clickImport(), /as bar 4/);
     assert.match(await evaluate('document.getElementById("import-warnings").textContent'), /shortened/);
   } finally { OmrService.prototype.predict = predict; }
+  // A screenshot with three bars: two usable, one Luna got wrong (out-of-order positions).
   const openaiResult = {
-    schemaVersion: 1, gridSlots: 32, status: 'ok', message: '', model: 'gpt-5.6-luna',
-    notes: [
-      { position: 0, duration: 'eighth', drums: ['kick', 'hi_hat_closed'] },
-      { position: 8, duration: 'eighth', drums: ['snare', 'hi_hat_closed'] },
+    schemaVersion: 2, gridSlots: 32, status: 'ok', message: 'The last bar was cut off and skipped.', model: 'gpt-5.6-luna',
+    bars: [
+      { notes: [
+        { position: 0, duration: 'eighth', drums: ['kick', 'hi_hat_closed'] },
+        { position: 8, duration: 'eighth', drums: ['snare', 'hi_hat_closed'] },
+      ], uncertainties: [{ position: 8, reason: 'The snare notehead is faint.' }] },
+      { notes: [{ position: 8, duration: 'quarter', drums: ['snare'] }, { position: 4, duration: 'quarter', drums: ['kick'] }], uncertainties: [] },
+      { notes: [{ position: 0, duration: 'whole', drums: ['crash'] }], uncertainties: [] },
     ],
-    uncertainties: [{ position: 8, reason: 'The snare notehead is faint.' }],
   };
   const recognize = OpenAiOmr.prototype.recognize;
   OpenAiOmr.prototype.recognize = async png => {
@@ -103,25 +107,31 @@ app.whenReady().then(async () => {
   clipboard.writeImage(nativeImage.createFromPath(path.join(images, image)));
   await evaluate('document.getElementById("ai-import-btn").click()');
   await waitFor(() => evaluate('!document.getElementById("ai-import-btn").disabled'));
-  assert.match(await evaluate('document.getElementById("import-status").textContent'), /gpt-5.6-luna screenshot as bar 5/);
+  const lunaStatus = await evaluate('document.getElementById("import-status").textContent');
+  assert.match(lunaStatus, /gpt-5.6-luna screenshot as bars 5–6\. The last bar was cut off and skipped\. Skipped bar 2 of the image \(Note 2 is out of order/);
   assert.match(await evaluate('document.getElementById("import-warnings").textContent'), /Luna flagged position 8/);
-  // Review: five imported bars start unchecked; editing one does not check it.
+  assert.equal((await state()).cursor.barIndex, 4, 'cursor on the first imported bar');
+  assert.deepEqual((await state()).bars[5].notes[0].drums, ['crash']);
+  // Review: six imported bars start unchecked; editing one does not check it.
   const text = id => evaluate(`document.getElementById("${id}").textContent`);
-  assert.equal(await text('review-count'), '5 imported bars to check');
-  assert.equal(await evaluate('document.querySelectorAll("#score .bar-unreviewed").length'), 5);
+  assert.equal(await text('review-count'), '6 imported bars to check');
+  assert.equal(await evaluate('document.querySelectorAll("#score .bar-unreviewed").length'), 6);
   assert.equal(await evaluate('document.querySelectorAll("#import-warnings li").length'), 1);
   const reviewed = async () => (await state()).bars.map(bar => bar.provenance.reviewed);
-  assert.deepEqual(await reviewed(), [false, false, false, false, false]);
+  assert.deepEqual(await reviewed(), [false, false, false, false, false, false]);
   assert.deepEqual((await state()).bars.map(bar => bar.provenance.source),
-    ['local_omr', 'local_omr', 'local_omr', 'local_omr', 'openai_omr']);
+    ['local_omr', 'local_omr', 'local_omr', 'local_omr', 'openai_omr', 'openai_omr']);
+  assert.equal((await state()).editor.history.past.at(-1).label, 'Import 2 bars');
   assert.equal((await state()).bars[4].provenance.model, 'gpt-5.6-luna');
   assert.equal((await state()).bars[0].provenance.model, 'baseline-14drum-v1');
   await evaluate('document.getElementById("review-next").click()');
-  assert.equal((await state()).cursor.barIndex, 0);
+  assert.equal((await state()).cursor.barIndex, 5);
+  await evaluate('document.getElementById("review-next").click()');
+  assert.equal((await state()).cursor.barIndex, 0, 'wraps to the first unchecked bar');
   await evaluate('document.getElementById("review-mark").click()');
-  assert.deepEqual(await reviewed(), [true, false, false, false, false]);
+  assert.deepEqual(await reviewed(), [true, false, false, false, false, false]);
   assert.equal(await text('review-mark'), 'Bar 1 is checked');
-  assert.equal(await text('review-count'), '4 imported bars to check');
+  assert.equal(await text('review-count'), '5 imported bars to check');
   await evaluate('document.getElementById("review-next").click()');
   assert.equal((await state()).cursor.barIndex, 1);
   await evaluate('document.getElementById("review-next").click()');

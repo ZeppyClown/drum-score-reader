@@ -206,17 +206,21 @@ export const moveCursorCommand = delta => ({
 
 // ── Imports, review, metadata ─────────────────────────────────────────────────
 
-// Adds an imported bar (a fresh bar id, the import's provenance). An untouched empty
-// score is replaced rather than left with a blank first bar.
-export const importBarCommand = ({ bar, provenance }) => ({
-  label: 'Import bar',
+// Adds imported bars in order (fresh bar ids, each with its own provenance) as ONE edit,
+// so a single undo removes the whole import. An untouched empty score is replaced rather
+// than left with a blank first bar. The cursor goes to the first imported bar.
+export const importBarsCommand = items => ({
+  label: items.length === 1 ? 'Import bar' : `Import ${items.length} bars`,
   run: editor => {
-    const imported = { provenance, notes: bar.notes };
+    if (!items.length) return null;
+    const imported = items.map(({ bar, provenance }) => ({ provenance, notes: bar.notes }));
     const empty = editor.bars.length === 1 && editor.bars[0].notes.length === 0;
-    const bars = empty ? [imported] : [...editor.bars, imported];
-    return { bars, cursor: { barIndex: bars.length - 1, noteIndex: 0, position: 1 } };
+    const bars = empty ? imported : [...editor.bars, ...imported];
+    return { bars, cursor: { barIndex: bars.length - imported.length, noteIndex: 0, position: 1 } };
   },
 });
+
+export const importBarCommand = item => importBarsCommand([item]);
 
 export const markReviewedCommand = barIndex => ({
   label: 'Mark bar reviewed',

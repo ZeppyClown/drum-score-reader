@@ -48,7 +48,7 @@ test('outputText reads only message items, so reasoning and tool calls are ignor
 test('screenshot import uses the OMR model setting through the shared client', async () => {
   let sent;
   const client = new OpenAiClient({ apiKey: 'x', fetchImpl: async (_url, init) => { sent = JSON.parse(init.body); return completed(JSON.stringify({
-    schemaVersion: 1, gridSlots: 32, status: 'ok', message: '', notes: [], uncertainties: [] })); } });
+    schemaVersion: 2, gridSlots: 32, status: 'ok', message: '', bars: [{ notes: [], uncertainties: [] }] })); } });
   const omr = new OpenAiOmr({ client, model: 'omr-model' });
   const result = await omr.recognize(Buffer.from('png'));
   assert.equal(sent.model, 'omr-model');

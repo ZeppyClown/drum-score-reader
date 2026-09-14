@@ -5,7 +5,7 @@ import {
   createEditor, execute, undo, redo, canUndo, canRedo, isDirty, markSaved, HISTORY_LIMIT,
   toggleDrumCommand, toggleDotCommand, changeDurationCommand, toggleTripletCommand,
   backspaceCommand, moveRightCommand, moveLeftCommand, moveCursorCommand,
-  importBarCommand, setMetadataCommand, markReviewedCommand, documentOf, isReadOnly,
+  importBarCommand, importBarsCommand, setMetadataCommand, markReviewedCommand, documentOf, isReadOnly,
 } from '../js/commands.js';
 import { createMeta, validateDocument, importedProvenance } from '../js/score-document.js';
 
@@ -188,4 +188,19 @@ test('a score in an unsupported meter is view-only: edits are refused, the curso
     assert.equal(execute(editor, command), editor);
   }
   assert.equal(execute(editor, moveCursorCommand(1)).cursor.position, 2);
+});
+
+test('importing several bars adds them in order as one undoable edit', () => {
+  const provenance = importedProvenance({ source: 'openai_omr', model: 'gpt-5.6-luna' });
+  const item = drum => ({ bar: { notes: [{ duration: 'w', dotted: false, drums: [drum] }] }, provenance });
+  let editor = execute(fresh(), toggleDrumCommand('kick'));
+  editor = execute(editor, importBarsCommand([item('snare'), item('crash'), item('ride')]));
+  assert.deepEqual(editor.bars.map(b => b.notes[0]?.drums[0]), ['kick', 'snare', 'crash', 'ride']);
+  assert.equal(editor.cursor.barIndex, 1, 'cursor goes to the first imported bar');
+  assert.equal(editor.history.past.at(-1).label, 'Import 3 bars');
+  assert.equal(undo(editor).bars.length, 1);
+  assert.equal(execute(editor, importBarsCommand([])), editor);
+  const intoEmpty = execute(fresh(), importBarsCommand([item('snare'), item('crash')]));
+  assert.deepEqual(intoEmpty.bars.map(b => b.notes[0].drums[0]), ['snare', 'crash']);
+  assert.equal(intoEmpty.cursor.barIndex, 0);
 });

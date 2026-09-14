@@ -10,50 +10,66 @@ const DURATIONS = [
   'sixteenth', 'thirty_second', 'triplet_eighth', 'triplet_sixteenth',
 ];
 
+// Most bars one screenshot may contain. More would risk the token and time limits, and
+// one miscounted bar shifts every bar after it.
+const MAX_BARS = 16;
+
+const NOTE_SCHEMA = {
+  type: 'object', additionalProperties: false,
+  properties: {
+    position: { type: 'integer', minimum: 0, maximum: 31 },
+    duration: { type: 'string', enum: DURATIONS },
+    drums: { type: 'array', minItems: 1, items: { type: 'string', enum: DRUMS } },
+  },
+  required: ['position', 'duration', 'drums'],
+};
+
+const UNCERTAINTY_SCHEMA = {
+  type: 'object', additionalProperties: false,
+  properties: {
+    position: { type: 'integer', minimum: 0, maximum: 31 },
+    reason: { type: 'string' },
+  },
+  required: ['position', 'reason'],
+};
+
+// Version 2: a list of bars in reading order (version 1 held exactly one bar).
 const RESPONSE_SCHEMA = {
   type: 'object', additionalProperties: false,
   properties: {
-    schemaVersion: { type: 'integer', enum: [1] },
+    schemaVersion: { type: 'integer', enum: [2] },
     gridSlots: { type: 'integer', enum: [32] },
     status: { type: 'string', enum: ['ok', 'needs_crop'] },
-    message: { type: 'string', description: 'Empty for ok; crop guidance when needs_crop.' },
-    notes: {
-      type: 'array', description: 'One entry per onset, strictly ordered by position.',
+    message: { type: 'string', description: 'Crop guidance when needs_crop; for ok, a short note about skipped partial bars, or empty.' },
+    bars: {
+      type: 'array', description: `Every complete bar in reading order (left to right, then top to bottom), at most ${MAX_BARS}.`,
       items: {
         type: 'object', additionalProperties: false,
         properties: {
-          position: { type: 'integer', minimum: 0, maximum: 31 },
-          duration: { type: 'string', enum: DURATIONS },
-          drums: { type: 'array', minItems: 1,
-            items: { type: 'string', enum: DRUMS } },
+          notes: { type: 'array', description: 'One entry per onset, strictly ordered by position.', items: NOTE_SCHEMA },
+          uncertainties: { type: 'array', items: UNCERTAINTY_SCHEMA },
         },
-        required: ['position', 'duration', 'drums'],
-      },
-    },
-    uncertainties: {
-      type: 'array',
-      items: {
-        type: 'object', additionalProperties: false,
-        properties: {
-          position: { type: 'integer', minimum: 0, maximum: 31 },
-          reason: { type: 'string' },
-        },
-        required: ['position', 'reason'],
+        required: ['notes', 'uncertainties'],
       },
     },
   },
-  required: ['schemaVersion', 'gridSlots', 'status', 'message', 'notes', 'uncertainties'],
+  required: ['schemaVersion', 'gridSlots', 'status', 'message', 'bars'],
 };
 
-const PROMPT = `Transcribe the attached image as exactly one 4/4 drum-notation bar.
-If it is not one readable cropped bar, set status to needs_crop, explain how to crop it in
-message, and return empty notes and uncertainties. Otherwise set status to ok and message
-to an empty string.
+const PROMPT = `Transcribe every complete 4/4 drum-notation bar in the attached image.
+Return the bars in reading order: left to right along each staff line, then the next staff
+line down. A bar runs from one barline to the next. Skip a bar that is cut off at the edge
+of the image and say so in message (for example "The last bar was cut off and skipped.").
+Return at most ${MAX_BARS} bars. If there is no complete readable bar, or more than ${MAX_BARS}, set
+status to needs_crop, explain how to crop it in message, and return an empty bars list.
+Otherwise set status to ok. Do not skip or merge bars in the middle: every complete bar
+between the first and the last one returned must be included, even if it only has rests.
 
-Positions are integers 0-31 counting 32nd-note slots from the start: beats 1, 2, 3, 4 are
-0, 8, 16, 24. Combine simultaneous hits into one drums array. Omit rests and silent slots.
-Read flags, beams, dots, and tuplets. Round triplet positions to the nearest slot while
-keeping strictly increasing positions.
+For each bar, positions are integers 0-31 counting 32nd-note slots from the start of that
+bar: beats 1, 2, 3, 4 are 0, 8, 16, 24. Combine simultaneous hits into one drums array. Omit
+rests and silent slots. Read flags, beams, dots, and tuplets. Round triplet positions to the
+nearest slot while keeping strictly increasing positions. Put uncertainties in the bar they
+belong to.
 
 Project notation: kick is the normal head below the staff; pedal hi-hat is the low x;
 floor_tom_2 and floor_tom_1 are the two lowest normal tom heads; snare is the normal head
@@ -66,27 +82,32 @@ uncertainties. Recheck tom height, ride versus crash, open versus closed hi-hat,
 eighths, and triplets before answering. Never invent an unreadable hit.`;
 
 function validateResult(result) {
-  if (!result || result.schemaVersion !== 1 || result.gridSlots !== 32 ||
-      !['ok', 'needs_crop'].includes(result.status) || !Array.isArray(result.notes) ||
-      !Array.isArray(result.uncertainties) || typeof result.message !== 'string') {
+  const barsOk = Array.isArray(result?.bars) &&
+    result.bars.every(bar => bar && Array.isArray(bar.notes) && Array.isArray(bar.uncertainties));
+  if (!result || result.schemaVersion !== 2 || result.gridSlots !== 32 ||
+      !['ok', 'needs_crop'].includes(result.status) || !barsOk || typeof result.message !== 'string') {
     throw new Error('OpenAI returned an invalid transcription. Try the screenshot again.');
   }
-  if (result.status === 'needs_crop') {
-    throw new Error(result.message || 'Crop the screenshot to one readable 4/4 bar and retry.');
+  if (result.status === 'needs_crop' || result.bars.length === 0) {
+    throw new Error(result.message || 'Crop the screenshot to complete 4/4 bars and retry.');
+  }
+  if (result.bars.length > MAX_BARS) {
+    throw new Error(`The screenshot has more than ${MAX_BARS} bars. Crop it to ${MAX_BARS} bars or fewer and retry.`);
   }
   return result;
 }
 
 // Luna counts its hidden reasoning against max_output_tokens. On busy bars it used
 // all of the old 4,096 on reasoning and never wrote the JSON (2026-09-14), and answers
-// took 30–60 s at medium effort. Victor chose high effort for accuracy (2026-09-14), which
-// thinks longer, so the budget is 40,000 tokens (at most about 5 cents per screenshot at
-// $1.20 per million output tokens) and the wait is 5 minutes. A reply that is still cut
+// took 30–60 s at medium effort. Victor chose high effort for accuracy and several bars per
+// screenshot (2026-09-14). One busy bar at high effort used 17,000 tokens and 2 min 49 s,
+// so the budget is 100,000 of Luna's 128,000 maximum (at most about 12 cents per screenshot
+// at $1.20 per million output tokens) and the wait is 10 minutes. A reply that is still cut
 // off is retried once at medium effort.
 const REASONING_EFFORT = 'high';
 const FALLBACK_EFFORT = 'medium';
-const MAX_OUTPUT_TOKENS = 40000;
-const IMPORT_TIMEOUT_MS = 300000;
+const MAX_OUTPUT_TOKENS = 100000;
+const IMPORT_TIMEOUT_MS = 600000;
 
 const HEARTBEAT_MS = 10000;
 
@@ -128,7 +149,7 @@ class OpenAiOmr {
       throw new Error('OpenAI is not configured. Quit the app and restart it with OPENAI_API_KEY set.');
     }
     if (!Buffer.isBuffer(png) || !png.length) throw new Error('Copy a PNG screenshot, then retry.');
-    if (png.length > 20 * 1024 * 1024) throw new Error('The clipboard image is over 20 MB. Crop it to one bar and retry.');
+    if (png.length > 20 * 1024 * 1024) throw new Error('The clipboard image is over 20 MB. Crop it to fewer bars and retry.');
     const started = Date.now();
     this.log(`sending ${(png.length / 1024).toFixed(0)} KB screenshot to ${this.model} (reasoning ${effort}, max_output_tokens ${MAX_OUTPUT_TOKENS}, timeout ${this.client.timeoutMs / 1000} s)`);
     const heartbeat = setInterval(() => this.log(`still waiting… ${Math.round((Date.now() - started) / 1000)} s`), HEARTBEAT_MS);
@@ -154,7 +175,7 @@ class OpenAiOmr {
     try { text = outputText(body, 'the screenshot'); }
     catch (error) { throw new Error(redactSecret(error.message, this.client.apiKey)); }
     this.log(`output (${((Date.now() - started) / 1000).toFixed(1)} s): ${text || '(empty)'}`);
-    if (!text) throw new Error('OpenAI returned no transcription. Try a clearer one-bar crop.');
+    if (!text) throw new Error('OpenAI returned no transcription. Try a clearer crop.');
     let result;
     try { result = JSON.parse(text); }
     catch { throw new Error('OpenAI returned invalid transcription JSON. Try the screenshot again.'); }
@@ -162,4 +183,4 @@ class OpenAiOmr {
   }
 }
 
-module.exports = { OpenAiOmr, RESPONSE_SCHEMA, apiErrorMessage, redactSecret, REASONING_EFFORT, MAX_OUTPUT_TOKENS, IMPORT_TIMEOUT_MS };
+module.exports = { OpenAiOmr, RESPONSE_SCHEMA, apiErrorMessage, redactSecret, REASONING_EFFORT, MAX_OUTPUT_TOKENS, IMPORT_TIMEOUT_MS, MAX_BARS };
