@@ -1,7 +1,7 @@
 // Graders for one Ask DrumHub answer against its question-bank expectations.
 // Deterministic checks only. A model judge (e.g. Gemini on synthetic data) may be added
 // only after its agreement with teachers is measured (plan §4 I3).
-import { unsupportedClaims } from '../../js/agent-contract.js';
+import { unsupportedClaims, barMentions } from '../../js/agent-contract.js';
 
 const covers = (ref, [from, to]) => ref.fromBar <= from && ref.toBar >= to;
 const overlaps = (ref, [from, to]) => ref.fromBar <= to && ref.toBar >= from;
@@ -12,8 +12,7 @@ const regex = pattern => new RegExp(pattern, 'i');
 export function groundedSentences(answer, snapshot) {
   const sentences = answer.answer.split(/(?<=[.!?])\s+/).filter(Boolean);
   const results = sentences.map(sentence => {
-    const numbers = [...sentence.matchAll(/\bbars?\s+(\d+)(?:\s*[–-]\s*(\d+))?/gi)]
-      .flatMap(m => (m[2] ? [Number(m[1]), Number(m[2])] : [Number(m[1])]));
+    const numbers = barMentions(sentence);
     const grounded = numbers.every(n => n >= snapshot.range.fromBar && n <= snapshot.range.toBar &&
       answer.references.some(r => n >= r.fromBar && n <= r.toBar));
     return { sentence, numbers, grounded: numbers.length === 0 || grounded || answer.abstained };

@@ -166,3 +166,17 @@ test('cancel stops the question and reports it as canceled', async () => {
   assert.equal((await pending).canceled, true);
   assert.equal(agent.inFlight, null);
 });
+
+test('the daily limit is loaded from and saved to the usage store, and counts only sent questions', async () => {
+  const saved = [];
+  const store = { load: () => ({ day: new Date(0).toISOString().slice(0, 10), cloudQuestions: 1, inputTokens: 5, outputTokens: 1 }), save: u => saved.push(u) };
+  let now = 1000;
+  const client = scripted([message(answer())]);
+  const agent = new ScoreAgent({ client, settings: () => ({ cloudEnabled: true }), now: () => (now += 5000), dailyLimit: 2, usageStore: store });
+  assert.equal((await ask(agent)).mode, 'cloud');
+  assert.equal(agent.usage.cloudQuestions, 2);
+  assert.equal(saved.at(-1).cloudQuestions, 2);
+  const limited = await ask(agent, { questionId: 'overview' });
+  assert.match(limited.caveats[0], /limit of 2/);
+  assert.equal(client.requests.length, 1);
+});

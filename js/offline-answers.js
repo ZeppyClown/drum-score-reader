@@ -20,6 +20,12 @@ const label = (from, to) => (from === to ? `bar ${from}` : `bars ${from}–${to}
 const name = drum => drum.replaceAll('_', ' ');
 const list = items => (items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`);
 const ref = (fromBar, toBar = fromBar) => ({ fromBar, toBar, label: label(fromBar, toBar) });
+// Consecutive bar numbers as ranges: [1,2,3,4,6] → [1–4, 6].
+const refsFor = numbers => [...new Set(numbers)].sort((a, b) => a - b).reduce((ranges, n) => {
+  const last = ranges.at(-1);
+  if (last && last.toBar === n - 1) return [...ranges.slice(0, -1), { ...last, toBar: n, label: label(last.fromBar, n) }];
+  return [...ranges, ref(n)];
+}, []);
 const reply = (answer, references = [], extra = {}) => ({
   answer, abstained: false, references, suggestedQuestions: [], caveats: [], ...extra,
 });
@@ -84,10 +90,10 @@ const ANSWERS = {
       ...exactGroups.map(g => `Bars ${list(g.barNumbers.map(String))} are exactly the same, so you only need to learn that pattern once.`),
       ...nearMatches.slice(0, 2).map(m => `Bar ${m.bars[1]} is ${Math.round(m.similarity * 100)}% the same as bar ${m.bars[0]}.`),
     ];
-    return reply(sentences.join(' '), [
-      ...exactGroups.map(g => ref(g.barNumbers[0])),
-      ...nearMatches.slice(0, 2).map(m => ref(m.bars[1])),
-    ].slice(0, 10));
+    return reply(sentences.join(' '), refsFor([
+      ...exactGroups.flatMap(g => g.barNumbers),
+      ...nearMatches.slice(0, 2).flatMap(m => m.bars),
+    ]).slice(0, 10));
   },
   overview: snap => {
     const o = getScoreOverview(snap);

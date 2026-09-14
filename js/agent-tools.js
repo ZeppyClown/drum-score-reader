@@ -82,9 +82,17 @@ export function runTool(name, rawArguments, snapshot) {
   }
 }
 
-// JSON text for a function_call_output, bounded so one call cannot flood the context.
+// Ids can come from an opened file, so they never go to the model: bar numbers are
+// enough, and main maps references back to ids itself.
+const ID_KEYS = new Set(['barId', 'eventId', 'fromBarId', 'toBarId']);
+const withoutIds = value => (Array.isArray(value) ? value.map(withoutIds)
+  : value && typeof value === 'object'
+    ? Object.fromEntries(Object.entries(value).filter(([k]) => !ID_KEYS.has(k)).map(([k, v]) => [k, withoutIds(v)]))
+    : value);
+
+// JSON text for a function_call_output, without ids, bounded so one call cannot flood the context.
 export function toolOutput(result) {
-  const text = JSON.stringify(result);
+  const text = JSON.stringify(withoutIds(result));
   return text.length <= MAX_OUTPUT_CHARS ? text
     : JSON.stringify({ error: 'That result was too large. Ask about fewer bars.' });
 }

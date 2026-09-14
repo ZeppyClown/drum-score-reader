@@ -61,8 +61,9 @@ function rate(results, check) {
   return { passed: applicable.filter(r => r.checks[check] === true).length, of: applicable.length };
 }
 
-export function summarize(results, { inputPrice = null, outputPrice = null } = {}) {
+export function summarize(results, { inputPrice = null, outputPrice = null, provider = 'offline' } = {}) {
   const graded = results.filter(r => !r.skipped && !r.error);
+  const attempted = results.filter(r => !r.skipped);
   const pct = ({ passed, of }) => (of ? Math.round((passed / of) * 1000) / 10 : null);
   const sentences = graded.reduce((acc, r) => ({ total: acc.total + r.checks.groundedSentences.total, grounded: acc.grounded + r.checks.groundedSentences.grounded }), { total: 0, grounded: 0 });
   const tokens = graded.reduce((acc, r) => ({ input: acc.input + (r.usage?.inputTokens ?? 0), output: acc.output + (r.usage?.outputTokens ?? 0) }), { input: 0, output: 0 });
@@ -73,6 +74,10 @@ export function summarize(results, { inputPrice = null, outputPrice = null } = {
     skipped: results.filter(r => r.skipped).length,
     errors: results.filter(r => r.error).length,
     fallbacks: graded.filter(r => r.fellBack).length,
+    // Share of attempted questions the model itself answered and passed the checks.
+    modelAnswerRate: provider === 'offline' || !attempted.length ? null
+      : Math.round((graded.filter(r => !r.fellBack).length / attempted.length) * 1000) / 10,
+    errorRate: attempted.length ? Math.round((results.filter(r => r.error).length / attempted.length) * 1000) / 10 : null,
     facts: pct(rate(graded, 'facts')),
     citationsValid: pct(rate(graded, 'citationsValid')),
     requiredReferences: pct(rate(graded, 'requiredReferences')),
@@ -92,6 +97,8 @@ export function summarize(results, { inputPrice = null, outputPrice = null } = {
     gate('Unavailable-fact abstention 100%', metrics.abstention, 100),
     gate('Unchecked-import disclosure 100%', metrics.unreviewedDisclosure, 100),
     gate('Grounded sentences at least 95%', metrics.groundedSentences, 95),
+    gate('Model answered and passed checks (no fallback) at least 95%', metrics.modelAnswerRate, 95),
+    { name: 'No harness errors', value: metrics.errorRate, threshold: 0, passed: metrics.errorRate === null ? null : metrics.errorRate === 0 },
     { name: 'Zero unconfirmed score changes (agent tools are read-only)', value: readOnly ? 0 : 1, threshold: 0, passed: readOnly },
   ];
   return { metrics, gates };
@@ -123,7 +130,8 @@ export async function runEval({ provider = 'offline', model = modelSettings().ag
         id: question.id, question: label, mode: answer.mode, fellBack: cloud && answer.mode !== 'cloud',
         latencyMs: answer.latencyMs ?? Date.now() - started, usage: answer.usage ?? null,
         answer: answer.answer, abstained: answer.abstained, references: answer.references.map(r => [r.fromBar, r.toBar]),
-        caveats: answer.caveats, checks, failures,
+        caveats: answer.caveats, checks,
+        failures: cloud && answer.mode !== 'cloud' ? [...failures, `fell back to offline — ${answer.caveats[0] ?? 'no reason given'}`] : failures,
       });
     } catch (error) {
       results.push({ id: question.id, question: label, error: error.message });
@@ -145,6 +153,8 @@ function printSummary(report, summary) {
   const m = summary.metrics;
   line('Questions graded / skipped / errors', `${m.graded} / ${m.skipped} / ${m.errors}`);
   line('Fell back to offline', m.fallbacks);
+  line('Model answer rate (%)', m.modelAnswerRate);
+  line('Error rate (%)', m.errorRate);
   line('Facts mentioned (%)', m.facts);
   line('References valid (%)', m.citationsValid);
   line('Required references (%)', m.requiredReferences);
@@ -172,6 +182,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     provider, model: flag('model') ?? modelSettings().agent, only: flag('only')?.split(',') ?? null,
   });
   const summary = summarize(report.results, {
+    provider,
     inputPrice: flag('input-price') === null ? null : Number(flag('input-price')),
     outputPrice: flag('output-price') === null ? null : Number(flag('output-price')),
   });

@@ -36,10 +36,31 @@ export const ANSWER_SCHEMA = {
 // Facts the score model does not encode yet (plan §5). A sentence mentioning one is an
 // unsupported claim unless the same sentence says it is not available.
 const UNSUPPORTED = /\b(accent(?:s|ed)?|sticking|dynamics?|crescendo|decrescendo|diminuendo|forte|fortissimo|pianissimo|mezzo|ghost notes?|flams?|drags?|rolls?|tied|ties|repeat signs?|first ending|second ending|coda|left hand|right hand|left foot|right foot|leading hand|[RL]{4,})\b/i;
-const NEGATION = /\b(not|no|doesn['’]?t|does not|isn['’]?t|is not|aren['’]?t|can['’]?t|cannot|without|unavailable|doesn't show|don['’]?t)\b/i;
+// Only a sentence that says the notation does not show/record the fact is allowed —
+// "Don't forget to use your right hand" is still a claim.
+const UNAVAILABLE = /\b(?:does not|doesn['’]t|do not|don['’]t|is not|isn['’]t|are not|aren['’]t|not|never|can['’]t|cannot)\s+(?:\w+\s+)?(?:show|shown|record|recorded|include|included|mark|marked|written|write|say|tell|contain|have)\b|\bno (?:information|marking|markings)\b/i;
 
 export function unsupportedClaims(text) {
-  return String(text).split(/(?<=[.!?])\s+/).filter(sentence => UNSUPPORTED.test(sentence) && !NEGATION.test(sentence));
+  return String(text).split(/(?<=[.!?])\s+/).filter(sentence => UNSUPPORTED.test(sentence) && !UNAVAILABLE.test(sentence));
+}
+
+// Every bar number a sentence refers to: "bar 5", "bars 7–8", "bars 1, 2, 3 and 6", and a
+// bare range like "7–8" (unless it is a tempo, percentage, count or time).
+export function barMentions(text) {
+  const numbers = new Set();
+  const expand = (from, to) => { for (let n = Math.min(from, to); n <= Math.max(from, to) && n - from < 2000; n++) numbers.add(n); };
+  const source = String(text);
+  for (const m of source.matchAll(/\bbars?\s+(\d+(?:\s*(?:,|and|&|–|-|to|or)\s*\d+)*)/gi)) {
+    const parts = m[1].split(/\s*(,|and|&|or)\s*/i).filter(p => /\d/.test(p));
+    for (const part of parts) {
+      const range = part.match(/(\d+)\s*(?:–|-|to)\s*(\d+)/i);
+      if (range) expand(Number(range[1]), Number(range[2])); else numbers.add(Number(part));
+    }
+  }
+  for (const m of source.matchAll(/(?<![\w.])(\d+)\s*[–-]\s*(\d+)(?!\s*(?:bpm|%|percent|times|seconds|s\b|minutes|out of|beats))(?!\w|\.\d)/gi)) {
+    expand(Number(m[1]), Number(m[2]));
+  }
+  return [...numbers].sort((a, b) => a - b);
 }
 
 const isText = (v, max) => typeof v === 'string' && v.length <= max;
@@ -71,8 +92,9 @@ export function checkAnswer(raw, snapshot) {
   if (claims.length) {
     problems.push(`The score does not record accents, sticking, dynamics, ornaments, ties, repeat signs or which hand or foot to use. Remove or rephrase: ${claims.map(c => JSON.stringify(c)).join(' ')}`);
   }
-  if (raw.abstained === false && typeof raw.answer === 'string' && /\bbars?\s+\d/i.test(raw.answer) && references.length === 0) {
-    problems.push('The answer mentions bar numbers, so add those bars to "references".');
+  if (raw.abstained === false && typeof raw.answer === 'string') {
+    const uncited = barMentions(raw.answer).filter(n => !references.some(r => n >= r.fromBar && n <= r.toBar));
+    if (uncited.length) problems.push(`The answer mentions bar${uncited.length === 1 ? '' : 's'} ${uncited.join(', ')}, so add ${uncited.length === 1 ? 'it' : 'them'} to "references" (only bars ${first}–${last} can be used).`);
   }
   return {
     answer: problems.length ? null : { answer: raw.answer.trim(), abstained: raw.abstained, references, suggestedQuestions: suggestions, caveats },

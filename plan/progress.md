@@ -46,6 +46,50 @@ Verified on 2026-09-14: 53 tests across the editor and OpenAI client (`npm test`
 offline Electron workflow (`npm run test:desktop`), all passing. The previous audit's
 33 ML tests (`ml/omr/`) were not rerun for this desktop integration change.
 
+### 2026-09-14 — Master plan tickets 4–12: review, score facts, Ask DrumHub, evaluation
+
+Victor asked for the AI parts to be built as well (the earlier "Victor codes the AI parts
+himself" preference was removed at his request).
+
+- **Ticket 4 — review:** imported bars get a dashed amber box; "N imported bars to check",
+  Next bar to check, Mark bar checked; each bar keeps source and model name.
+- **Ticket 5 — snapshot:** `js/score-snapshot.js` — ids, exact onset/duration ticks, tempo,
+  meter, review state, selection; no title or import warning text; SHA-256 hash; ≤ 64 bars
+  for model calls; main re-validates every field. The hash detects corruption and pins a
+  version; it is not proof of authenticity, because the page owns the score.
+- **Tickets 6–7 — score facts without AI:** overview, beat-by-beat inspection with spoken
+  counting, exact/near repeats, symmetric comparison, possible fills, 0–100 notation
+  complexity with every signal and reason, and a five-step practice plan. Expected values
+  are hand-counted on a 10-bar fixture; **complexity and fill labels still need a teacher.**
+- **Ticket 8 — selection and insights:** click / Shift-click bars; Insights side panel;
+  citations select bars by id and stop working after any edit until Refresh.
+- **Ticket 9 — shared OpenAI transport:** `desktop/openai-client.cjs` (store:false, retries,
+  cancellation, redaction); `OPENAI_OMR_MODEL` and `OPENAI_AGENT_MODEL`.
+- **Ticket 10 — agent:** `desktop/score-agent.cjs` — seven read-only tools; the model sees
+  notes only through tool results; answers must cite shared bars and avoid accents,
+  sticking, dynamics, ornaments, ties, repeat signs and hands/feet; one repair round, then
+  an offline fallback; code always adds the unchecked-import and partial-score warnings.
+- **Ticket 11 — Ask DrumHub panel:** six suggested questions answered offline; typed
+  questions only with cloud help, which is **off by default** and needs an adult
+  confirmation (plan §10 recommended default). The Luna screenshot import now uses the
+  same switch. Stop, stale-answer labels and opt-out are covered by a real-app test.
+- **Ticket 12 — evaluation:** `eval/score-agent/` — 20 questions on two frozen scores,
+  deterministic graders, the plan's release gates, and versioned reports. Offline baseline:
+  8 questions graded, every measure 100%, all gates passed. **Not yet run against
+  GPT-5.6 Luna** (no API key on this machine): `npm run eval:agent -- --provider openai`.
+- Codex reviewed tickets 4–8 (5 findings, 4 fixed: import warning text reaching the model,
+  unchecked selection in snapshots, whole-score claims on scores over 64 bars, stale
+  warnings after checking a bar; the fifth is the hash limitation above).
+- Codex reviewed tickets 9–12 (6 findings, all fixed): bar/note ids in tool results
+  (a crafted file could hide instructions in an id) are now stripped; "Don't forget your
+  right hand" no longer slips past the claim check; bare ranges like "7–8" and bar lists
+  must be cited; the harness now gates on the model answering without fallback (≥ 95%) and
+  on zero errors; the daily cloud limit is saved to disk and counts only sent questions;
+  repeat answers cite every bar they name. It found no problem with the Responses API
+  tool-loop item shapes, which match OpenAI's stateless function-calling guidance.
+- Verified: `npm test` 166 passing; `npm run test:desktop` runs four real-Electron
+  workflows, all passing.
+
 ### 2026-09-14 — Master plan Phase 0 item 3 and Phase 1 (tickets 1–3)
 
 Built from `drumhub_master_plan.md` §3.1, §4 A1–A4, §6 Phases 0–1 and §8 tickets 1–3.

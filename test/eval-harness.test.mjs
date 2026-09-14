@@ -64,8 +64,10 @@ test('a cloud run grades the model, counts fallbacks, tokens and cost, and fails
   assert.deepEqual(byId.sticking.failures, []);
   assert.deepEqual(byId.tempo.failures, []);
   assert.equal(byId.accents.fellBack, true, 'the accent claim fails the checks twice, so the offline fallback answers');
-  const { metrics, gates } = summarize(report.results, { inputPrice: 1, outputPrice: 10 });
+  const { metrics, gates } = summarize(report.results, { inputPrice: 1, outputPrice: 10, provider: 'openai' });
   assert.equal(metrics.fallbacks, 1);
+  assert.equal(metrics.modelAnswerRate, 66.7);
+  assert.equal(gates.find(g => g.name.startsWith('Model answered')).passed, false, 'a fallback fails the model gate even when the shown answer is fine');
   assert.equal(metrics.tokens.input, 4000);
   assert.equal(metrics.estimatedCostUsd, 0.008);
   assert.equal(gates.find(g => g.name.startsWith('Unavailable-fact')).passed, true);

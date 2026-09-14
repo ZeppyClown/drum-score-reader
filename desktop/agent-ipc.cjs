@@ -5,12 +5,26 @@ const { app, dialog, ipcMain, BrowserWindow } = require('electron');
 const { ScoreAgent, AgentRequestError } = require('./score-agent.cjs');
 const { AppSettings } = require('./app-settings.cjs');
 const { ScoreFiles } = require('./score-files.cjs');
+const fs = require('node:fs');
+const path = require('node:path');
+
+// The daily cloud-question count, kept in the app data folder so restarting does not reset it.
+function usageStore(files, dataDir) {
+  const file = path.join(dataDir, 'agent-usage.json');
+  return {
+    load: () => { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return null; } },
+    save: usage => { fs.mkdirSync(dataDir, { recursive: true }); files.writeAtomic(file, `${JSON.stringify(usage)}\n`).catch(() => {}); },
+  };
+}
 
 function initAgent({ trustedSender }) {
   const files = new ScoreFiles({ dataDir: app.getPath('userData') });
   const settings = new AppSettings({ dataDir: app.getPath('userData'), writeAtomic: (file, text) => files.writeAtomic(file, text) });
   const ready = settings.load();
-  const agent = new ScoreAgent({ settings: () => ({ cloudEnabled: settings.cloudEnabled }) });
+  const agent = new ScoreAgent({
+    settings: () => ({ cloudEnabled: settings.cloudEnabled }),
+    usageStore: usageStore(files, app.getPath('userData')),
+  });
 
   const handle = (channel, fn) => ipcMain.handle(channel, async (event, ...args) => {
     if (!trustedSender(event)) return { error: 'Ask DrumHub is only available in the score editor.' };

@@ -29,7 +29,10 @@ with an error if a release gate fails.
 | Fallbacks, latency, tokens, cost | How often cloud answers failed the checks, speed, and spend |
 
 Release gates (plan §4 I3): references 100% valid, abstention 100%, disclosure 100%,
-grounded sentences ≥ 95%, and zero score changes (the agent's tools are read-only).
+grounded sentences ≥ 95%, and zero score changes (the agent's tools are read-only). Cloud
+runs also require the model itself to answer and pass the checks — without falling back to
+the offline answer — for at least 95% of questions, and no harness errors. Answers shown
+after a fallback are still graded, because that is what the user sees.
 
 ## Files
 

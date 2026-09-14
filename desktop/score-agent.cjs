@@ -53,12 +53,21 @@ function validateRequest(request) {
 class ScoreAgent {
   // settings() → { cloudEnabled }: read on every question, so turning cloud help off
   // takes effect immediately.
+  // usageStore: { load() → usage | null, save(usage) } so the daily limit survives restarts.
   constructor({ client = new OpenAiClient(), model = modelSettings().agent, settings = () => ({ cloudEnabled: false }),
-    maxToolRounds = MAX_TOOL_ROUNDS, minIntervalMs = 1500, dailyLimit = 100, now = Date.now } = {}) {
-    Object.assign(this, { client, model, settings, maxToolRounds, minIntervalMs, dailyLimit, now });
+    maxToolRounds = MAX_TOOL_ROUNDS, minIntervalMs = 1500, dailyLimit = 100, now = Date.now,
+    usageStore = { load: () => null, save: () => {} } } = {}) {
+    Object.assign(this, { client, model, settings, maxToolRounds, minIntervalMs, dailyLimit, now, usageStore });
     this.inFlight = null;
     this.lastCloudAt = -Infinity;
-    this.usage = { day: '', cloudQuestions: 0, inputTokens: 0, outputTokens: 0 };
+    const saved = usageStore.load();
+    this.usage = saved && typeof saved.day === 'string' && Number.isInteger(saved.cloudQuestions)
+      ? { day: saved.day, cloudQuestions: saved.cloudQuestions, inputTokens: saved.inputTokens | 0, outputTokens: saved.outputTokens | 0 }
+      : { day: '', cloudQuestions: 0, inputTokens: 0, outputTokens: 0 };
+  }
+
+  saveUsage() {
+    try { this.usageStore.save({ ...this.usage }); } catch { /* the limit still applies for this run */ }
   }
 
   status() {
@@ -80,14 +89,13 @@ class ScoreAgent {
     if (!cloudEnabled || !this.client.configured) return offline(null);
 
     const day = new Date(this.now()).toISOString().slice(0, 10);
-    if (this.usage.day !== day) this.usage = { day, cloudQuestions: 0, inputTokens: 0, outputTokens: 0 };
+    if (this.usage.day !== day) { this.usage = { day, cloudQuestions: 0, inputTokens: 0, outputTokens: 0 }; this.saveUsage(); }
     if (this.usage.cloudQuestions >= this.dailyLimit) return offline(`Today's limit of ${this.dailyLimit} cloud questions was reached, so this is an offline answer.`);
     if (this.now() - this.lastCloudAt < this.minIntervalMs) throw new AgentRequestError('Please wait a moment before asking again.');
 
     const controller = new AbortController();
     this.inFlight = controller;
     this.lastCloudAt = this.now();
-    this.usage.cloudQuestions += 1;
     const started = this.now();
     // Usage is kept even when the answer falls back, so cost reports include failed attempts.
     const trace = { rounds: 0, toolCalls: [], repaired: false, inputTokens: 0, outputTokens: 0, reasoningTokens: 0 };
@@ -113,7 +121,11 @@ class ScoreAgent {
       { type: 'input_text', text: context },
       { type: 'input_text', text: `Question: ${text}` },
     ] }];
+    // A question counts toward the daily limit once its first request is sent.
+    this.usage = { ...this.usage, cloudQuestions: this.usage.cloudQuestions + 1 };
+    this.saveUsage();
     for (;;) {
+      if (signal.aborted) throw new Error('Canceled.');
       const mustAnswer = trace.rounds >= this.maxToolRounds;
       const body = await this.client.createResponse({
         model: this.model,
@@ -160,8 +172,8 @@ class ScoreAgent {
     trace.inputTokens += inputTokens;
     trace.outputTokens += outputTokens;
     trace.reasoningTokens += usage?.output_tokens_details?.reasoning_tokens ?? 0;
-    this.usage.inputTokens += inputTokens;
-    this.usage.outputTokens += outputTokens;
+    this.usage = { ...this.usage, inputTokens: this.usage.inputTokens + inputTokens, outputTokens: this.usage.outputTokens + outputTokens };
+    this.saveUsage();
   }
 }
 
