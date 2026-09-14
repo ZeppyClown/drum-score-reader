@@ -8,6 +8,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const userData = fs.mkdtempSync(path.join(os.tmpdir(), 'drumhub-desktop-smoke-'));
 app.setPath('userData', userData);
+// Luna screenshot import is a cloud feature, so this run starts with adult cloud help on.
+fs.writeFileSync(path.join(userData, 'settings.json'), JSON.stringify({ cloudAssist: { enabled: true, changedAt: null } }));
 // The imports leave unsaved changes, so quitting asks to save: answer "Don't Save".
 const prompts = [];
 dialog.showMessageBoxSync = (_win, options) => { prompts.push(options.message); return 1; };

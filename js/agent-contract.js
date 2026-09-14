@@ -87,7 +87,7 @@ export function requiredCaveats(snapshot, references, scope) {
   const unchecked = snapshot.bars.filter(b => !b.reviewed && inScope(b.barNumber)).map(b => b.barNumber);
   const caveats = [];
   if (unchecked.length) {
-    caveats.push(`${unchecked.length === 1 ? `Bar ${unchecked[0]} was` : `Bars ${unchecked.join(', ')} were`} imported and not checked yet, so the notes there might be wrong.`);
+    caveats.push(`${unchecked.length === 1 ? `Bar ${unchecked[0]} was` : `Bars ${unchecked.join(', ')} were`} imported and not checked yet, so facts that use ${unchecked.length === 1 ? 'that bar' : 'those bars'} might be wrong.`);
   }
   if (snapshot.truncated) {
     caveats.push(`Only bars ${snapshot.range.fromBar}–${snapshot.range.toBar} of ${snapshot.totalBars} were looked at.`);

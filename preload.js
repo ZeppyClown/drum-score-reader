@@ -17,3 +17,10 @@ contextBridge.exposeInMainWorld('scoreFiles', {
     if (COMMANDS.has(name)) callback(name, arg);
   }),
 });
+// Ask DrumHub: questions and snapshots go to main, which owns the key and the model call.
+contextBridge.exposeInMainWorld('agent', {
+  status: () => ipcRenderer.invoke('agent:status'),
+  ask: request => ipcRenderer.invoke('agent:ask', request),
+  cancel: () => ipcRenderer.invoke('agent:cancel'),
+  setCloud: enabled => ipcRenderer.invoke('agent:set-cloud', Boolean(enabled)),
+});

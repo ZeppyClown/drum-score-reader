@@ -47,6 +47,8 @@ drum score reader/
 │   ├── agent-tools.js  ← The 7 read-only tools Ask DrumHub may call, run on the snapshot (pure)
 │   ├── agent-contract.js ← Answer JSON schema, local answer checks, caveats added by code (pure)
 │   ├── offline-answers.js ← Suggested questions and their offline answers (pure)
+│   ├── ask-request.js  ← Which bars a question covers; builds the snapshot sent to main (pure)
+│   ├── agent-ui.js     ← Side panel "Ask DrumHub" tab: suggestions, typed questions, answers, Stop
 │   └── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
@@ -530,6 +532,32 @@ DrumHub without changing them.
 - Save to the already-linked file requires the same `scoreId`; a different score goes
   through Save As. File operations in main run one at a time.
 - Scores inside the editor are frozen (`commands.js`). Build new objects; never edit in place.
+
+---
+
+## 10. Ask DrumHub
+
+```
+agent-ui.js → ask-request.js (scope + snapshot) → preload window.agent.ask
+  → desktop/agent-ipc.cjs → desktop/score-agent.cjs
+       validate request + snapshot (score-snapshot.js)
+       cloud help off / no key → offline-answers.js
+       cloud help on → OpenAI (desktop/openai-client.cjs, OPENAI_AGENT_MODEL)
+            ↔ tool calls run locally (agent-tools.js → score-analysis.js)
+       checkAnswer (agent-contract.js) → one repair round → else offline fallback
+       finalizeAnswer adds bar ids + caveats written by code
+  → agent-ui.js shows answer, bar buttons (followCitation), caveats, follow-ups
+```
+
+- **Cloud help is off by default.** Turning it on shows an adult-only confirmation and is
+  saved in `settings.json` in the app data folder (`desktop/app-settings.cjs`). The same
+  switch gates the Luna screenshot import.
+- The model never sees the title, import warning text, or notes except through tool results.
+- An answer is rejected if it cites bars the tools were not given, mentions bar numbers
+  without references, or claims accents, sticking, dynamics, ornaments, ties, repeat signs
+  or hands/feet (a sentence saying the score doesn't show them is fine).
+- Warnings about unchecked imported bars and partial scores are added by code every time.
+- Limits: 500-character questions, one at a time, 1.5 s between cloud questions, 100 per day.
 
 ---
 

@@ -4,11 +4,13 @@ const { pathToFileURL } = require('url');
 const { OmrService } = require('./desktop/omr-service.cjs');
 const { OpenAiOmr } = require('./desktop/openai-omr.cjs');
 const { initScoreFiles } = require('./desktop/score-ipc.cjs');
+const { initAgent } = require('./desktop/agent-ipc.cjs');
 const service = new OmrService({ root: __dirname });
 const openai = new OpenAiOmr();
 let importing = false;
 let quitting = false;
 let scoreFiles = null;
+let agentIpc = null;
 
 function trustedSender(event) {
   return event.senderFrame === event.sender.mainFrame &&
@@ -38,6 +40,10 @@ ipcMain.handle('ai:paste-image', async event => {
   if (importing) return { error: 'An import is already in progress.' };
   importing = true;
   try {
+    await agentIpc.ready;
+    if (!agentIpc.settings.cloudEnabled) {
+      return { error: 'Screenshot import sends the image to OpenAI, so an adult needs to turn on cloud help first (Insights & Ask → Ask DrumHub). Import bar image… works offline.' };
+    }
     const image = clipboard.readImage();
     if (image.isEmpty()) return { error: 'The clipboard does not contain an image. Copy a PNG screenshot and retry.' };
     return await openai.recognize(image.toPNG());
@@ -57,6 +63,7 @@ function createWindow() {
 
 app.whenReady().then(() => {
   scoreFiles = initScoreFiles({ trustedSender });
+  agentIpc = initAgent({ trustedSender });
   createWindow();
   service.start().catch(error => console.error(error.message));
   app.on('activate', () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });

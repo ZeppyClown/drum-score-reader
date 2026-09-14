@@ -60,3 +60,25 @@ body.panel-open #keypad { right: 404px !important; }
 #side-panel.stale #insights-cards .cite { pointer-events: none; }
 .cite { padding: 0 6px; font-size: 12px; color: #1d4ed8; border-color: #bfdbfe; background: #eff6ff; border-radius: 10px; }
 .bar-selected { fill: #dbeafe; stroke: #3b82f6; }
+.ask-mode { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #374151; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; }
+.ask-mode button { align-self: flex-start; font-size: 12px; padding: 2px 8px; }
+.ask-heading { font-size: 13px; margin: 12px 0 6px; }
+#ask-suggestions { display: flex; flex-wrap: wrap; gap: 6px; }
+#ask-suggestions button, .followup { font-size: 12px; padding: 3px 8px; border-radius: 12px; }
+#ask-form { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+#ask-form select { font: inherit; font-size: 12px; }
+#ask-input { width: 100%; resize: none; overflow: hidden; font: inherit; border: 1px solid #d1d5db; border-radius: 6px; padding: 6px 8px; }
+#ask-input:disabled { background: #f3f4f6; }
+#ask-submit { align-self: flex-end; background: #2563eb; color: #fff; border-color: #2563eb; }
+#ask-submit:disabled { background: #93c5fd; border-color: #93c5fd; cursor: not-allowed; }
+#ask-busy { margin-top: 8px; font-size: 13px; color: #1d4ed8; }
+#ask-status { font-size: 12px; color: #92400e; min-height: 1em; }
+#ask-answer { border: 1px solid #bfdbfe; background: #f8fbff; border-radius: 8px; padding: 10px 12px; }
+#ask-answer.stale { opacity: .6; }
+#ask-answer.stale .cite { pointer-events: none; }
+#ask-stale { color: #92400e; font-weight: 600; font-size: 12px; margin: 0 0 6px; }
+#ask-question { font-weight: 600; margin: 0 0 6px; }
+#ask-text { margin: 0 0 8px; line-height: 1.45; white-space: pre-wrap; }
+#ask-references { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+#ask-caveats { margin: 6px 0; padding-left: 18px; color: #92400e; font-size: 12px; }
+#ask-followups { display: flex; flex-wrap: wrap; gap: 6px; }

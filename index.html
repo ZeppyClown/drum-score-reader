@@ -70,7 +70,29 @@
       <div class="panel-row"><span id="insights-status" role="status"></span><button id="insights-refresh" type="button">Refresh</button></div>
       <div id="insights-cards"></div>
     </section>
-    <section id="ask-tab" role="tabpanel" aria-labelledby="tab-ask" hidden></section>
+    <section id="ask-tab" role="tabpanel" aria-labelledby="tab-ask" hidden>
+      <div class="ask-mode"><span id="ask-mode-text"></span><button id="ask-cloud-toggle" type="button">Turn on cloud help…</button></div>
+      <h3 class="ask-heading">Suggested questions</h3>
+      <div id="ask-suggestions"></div>
+      <form id="ask-form">
+        <label class="panel-note">Typed questions are about
+          <select id="ask-scope"><option value="selection">the selected bars</option><option value="score">the whole score</option></select>
+        </label>
+        <textarea id="ask-input" rows="2" maxlength="500"></textarea>
+        <button id="ask-submit" type="submit">Ask</button>
+      </form>
+      <div id="ask-busy" hidden>Working it out… <button id="ask-cancel" type="button">Stop</button></div>
+      <p id="ask-status" role="status"></p>
+      <article id="ask-answer" hidden aria-live="polite">
+        <p id="ask-stale" hidden>This answer is about an earlier version of the score. Ask again to update it.</p>
+        <p id="ask-question"></p>
+        <p id="ask-text"></p>
+        <div id="ask-references"></div>
+        <ul id="ask-caveats"></ul>
+        <div id="ask-followups"></div>
+        <p id="ask-meta" class="panel-note"></p>
+      </article>
+    </section>
   </aside>
 
   <!-- Score area -->
