@@ -1,4 +1,6 @@
 * { box-sizing: border-box; }
+/* The hidden attribute must win over any display rule below (e.g. .modal is flex). */
+[hidden] { display: none !important; }
 body { margin: 0; color: #1f2937; background: white; font: 14px system-ui, sans-serif; overflow: hidden; }
 button, input { font: inherit; }
 button { cursor: pointer; border: 1px solid #cbd5e1; border-radius: 5px; padding: 5px 10px; background: white; }

@@ -42,6 +42,12 @@ app.whenReady().then(async () => {
     catch (error) { throw new Error(`Renderer check failed: ${code}`, { cause: error }); }
   };
   await waitFor(async () => !win.webContents.isLoading() && await evaluate('Boolean(document.querySelector("#score svg"))'));
+  // What is actually visible at start-up: no dialog or overlay covers the score.
+  for (const id of ['page-import', 'side-panel', 'backdrop']) {
+    assert.equal(await evaluate(`getComputedStyle(document.getElementById('${id}')).display`), 'none', `${id} is hidden at start-up`);
+  }
+  assert.equal(await evaluate(`(() => { const r = document.querySelector('#score svg').getBoundingClientRect();
+    return document.elementFromPoint(r.left + 40, r.top + 40)?.closest('#score') !== null; })()`), true, 'the score is not covered');
   const images = path.resolve(__dirname, '../ml/data/training/dataset/images');
   const image = '21 Guns Drum Tab by Green Day _ Songsterr Tabs with Rhythm_bar003.png';
   const state = () => evaluate('import("./js/state.js").then(({state}) => JSON.parse(JSON.stringify(state)))');
