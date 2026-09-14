@@ -4,6 +4,7 @@ import { barRow, barCol, barY, cursorCentreY } from './layout.js';
 import { isRest, tripletStarts } from './bar.js';
 import { noteKeys, noteStemDir } from './notation.js';
 import { needsReview } from './review.js';
+import { resolveSelection } from './selection.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -202,7 +203,7 @@ export function render() {
 
 // ── Bar overlays ──────────────────────────────────────────────────────────────
 // Tinted boxes drawn BEHIND the notation (inserted first in the SVG): amber for
-// imported bars that still need review. barBoxes keeps each bar's box so clicks can
+// imported bars that still need review, blue for selected bars. barBoxes keeps each bar's box so clicks can
 // be mapped back to a bar (see barAt).
 let barBoxes = [];
 
@@ -220,14 +221,11 @@ function overlayRect(svg, { x, y, width, height }, className) {
 
 function drawBarOverlays(svg, staves) {
   barBoxes = staves.map(box);
+  const selected = resolveSelection(state.editor);
   state.bars.forEach((bar, i) => {
+    if (selected && i >= selected.fromIndex && i <= selected.toIndex) overlayRect(svg, barBoxes[i], 'bar-selected');
     if (!needsReview(bar)) return;
     overlayRect(svg, barBoxes[i], 'bar-unreviewed');
-    const label = document.createElementNS(SVG_NS, 'text');
-    Object.entries({ x: barBoxes[i].x + 4, y: barBoxes[i].y - 3, class: 'bar-unreviewed-label' })
-      .forEach(([k, v]) => label.setAttribute(k, v));
-    label.textContent = 'Check this bar';
-    svg.appendChild(label);
   });
 }
 

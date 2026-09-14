@@ -11,12 +11,13 @@
 //   cursor:  { barIndex, noteIndex, position }
 //   history: { past: [entry], future: [entry] }, entry = { label, meta, bars, cursor }
 //   saved:   { meta, bars } as last saved or opened, for isDirty()
+//   selection: { fromBarId, toBarId } | null — see selection.js
 //   idFactory
 // }
 //
 // A command is { label, run(editor) } where run returns the changed parts
-// ({ bars?, meta?, cursor? }) or null when the edit is refused. A command that only
-// moves the cursor changes neither revision nor history.
+// ({ bars?, meta?, cursor?, selection? }) or null when the edit is refused. A command
+// that only moves the cursor or selection changes neither revision nor history.
 //
 // Revisions only move forward: undo and redo restore the exact earlier score but
 // count as new revisions, so an answer computed for revision 7 can never be
@@ -47,7 +48,7 @@ export function createEditor({ meta, bars, cursor = { barIndex: 0, noteIndex: 0,
   const identified = freeze(withIds(bars, idFactory));
   freeze(meta);
   return {
-    meta, bars: identified, cursor: freeze(cursor), idFactory,
+    meta, bars: identified, cursor: freeze(cursor), idFactory, selection: null,
     history: { past: [], future: [] },
     saved: { meta, bars: identified },
   };
@@ -81,8 +82,9 @@ export function execute(editor, command) {
   const bars = result.bars ?? editor.bars;
   const meta = result.meta ?? editor.meta;
   const cursor = freeze(result.cursor ?? editor.cursor);
+  const selection = freeze(result.selection !== undefined ? result.selection : editor.selection ?? null);
   if (bars === editor.bars && meta === editor.meta) {
-    return cursor === editor.cursor ? editor : { ...editor, cursor };
+    return cursor === editor.cursor && selection === (editor.selection ?? null) ? editor : { ...editor, cursor, selection };
   }
   if (isReadOnly(editor)) return editor;
   return {

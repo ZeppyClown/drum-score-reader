@@ -14,6 +14,7 @@
     </button>
     <button id="import-btn" type="button">Import bar image…</button>
     <button id="ai-import-btn" type="button">Paste screenshot with GPT-5.6 Luna</button>
+    <button id="panel-btn" type="button" aria-expanded="false" aria-controls="side-panel">Insights &amp; Ask</button>
     <div id="score-details">
       <label>Title <input id="score-title" type="text" maxlength="200" spellcheck="false" /></label>
       <label>Tempo <input id="score-tempo" type="number" min="20" max="300" step="1" /> BPM</label>
@@ -57,6 +58,20 @@
     />
 
   </div>
+
+  <!-- Side panel: offline insights and Ask DrumHub -->
+  <aside id="side-panel" hidden aria-label="Score insights and questions">
+    <div role="tablist" class="panel-tabs">
+      <button type="button" role="tab" id="tab-insights" aria-controls="insights-tab" aria-selected="true">Insights</button>
+      <button type="button" role="tab" id="tab-ask" aria-controls="ask-tab" aria-selected="false">Ask DrumHub</button>
+    </div>
+    <p id="selection-label" class="panel-note"></p>
+    <section id="insights-tab" role="tabpanel" aria-labelledby="tab-insights">
+      <div class="panel-row"><span id="insights-status" role="status"></span><button id="insights-refresh" type="button">Refresh</button></div>
+      <div id="insights-cards"></div>
+    </section>
+    <section id="ask-tab" role="tabpanel" aria-labelledby="tab-ask" hidden></section>
+  </aside>
 
   <!-- Score area -->
   <div id="score" class="fixed top-10 left-0 right-0 bottom-0 overflow-auto p-5"></div>

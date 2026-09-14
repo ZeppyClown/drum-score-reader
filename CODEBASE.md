@@ -40,6 +40,10 @@ drum score reader/
 │   ├── sha256.js       ← Synchronous SHA-256 (same hash in page and main)
 │   ├── score-snapshot.js ← Compact, hash-checked score facts for analysis and the agent (pure)
 │   ├── score-analysis.js ← Overview, bar inspection, repeats, fills, complexity, practice plan (pure)
+│   ├── selection.js    ← Selected bars stored by bar id; click / Shift-click commands (pure)
+│   ├── selection-ui.js ← Maps clicks on the score to bars
+│   ├── insights.js     ← Offline insight cards with bar citations; stale-revision check (pure)
+│   ├── insights-ui.js  ← Side panel "Insights" tab; followCitation() shared with Ask DrumHub
 │   └── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
@@ -183,7 +187,7 @@ bar = {
 
 `provenance.source` is `'manual'`, `'local_omr'` or `'openai_omr'`. Imported bars start
 `reviewed: false` and editing them does not change that — only an explicit "mark reviewed"
-command does. Unreviewed bars are drawn with a dashed amber box and "Check this bar"
+command does. Unreviewed bars are drawn with a dashed amber box
 (`drawBarOverlays` in `score.js`); the review bar under the import buttons jumps between them.
 
 **There is no beat or position field on notes.** The first note in the array is the first note in the bar. VexFlow reads them in sequence and handles timing from durations.
