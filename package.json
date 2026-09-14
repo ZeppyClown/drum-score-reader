@@ -290,7 +290,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "electron .",
-    "test": "node --test \"test/*.test.mjs\" test/openai-omr.test.cjs test/openai-client.test.cjs test/score-agent.test.cjs test/score-files.test.cjs test/page-import.test.cjs",
+    "test": "node --test \"test/*.test.mjs\" test/openai-omr.test.cjs test/openai-client.test.cjs test/score-agent.test.cjs test/score-files.test.cjs test/page-import.test.cjs test/practice-store.test.cjs",
     "test:service": "node --test test/service.integration.cjs",
     "eval:agent": "node eval/score-agent/run.mjs",
     "test:desktop": "electron test/desktop-smoke.cjs && electron test/desktop-files-smoke.cjs && electron test/desktop-insights-smoke.cjs && electron test/desktop-agent-smoke.cjs && electron test/desktop-page-import-smoke.cjs"
