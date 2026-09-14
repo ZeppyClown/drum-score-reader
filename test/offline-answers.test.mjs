@@ -110,3 +110,16 @@ test('tools: strict definitions, local results, and errors instead of crashes', 
   assert.equal(inspected.includes(s.bars[0].barId) || /barId|eventId/.test(inspected), false, 'ids never reach the model');
   assert.match(toolOutput({ big: 'x'.repeat(30000) }), /too large/);
 });
+
+test('checks catch invented playing instructions, tool jargon, and duplicate or irrelevant warnings', async () => {
+  const { finalizeAnswer } = await import('../js/agent-contract.js');
+  const s = snap();
+  const base = { answer: 'Bar 10 has a dotted quarter.', abstained: false, references: [{ fromBar: 10, toBar: 10, label: 'bar 10' }], suggestedQuestions: [], caveats: [] };
+  assert.match(checkAnswer({ ...base, answer: 'Hit the snare on 3 and let it ring.' }, s).problems.join(), /how a cymbal should ring/);
+  assert.match(checkAnswer({ ...base, answer: 'The tools cover bars 1–10.', references: [{ fromBar: 1, toBar: 10, label: 'x' }] }, s).problems.join(), /Do not mention tools/);
+  const checked = checkAnswer({ ...base, caveats: ['Bar 10 was imported and not checked.'] }, s).answer;
+  const final = finalizeAnswer(checked, s, { mode: 'cloud', scope: { fromBar: 10, toBar: 10 } });
+  assert.equal(final.caveats.filter(c => /not checked/.test(c)).length, 1);
+  const tempo = finalizeAnswer(checkAnswer({ ...base, answer: 'The tempo is 100 BPM.', references: [] }, s).answer, s, { mode: 'cloud', scope: { fromBar: 1, toBar: 10 } });
+  assert.deepEqual(tempo.caveats, [], 'a whole-score answer that cites no unchecked bar gets no warning');
+});

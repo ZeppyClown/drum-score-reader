@@ -35,7 +35,7 @@ export const ANSWER_SCHEMA = {
 
 // Facts the score model does not encode yet (plan §5). A sentence mentioning one is an
 // unsupported claim unless the same sentence says it is not available.
-const UNSUPPORTED = /\b(accent(?:s|ed)?|sticking|dynamics?|crescendo|decrescendo|diminuendo|forte|fortissimo|pianissimo|mezzo|ghost notes?|flams?|drags?|rolls?|tied|ties|repeat signs?|first ending|second ending|coda|left hand|right hand|left foot|right foot|leading hand|[RL]{4,})\b/i;
+const UNSUPPORTED = /\b(accent(?:s|ed)?|sticking|dynamics?|crescendo|decrescendo|diminuendo|forte|fortissimo|pianissimo|mezzo|ghost notes?|flams?|drags?|rolls?|tied|ties|repeat signs?|first ending|second ending|coda|left hand|right hand|left foot|right foot|leading hand|let (?:it|them) ring|choke|muffle|mute|rimshot|swing feel|[RL]{4,})\b/i;
 // Only a sentence that says the notation does not show/record the fact is allowed —
 // "Don't forget to use your right hand" is still a claim.
 const UNAVAILABLE = /\b(?:does not|doesn['’]t|do not|don['’]t|is not|isn['’]t|are not|aren['’]t|not|never|can['’]t|cannot)\s+(?:\w+\s+)?(?:show|shown|record|recorded|include|included|mark|marked|written|write|say|tell|contain|have)\b|\bno (?:information|marking|markings)\b/i;
@@ -88,9 +88,12 @@ export function checkAnswer(raw, snapshot) {
   }
   const suggestions = Array.isArray(raw.suggestedQuestions) ? raw.suggestedQuestions.filter(q => isText(q, LIMITS.suggestion) && q.trim()).slice(0, LIMITS.suggestions) : [];
   const caveats = Array.isArray(raw.caveats) ? raw.caveats.filter(c => isText(c, LIMITS.caveat) && c.trim()).slice(0, LIMITS.caveats) : [];
+  if (typeof raw.answer === 'string' && /\btools?\b|\bsnapshot\b|\bjson\b/i.test(raw.answer)) {
+    problems.push('Do not mention tools, snapshots or JSON to the reader; say "the score" instead.');
+  }
   const claims = unsupportedClaims(typeof raw.answer === 'string' ? raw.answer : '');
   if (claims.length) {
-    problems.push(`The score does not record accents, sticking, dynamics, ornaments, ties, repeat signs or which hand or foot to use. Remove or rephrase: ${claims.map(c => JSON.stringify(c)).join(' ')}`);
+    problems.push(`The score does not record accents, sticking, dynamics, ornaments, ties, repeat signs, how a cymbal should ring, or which hand or foot to use. Remove or rephrase: ${claims.map(c => JSON.stringify(c)).join(' ')}`);
   }
   if (raw.abstained === false && typeof raw.answer === 'string') {
     const uncited = barMentions(raw.answer).filter(n => !references.some(r => n >= r.fromBar && n <= r.toBar));
@@ -103,8 +106,11 @@ export function checkAnswer(raw, snapshot) {
 }
 
 // Caveats added by code for every final answer, so disclosure never depends on the model.
+// A whole-score question only warns about unchecked bars the answer actually cites; a
+// question about chosen bars always warns about unchecked bars among them.
 export function requiredCaveats(snapshot, references, scope) {
-  const inScope = n => (scope && n >= scope.fromBar && n <= scope.toBar) ||
+  const wholeScore = scope && scope.fromBar <= 1 && scope.toBar >= snapshot.totalBars;
+  const inScope = n => (scope && !wholeScore && n >= scope.fromBar && n <= scope.toBar) ||
     references.some(r => n >= r.fromBar && n <= r.toBar);
   const unchecked = snapshot.bars.filter(b => !b.reviewed && inScope(b.barNumber)).map(b => b.barNumber);
   const caveats = [];
@@ -121,7 +127,10 @@ export function requiredCaveats(snapshot, references, scope) {
 export function finalizeAnswer(checked, snapshot, { mode, model = null, scope = null, extraCaveats = [] }) {
   const idOf = n => snapshot.bars.find(b => b.barNumber === n)?.barId ?? null;
   const references = checked.references.map(r => ({ ...r, fromBarId: idOf(r.fromBar), toBarId: idOf(r.toBar) }));
-  const caveats = [...new Set([...requiredCaveats(snapshot, references, scope), ...extraCaveats, ...checked.caveats])];
+  const required = requiredCaveats(snapshot, references, scope);
+  // Drop the model's own versions of warnings that code already gives.
+  const modelCaveats = checked.caveats.filter(c => !(required.length && /not (?:been )?checked|imported|only bars|bars \d+.\d+ of|tools? cover/i.test(c)));
+  const caveats = [...new Set([...required, ...extraCaveats, ...modelCaveats])].slice(0, LIMITS.caveats);
   return {
     mode, model,
     scoreId: snapshot.scoreId, revision: snapshot.revision, snapshotHash: snapshot.snapshotHash,

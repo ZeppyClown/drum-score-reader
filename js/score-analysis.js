@@ -100,12 +100,13 @@ export function getScoreOverview(snap) {
   const refused = unsupported(snap);
   if (refused) return refused;
   const drumHits = new Map();
-  let restCount = 0; let chordCount = 0; let tripletGroups = 0;
+  let restCount = 0; let notesWithSeveralDrums = 0; let drumHitCount = 0; let tripletGroups = 0;
   let smallest = null; const smallestBars = [];
   for (const bar of snap.bars) {
     for (const event of bar.events) {
       if (event.isRest) restCount++;
-      if (event.drums.length > 1) chordCount++;
+      if (event.drums.length > 1) notesWithSeveralDrums++;
+      drumHitCount += event.drums.length;
       event.drums.forEach(d => drumHits.set(d, (drumHits.get(d) ?? 0) + 1));
     }
     tripletGroups += tripletGroupsIn(bar);
@@ -125,7 +126,8 @@ export function getScoreOverview(snap) {
     drumsUsed: [...drumHits].map(([drum, hits]) => ({ drum, hits }))
       .sort((a, b) => b.hits - a.hits || a.drum.localeCompare(b.drum)),
     smallestNote: smallest ? { label: durationLabel(smallest), bars: smallestBars } : null,
-    restCount, chordCount, tripletGroups,
+    // drumHitCount: every drum stroke; notesWithSeveralDrums: moments where 2+ drums sound together.
+    drumHitCount, notesWithSeveralDrums, restCount, tripletGroups,
     emptyBars: snap.bars.filter(b => hitsOf(b).length === 0).map(b => b.barNumber),
     incompleteBars: snap.bars.filter(b => b.events.reduce((t, e) => t + e.durationTicks, 0) < barCapacity(snap))
       .map(b => b.barNumber),

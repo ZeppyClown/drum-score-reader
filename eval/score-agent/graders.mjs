@@ -53,6 +53,11 @@ export function gradeAnswer(answer, snapshot, expect = {}) {
   const discloses = answer.caveats.some(c => /imported and not checked yet/.test(c));
   record('unreviewedDisclosure', expect.disclosesUnreviewed === true ? discloses : null, 'did not warn about unchecked imported bars');
 
+  record('noIrrelevantWarning', expect.noUnreviewedWarning === true ? !discloses : null, 'warned about unchecked bars the answer does not use');
+
+  record('noInternalJargon', !/\btools?\b|\bsnapshot\b|\bjson\b/i.test(answer.answer), 'mentions tools, snapshots or JSON to the reader');
+  record('noDuplicateWarnings', answer.caveats.filter(c => /not (?:been )?checked/i.test(c)).length <= 1, 'repeats the unchecked-bar warning');
+
   const caveatMissing = (expect.caveatMentions ?? []).filter(text => !answer.caveats.some(c => c.includes(text)));
   record('caveats', expect.caveatMentions ? caveatMissing.length === 0 : null, `missing caveat: ${caveatMissing.join(', ')}`);
 

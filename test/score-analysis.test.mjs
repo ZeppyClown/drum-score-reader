@@ -34,7 +34,8 @@ test('C1 overview matches the hand-counted fixture', () => {
   assert.deepEqual(overview.smallestNote, { label: '16th', bars: [7, 8] });
   assert.equal(overview.restCount, 1);
   assert.equal(overview.tripletGroups, 1);
-  assert.equal(overview.chordCount, 37);
+  assert.equal(overview.notesWithSeveralDrums, 37);
+  assert.equal(overview.drumHitCount, 71 + 24 + 23 + 11 + 1);  // hi-hat, kick, snare, toms, crash
   assert.deepEqual(overview.unreviewedBars, [10]);
   assert.deepEqual(overview.emptyBars, []);
   assert.deepEqual(overview.incompleteBars, []);
