@@ -41,3 +41,29 @@ test('the shared client refuses to send once the monthly limit is reached, and c
   await assert.rejects(client.createResponse({ model: 'gpt-5.6-luna' }), /cloud help limit .* has been reached/);
   assert.equal(calls, 1, 'nothing was sent after the limit');
 });
+
+test('no more than perMinute requests are allowed in any 60 seconds', t => {
+  let now = new Date('2026-09-15T10:00:00Z');
+  const budget = new CloudBudget({ file: tempFile(t), perMinute: 2, now: () => now });
+  budget.check();
+  now = new Date('2026-09-15T10:00:20Z');
+  budget.check();
+  assert.throws(() => budget.check(), /pausing it\. Try again in about 40 seconds/);
+  now = new Date('2026-09-15T10:01:00Z');
+  budget.check();   // the first request is now more than a minute old
+  assert.throws(() => budget.check(), /Try again in about 20 seconds/);
+});
+
+test('provider health follows the latest outcome', async t => {
+  let now = new Date('2026-09-15T10:00:00Z');
+  const budget = new CloudBudget({ file: tempFile(t), now: () => now });
+  assert.equal(budget.status().health, 'unknown');
+  await budget.record('gpt-5.6-luna', { input_tokens: 10, output_tokens: 10 });
+  assert.equal(budget.status().health, 'ok');
+  now = new Date('2026-09-15T10:05:00Z');
+  await budget.recordError('OpenAI timed out.');
+  assert.equal(budget.status().health, 'problem');
+  now = new Date('2026-09-15T10:06:00Z');
+  await budget.record('gpt-5.6-luna', { input_tokens: 10, output_tokens: 10 });
+  assert.equal(budget.status().health, 'ok');
+});

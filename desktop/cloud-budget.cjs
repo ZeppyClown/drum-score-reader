@@ -9,14 +9,21 @@ const path = require('node:path');
 // USD per million tokens. Unknown models are counted at the most expensive listed price.
 const PRICES = Object.freeze({ 'gpt-5.6-luna': Object.freeze({ input: 0.2, output: 1.2 }) });
 const DEFAULT_LIMIT_USD = 5;
+// Requests allowed in any 60 seconds, across all cloud features, so a loop or a stuck
+// button can't fire off a burst of paid calls.
+const DEFAULT_PER_MINUTE = 20;
+const MINUTE_MS = 60000;
 
 const monthOf = date => date.toISOString().slice(0, 7);
 
 class CloudBudget {
-  // limitUsd: DRUMHUB_MONTHLY_CLOUD_USD or 5. writeFile(file, text) should be atomic in the app.
-  constructor({ file, limitUsd = Number(process.env.DRUMHUB_MONTHLY_CLOUD_USD) || DEFAULT_LIMIT_USD, now = () => new Date(),
+  // limitUsd: DRUMHUB_MONTHLY_CLOUD_USD or 5. perMinute: DRUMHUB_CLOUD_REQUESTS_PER_MINUTE or 20.
+  // writeFile(file, text) should be atomic in the app.
+  constructor({ file, limitUsd = Number(process.env.DRUMHUB_MONTHLY_CLOUD_USD) || DEFAULT_LIMIT_USD,
+    perMinute = Number(process.env.DRUMHUB_CLOUD_REQUESTS_PER_MINUTE) || DEFAULT_PER_MINUTE, now = () => new Date(),
     writeFile = (target, text) => fs.promises.writeFile(target, text), prices = PRICES } = {}) {
-    Object.assign(this, { file, limitUsd, now, writeFile, prices });
+    Object.assign(this, { file, limitUsd, perMinute, now, writeFile, prices });
+    this.recentSends = [];   // times (ms) of requests allowed in the last minute; not saved
     this.state = { month: monthOf(now()), spentUsd: 0, requests: 0, inputTokens: 0, outputTokens: 0, lastError: null };
     try {
       const saved = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -35,12 +42,20 @@ class CloudBudget {
     return { input: Math.max(...all.map(p => p.input)), output: Math.max(...all.map(p => p.output)) };
   }
 
-  // Throws before a request once the month's estimated spending has reached the limit.
+  // Throws before a request once the month's estimated spending has reached the limit, or
+  // when too many requests were sent in the last minute. An allowed request is counted.
   check() {
     this.rollMonth();
     if (this.state.spentUsd >= this.limitUsd) {
       throw new Error(`This month's cloud help limit (about US$${this.limitUsd.toFixed(2)}) has been reached, so nothing more is sent until ${this.nextMonthLabel()}. Offline features still work.`);
     }
+    const nowMs = this.now().getTime();
+    this.recentSends = this.recentSends.filter(time => nowMs - time < MINUTE_MS);
+    if (this.recentSends.length >= this.perMinute) {
+      const waitSeconds = Math.ceil((MINUTE_MS - (nowMs - this.recentSends[0])) / 1000);
+      throw new Error(`Cloud help is being used very quickly, so DrumHub is pausing it. Try again in about ${waitSeconds} seconds.`);
+    }
+    this.recentSends = [...this.recentSends, nowMs];
   }
 
   record(model, usage) {
@@ -52,6 +67,7 @@ class CloudBudget {
       ...this.state,
       spentUsd: this.state.spentUsd + (input * price.input + output * price.output) / 1e6,
       requests: this.state.requests + 1, inputTokens: this.state.inputTokens + input, outputTokens: this.state.outputTokens + output,
+      lastSuccessAt: this.now().toISOString(),
     };
     return this.save();
   }
@@ -76,9 +92,13 @@ class CloudBudget {
 
   status() {
     this.rollMonth();
+    const { lastError, lastSuccessAt = null } = this.state;
+    // Provider health: 'unknown' before any request, 'problem' while the latest outcome was an error.
+    const health = !lastError && !lastSuccessAt ? 'unknown'
+      : lastError && (!lastSuccessAt || lastError.at > lastSuccessAt) ? 'problem' : 'ok';
     return { month: this.state.month, spentUsd: Math.round(this.state.spentUsd * 10000) / 10000, limitUsd: this.limitUsd,
-      requests: this.state.requests, lastError: this.state.lastError };
+      requests: this.state.requests, lastError, lastSuccessAt, health };
   }
 }
 
-module.exports = { CloudBudget, PRICES, DEFAULT_LIMIT_USD };
+module.exports = { CloudBudget, PRICES, DEFAULT_LIMIT_USD, DEFAULT_PER_MINUTE };

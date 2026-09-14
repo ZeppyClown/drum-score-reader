@@ -31,7 +31,7 @@ function showMode() {
   $('ask-cloud-toggle').textContent = status.cloudEnabled ? 'Turn off cloud help' : 'Turn on cloud help…';
   const budget = status.budget;
   $('ask-budget').textContent = budget && status.cloudEnabled
-    ? `Cloud spending this month: about US$${budget.spentUsd.toFixed(2)} of US$${budget.limitUsd.toFixed(2)}.${budget.lastError ? ` Last cloud problem: ${budget.lastError.message}` : ''}`
+    ? `Cloud spending this month: about US$${budget.spentUsd.toFixed(2)} of US$${budget.limitUsd.toFixed(2)}.${budget.health === 'problem' && budget.lastError ? ` Last cloud request failed: ${budget.lastError.message}` : ''}`
     : '';
   $('ask-input').disabled = !status.cloudEnabled || busy;
   $('ask-input').placeholder = status.cloudEnabled
