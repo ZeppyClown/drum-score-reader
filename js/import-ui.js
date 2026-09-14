@@ -42,6 +42,24 @@ export function initImport() {
     finally { button.disabled = aiButton.disabled = false; button.blur(); }
   });
 
+  // "Turn on cloud help…" next to the message: shows the adult confirmation (in main),
+  // tells the Ask DrumHub tab, and retries the paste once cloud help is on.
+  function offerCloudHelp() {
+    const turnOn = document.createElement('button');
+    turnOn.type = 'button';
+    turnOn.id = 'import-cloud-btn';
+    turnOn.textContent = 'Turn on cloud help…';
+    turnOn.addEventListener('click', async () => {
+      turnOn.disabled = true;
+      const next = await window.agent.setCloud(true);
+      window.dispatchEvent(new CustomEvent('cloud-help-changed', { detail: next }));
+      if (next.error) { status.textContent = next.error; return; }
+      if (next.cloudEnabled) pasteScreenshot();
+      else turnOn.disabled = false;
+    });
+    status.append(' ', turnOn);
+  }
+
   async function pasteScreenshot() {
     if (aiButton.disabled) return;
     button.disabled = aiButton.disabled = true;
@@ -50,6 +68,11 @@ export function initImport() {
     try {
       if (!window.omr) throw new Error('Open the desktop app with npm start to import images.');
       const result = await window.omr.pasteAiImage();
+      if (result.code === 'cloud_required' && window.agent) {
+        status.textContent = `Luna import needs cloud help: ${result.error}`;
+        offerCloudHelp();
+        return;
+      }
       if (result.error) throw new Error(result.error);
       applyPrediction(result, `${result.model} screenshot`, 'openai_omr', status);
     } catch (error) { status.textContent = `Luna import failed: ${error.message}`; }

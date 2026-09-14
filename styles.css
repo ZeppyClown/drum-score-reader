@@ -11,6 +11,7 @@ body > div:first-child { position: fixed; inset: 0 0 auto; height: 40px; backgro
 #import-panel { position: fixed; top: 40px; left: 0; right: 0; height: 146px; padding: 8px 20px; overflow: auto; background: #eff6ff; border-bottom: 1px solid #bfdbfe; }
 #import-panel p { margin: 4px 0; }
 #import-status { font-weight: 600; }
+#import-cloud-btn { font-weight: 400; padding: 1px 8px; margin-left: 4px; }
 #import-warnings { margin: 4px 0; padding-left: 20px; color: #92400e; }
 #score { position: fixed; inset: 186px 0 0; overflow: auto; padding: 20px; }
 #backdrop { position: fixed; inset: 40px 0 0; z-index: 30; }

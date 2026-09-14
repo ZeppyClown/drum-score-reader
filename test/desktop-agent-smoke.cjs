@@ -94,12 +94,15 @@ app.whenReady().then(async () => {
   await waitFor(async () => /Bar 10: 1 trip let \(2\) 3 4 &/.test(await text('#ask-text') ?? ''), 'count answer');
   assert.match(await text('#ask-caveats'), /Bar 10 was imported and not checked yet/);
 
-  // 3. Luna screenshot import is refused while cloud help is off.
+  // 3. Luna screenshot import is refused while cloud help is off, with a button to turn it on.
+  require('electron').clipboard.clear();
   await click('#ai-import-btn');
-  await waitFor(async () => /adult needs to turn on cloud help/.test(await text('#import-status')), 'luna gated');
+  await waitFor(async () => /needs cloud help.*adult needs to turn on cloud help/.test(await text('#import-status')), 'luna gated');
 
-  // 4. An adult turns on cloud help (confirmation dialog) and it is remembered.
-  await click('#ask-cloud-toggle');
+  // 4. An adult turns it on from the import message (confirmation dialog); the paste is retried,
+  //    the Ask tab updates, and the setting is remembered.
+  await click('#import-cloud-btn');
+  await waitFor(async () => /clipboard does not contain an image/.test(await text('#import-status')), 'paste retried after opt-in');
   await waitFor(async () => /Cloud help is on \(adult mode\)/.test(await text('#ask-mode-text')), 'cloud mode');
   assert.match(dialogs.at(-1), /For teachers and parents only/);
   assert.equal(JSON.parse(fs.readFileSync(path.join(temp, 'userData', 'settings.json'), 'utf8')).cloudAssist.enabled, true);

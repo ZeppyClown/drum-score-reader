@@ -45,7 +45,7 @@ ipcMain.handle('ai:paste-image', async event => {
   try {
     await agentIpc.ready;
     if (!agentIpc.settings.cloudEnabled) {
-      return { error: 'Screenshot import sends the image to OpenAI, so an adult needs to turn on cloud help first (Insights & Ask → Ask DrumHub). Import bar image… works offline.' };
+      return { code: 'cloud_required', error: 'Screenshot import sends the image to OpenAI, so an adult needs to turn on cloud help first. Import bar image… works offline.' };
     }
     const image = clipboard.readImage();
     if (image.isEmpty()) return { error: 'The clipboard does not contain an image. Copy a PNG screenshot and retry.' };

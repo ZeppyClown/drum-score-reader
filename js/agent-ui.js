@@ -114,6 +114,10 @@ export async function initAgentPanel() {
     status = { ...status, ...next };
     showMode();
   });
+  window.addEventListener('cloud-help-changed', event => {
+    if (!event.detail?.error) status = { ...status, ...event.detail };
+    showMode();
+  });
   onEditorChange(() => {
     if (!current) return;
     $('ask-stale').hidden = !isStale(current);
