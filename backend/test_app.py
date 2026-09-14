@@ -92,5 +92,54 @@ class ServiceTests(unittest.TestCase):
         self.assertGreater(run.bound_address[1], 0)
 
 
+class SegmentEndpointTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.folder = tempfile.TemporaryDirectory()
+        make_bundle(cls.folder.name)
+        cls.client = TestClient(service.create_app(load_bundle(cls.folder.name)))
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.folder.cleanup()
+
+    def test_segments_a_page_image_and_returns_it_for_review(self):
+        import cv2
+        import numpy as np
+        from test_page_segment import drum_staff, page
+        img = page()
+        drum_staff(img, 150, 50, 1150, [350, 650, 950, 1150])
+        drum_staff(img, 450, 50, 1150, [600, 1150])
+        ok, png = cv2.imencode('.png', img)
+        response = self.client.post('/segment', files={'file': ('page.png', png.tobytes(), 'image/png')})
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body['barCount'], 6)
+        (first,) = body['pages']
+        self.assertEqual((first['width'], first['height']), (1200, 900))
+        self.assertTrue(first['image'].startswith('data:image/png;base64,'))
+        self.assertEqual([len(s['bars']) for s in first['systems']], [4, 2])
+
+    def test_large_photos_are_scaled_down_with_boxes_in_the_returned_image(self):
+        import cv2
+        from test_page_segment import drum_staff, page
+        img = cv2.resize(page(), (4000, 3000))
+        drum_staff(img, 1000, 100, 3900, [1300, 2600, 3900], space=24, crossing_stems=False)
+        ok, png = cv2.imencode('.png', img)
+        body = self.client.post('/segment', files={'file': ('photo.png', png.tobytes(), 'image/png')}).json()
+        (first,) = body['pages']
+        self.assertEqual(max(first['width'], first['height']), 3000)
+        self.assertEqual(body['barCount'], 3)
+        for bar in first['systems'][0]['bars']:
+            self.assertLessEqual(bar['x'] + bar['width'], first['width'])
+
+    def test_unreadable_and_missing_files_are_explained(self):
+        bad = self.client.post('/segment', files={'file': ('notes.txt', b'hello', 'text/plain')})
+        self.assertEqual(bad.status_code, 422)
+        self.assertEqual(bad.json()['error']['code'], 'invalid_page')
+        missing = self.client.post('/segment')
+        self.assertEqual(missing.json()['error']['code'], 'missing_file')
+
+
 if __name__ == '__main__':
     unittest.main()

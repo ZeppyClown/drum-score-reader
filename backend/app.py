@@ -18,10 +18,17 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+import base64
+
+import cv2
+
 from omr_bundle import BundleError, ImageInputError, load_bundle, predict
+import page_segment
 
 HOST = '127.0.0.1'
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+MAX_PAGE_UPLOAD_BYTES = 40 * 1024 * 1024
+MAX_PAGE_SIDE = 3000   # larger photos are scaled down before finding bars
 IMAGE_ERROR_STATUS = {'unsupported_file': 415, 'invalid_image': 422, 'image_too_large': 413}
 
 
@@ -35,6 +42,8 @@ def create_app(bundle):
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(request, error):
+        if request.url.path == '/segment':
+            return error_response(422, 'missing_file', 'Send one PNG, JPEG or PDF in the multipart field "file"')
         return error_response(422, 'missing_image',
                               'Send one PNG or JPEG bar image in the multipart field "image"')
 
@@ -58,6 +67,33 @@ def create_app(bundle):
         except BundleError as error:
             return error_response(500, 'invalid_model_output', str(error))
         return {'notes': notes, 'model_sha256': bundle.model_sha256}
+
+    @app.post('/segment')
+    def segment_pages(file: UploadFile = File(...)):
+        """Pages of a PNG/JPEG/PDF with suggested bar boxes (master plan B3). Each page image is
+        returned as a PNG so the app crops exactly the pixels the boxes refer to."""
+        data = file.file.read(MAX_PAGE_UPLOAD_BYTES + 1)
+        if len(data) > MAX_PAGE_UPLOAD_BYTES:
+            return error_response(413, 'file_too_large', 'Pages must be '
+                                  f'{MAX_PAGE_UPLOAD_BYTES / 1024 ** 2:g} MB or smaller')
+        try:
+            grays = page_segment.load_pages(data)
+        except page_segment.SegmentError as error:
+            return error_response(422, 'invalid_page', str(error))
+        pages = []
+        for number, gray in enumerate(grays, start=1):
+            side = max(gray.shape)
+            if side > MAX_PAGE_SIDE:
+                scale = MAX_PAGE_SIDE / side
+                gray = cv2.resize(gray, (round(gray.shape[1] * scale), round(gray.shape[0] * scale)),
+                                  interpolation=cv2.INTER_AREA)
+            ok, png = cv2.imencode('.png', gray)
+            if not ok:
+                return error_response(500, 'encode_failed', 'A page could not be prepared for review')
+            result = page_segment.segment_image(gray)
+            pages.append({'page': number, **result,
+                          'image': 'data:image/png;base64,' + base64.b64encode(png.tobytes()).decode('ascii')})
+        return {'pages': pages, 'barCount': sum(len(s['bars']) for p in pages for s in p['systems'])}
 
     return app
 

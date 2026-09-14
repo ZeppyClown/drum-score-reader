@@ -69,6 +69,34 @@ two hits would be lost. Every error uses one envelope:
 | 422 | `missing_image` | No `image` field in the request |
 | 500 | `invalid_model_output` | Inference failed or returned the wrong shape or non-finite values |
 
+## Page import: `POST /segment`
+
+Send one PNG, JPEG or PDF (up to 20 pages, 40 MB) in the multipart field `file`. The
+response has every page as a PNG data URL plus suggested bar boxes in that image's pixel
+coordinates, in reading order:
+
+```json
+{ "barCount": 6, "pages": [{ "page": 1, "width": 1190, "height": 1684, "image": "data:image/png;base64,…",
+  "systems": [{ "staffTop": 257.0, "staffBottom": 301.0, "lineSpacing": 11.0, "x0": 68, "x1": 1119,
+                "bars": [{ "x": 66, "y": 219, "width": 192, "height": 121 }] }] }] }
+```
+
+`page_segment.py` works from pixels (local threshold → five-line staves → barlines that stop
+at the staff edges, so drum stems crossing the staff are not mistaken for barlines). Photos
+are scaled to at most 3000 px on the long side first. Boxes are suggestions for the user to
+review before transcription.
+
+Measured on 2026-09-15 against the vector crop tools with `python3 backend/eval_segment.py`:
+
+| Source | Pages with the exact bar count | Bars found / expected | Bars wrong |
+| --- | --- | --- | --- |
+| Songsterr PDFs | 528 / 549 (96.2%) | 16,894 / 16,915 | 33 (0.2%) |
+| Reflow PDFs | 215 / 308 (69.8%) | 6,807 / 7,019 | 264 (3.8%) |
+
+Reflow's remaining misses are mostly staves whose lines run through dense rows of touching
+noteheads. Two attempted fixes (thin-ink line detection, tolerant staff grouping) made both
+sources worse and were reverted.
+
 ## Preprocessing
 
 `omr_bundle.preprocess` reproduces `ml/omr/omr_model.image_transform` without PyTorch:
