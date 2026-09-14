@@ -1,6 +1,6 @@
 # Project Progress Review
 
-Reviewed: 2026-09-14 (first written 2026-09-11)
+Reviewed: 2026-09-15 (first written 2026-09-11)
 
 Baseline: `main` at `b332e66`, plus the uncommitted Workstream 3 implementation described
 below. Historical verification entries retain their original scope and counts.
@@ -9,6 +9,44 @@ Scope: the drum-score reader at the repository root and `ml/`; the unrelated unt
 `ai-engineer-workshop-2026-project/` and `songsterr/` directories are excluded.
 
 ## Current status
+
+Updated 2026-09-15 at `main` (not pushed). **Every build item in `drumhub_master_plan.md`
+Phases 0–8 now exists in the app**; what remains needs a person (teacher review, signing
+certificates, a pilot) or a decision from Victor. See the 2026-09-15 entry below.
+
+### 2026-09-15 — Master plan Phases 4–8: page import, playback, library, practice, export, hardening
+
+Built (each with Node tests and a real-Electron workflow test; Codex built or reviewed several slices):
+
+| Plan item | What exists now |
+|---|---|
+| B3 page/PDF import | `backend/page_segment.py` finds staves and bars from pixels; review screen to fix boxes; bars read one by one with retry and resume. Measured on 857 real pages: Songsterr 528/549 pages exactly right, Reflow 215/308 (Reflow stays local). |
+| B2 multi-bar Luna | One screenshot can hold up to 16 bars. |
+| B5 benchmark lab | `eval/recognition/`: 45 synthetic bars drawn by the app, plus held-out Songsterr. Local model: 0% exact bars, drum F1 22.2. **GPT-5.6 Luna (high): 51.1% exact, onset F1 97.7, drum F1 84.3, ~90 s and ~US$0.01 per bar.** Gemini (adult developer check, synthetic only) — see eval/recognition/README.md. |
+| E1 playback | Synthesised drums, count-in, loop, practice tempo, moving note highlight, Space to play. |
+| E2–E4 practice | Practice plan, tries saved in local SQLite, hardest bars per student. |
+| F1–F3 library | 26 original exercises, search with reasons, preview and insert. |
+| G1–G2 Fill Lab | 21 fills with suggestions; new fills from Luna are checked before they are shown. |
+| H1–H4 teacher | Students (display name only), assignments, dashboard, teacher summary from saved facts only. |
+| D4 actions | Answers can offer select / loop / slow down / open exercise buttons; nothing happens without a click. |
+| I1 export | PDF, MIDI and MusicXML from the File menu. |
+| I2 safety | One monthly cloud limit (US$5 default), 20 requests per minute, provider health, key redaction, store:false. Codex red-team of prompts and malformed outputs — see below. |
+| Phase 8 accessibility | Codex review found 21 problems; all fixed: focus handling in dialogs, keyboard box editing, score in words, keyboard bar selection, named controls, no silent failures. |
+| Phase 8 packaging | `npm run dist:dir` builds an unsigned macOS app; checked that it starts the recognition service from its own files. Python still has to be installed. |
+
+Not done, and why:
+
+- **G3 fine-tuning gate** — a decision document, not code; needs Victor and teacher-rated fills.
+- **I3 Gemini judge** — the plan requires calibrating it against teachers first.
+- **Signed updates / notarised app / bundled Python** — needs an Apple Developer certificate and a decision on Python packaging.
+- **Teacher review** of the question bank, complexity and fill labels, exercise descriptions.
+- **Pilot and release thresholds** (Phase 8.4) — needs real teachers and students.
+- **Decisions 5, 7, 8, 9, 11** in the master plan §10 are still open (budget default is set to US$5 as a placeholder).
+
+Verified 2026-09-15: 272 Node tests (`npm test`) and 7 real-Electron workflow tests
+(`npm run test:desktop`) pass; the packaged app starts.
+
+### Earlier status (2026-09-14)
 
 The plan consolidation itself is complete: `plan/README.md` is the authoritative plan,
 this file preserves the dated audit, and `model_training.md` and `score_editor.md` are
@@ -341,36 +379,34 @@ append preservation, cancellation, unsupported files, empty predictions, malform
 events, and conversion warnings. Service checks cover process reuse, crash recovery,
 startup timeout, missing artifacts/Python, and shutdown. No API key is needed.
 
-### Workstream 4 — Import complete pages and PDFs: not started
+### Workstream 4 — Import complete pages and PDFs: done (see 2026-09-15)
 
-- [ ] PDF page rendering.
-- [ ] Staff-system and bar-line detection for user imports.
-- [ ] Crop-review and correction UI.
-- [ ] Ordered multi-bar inference with progress and per-bar errors.
-- [ ] Partial-failure recovery and retry.
+- [x] PDF page rendering.
+- [x] Staff-system and bar-line detection for user imports.
+- [x] Crop-review and correction UI.
+- [x] Ordered multi-bar inference with progress and per-bar errors.
+- [x] Partial-failure recovery and retry.
 
-The ML data-preparation crop scripts are offline dataset tools; they are not wired into the
-desktop app and do not provide the user-facing import workflow described by this
-workstream.
+Built in `backend/page_segment.py`, `desktop/page-import.cjs` and `js/page-import-ui.js`.
 
-### Workstream 5 — Playback: not started
+### Workstream 5 — Playback: done (see 2026-09-15)
 
-- [ ] Tempo, meter, and duration-to-time rules.
-- [ ] Bundled drum samples and drum-to-sample mapping.
-- [ ] Play, pause/stop, tempo, and start-position controls.
-- [ ] Active-event highlighting.
+- [x] Tempo, meter, and duration-to-time rules.
+- [x] Drum sounds: synthesised in `js/drum-synth.js` instead of bundled samples (no licences or loading).
+- [x] Play, pause/stop, tempo, and start-position controls.
+- [x] Active-event highlighting.
 
-No Web Audio implementation or sample assets are present.
+Built in `js/playback-schedule.js`, `js/playback-engine.js`, `js/transport-ui.js`.
 
-### Workstream 6 — Export: not started
+### Workstream 6 — Export: done (see 2026-09-15)
 
-- [ ] PDF export.
-- [ ] MIDI export.
-- [ ] MusicXML export.
-- [ ] Fixture-based exporter tests for timing, simultaneous hits, rests, dotted notes,
+- [x] PDF export.
+- [x] MIDI export.
+- [x] MusicXML export.
+- [x] Fixture-based exporter tests for timing, simultaneous hits, rests, dotted notes,
   and tuplets.
 
-There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
+Built in `js/export-midi.js`, `js/export-musicxml.js` and File > Export (printToPDF).
 
 ## Cross-cutting work: not complete
 
@@ -400,8 +436,8 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
   notes cannot be dotted, resized, or have their rests deleted, and 32nds cannot be
   dotted. 32 Node tests pass, and a 20-step real-app script confirmed triplet creation,
   splitting, every refusal, 32nds, and the dotted 16th with no page errors.
-- [ ] Add `test`, `lint`, build, and packaging scripts. `npm test` now runs the editor
-  rule tests; lint, build, and packaging scripts do not exist yet.
+- [ ] Add `test`, `lint`, build, and packaging scripts. `npm test`, `npm run test:desktop` and
+  `npm run dist` / `dist:dir` exist (2026-09-15); a lint script does not.
 - [x] Keep generated datasets and model weights out of Git. The regenerated local dataset
   and `ml/data/dataset.zip` are ignored; the ZIP is removed from version control without
   deleting the local copy.

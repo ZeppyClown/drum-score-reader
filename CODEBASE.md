@@ -42,22 +42,43 @@ drum score reader/
 │   ├── score-analysis.js ← Overview, bar inspection, repeats, fills, complexity, practice plan (pure)
 │   ├── selection.js    ← Selected bars stored by bar id; click / Shift-click commands (pure)
 │   ├── selection-ui.js ← Maps clicks on the score to bars
+│   ├── score-description.js ← Each bar in plain words for screen readers (pure)
+│   ├── score-a11y.js   ← Keeps the hidden "bars in words" list current; S / Shift+S select bars
 │   ├── insights.js     ← Offline insight cards with bar citations; stale-revision check (pure)
 │   ├── insights-ui.js  ← Side panel "Insights" tab; followCitation() shared with Ask DrumHub
 │   ├── agent-tools.js  ← The 7 read-only tools Ask DrumHub may call, run on the snapshot (pure)
 │   ├── agent-contract.js ← Answer JSON schema, local answer checks, caveats added by code (pure)
+│   ├── agent-actions.js ← Actions an answer may suggest (select, loop, slow down, open exercise); applied only after a click (pure)
 │   ├── offline-answers.js ← Suggested questions and their offline answers (pure)
 │   ├── ask-request.js  ← Which bars a question covers; builds the snapshot sent to main (pure)
 │   ├── agent-ui.js     ← Side panel "Ask DrumHub" tab: suggestions, typed questions, answers, Stop
 │   ├── page-boxes.js   ← Page-import bar boxes: reading order, clamping, validation (pure)
 │   ├── page-import-ui.js ← Import page or PDF: review/edit boxes, transcribe, retry, add, resume
 │   ├── playback-schedule.js ← Exact hit/click times for playback, loops, count-in (pure)
+│   ├── playback-engine.js ← Look-ahead Web Audio scheduler; AudioContext time is the only clock
+│   ├── drum-synth.js   ← Drum sounds made from oscillators and noise (no sample files)
+│   ├── transport-ui.js ← Play/Stop, practice tempo, loop, count-in, metronome bar
+│   ├── exercise-catalogue.js ← DrumHub's own 26 exercises and 21 fills (pure data)
+│   ├── exercise-search.js ← Filter + word-overlap search for exercises and fills (pure)
+│   ├── library-ui.js   ← Side panel "Library" tab: exercises and Fill Lab
+│   ├── practice-ui.js  ← Side panel "Practice" tab: students, assignments, tries, dashboard, teacher summary
 │   ├── export-midi.js  ← Score → Standard MIDI File on the General MIDI drum channel (pure)
 │   └── export-musicxml.js ← Score → MusicXML 4.0 drum part (pure)
 │   ├── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
-├── desktop/            ← Main-process modules: OMR service, OpenAI client + import, Ask DrumHub agent, score files (see §9)
+├── desktop/            ← Main-process modules (see §9–§12):
+│   ├── omr-service.cjs      ← Starts/stops the Python recognition service; /predict and /segment
+│   ├── openai-client.cjs    ← The one OpenAI transport: store:false, retries, key redaction, budget check
+│   ├── cloud-budget.cjs     ← Monthly US$ limit, 20 requests/minute, provider health; shared by all cloud features
+│   ├── openai-omr.cjs       ← Screenshot → up to 16 bars with GPT-5.6 Luna (prompt + strict schema)
+│   ├── score-agent.cjs, agent-ipc.cjs, app-settings.cjs ← Ask DrumHub tool loop, adult cloud opt-in
+│   ├── page-import.cjs, page-import-ipc.cjs ← Page/PDF import jobs saved box by box, cropping, progress
+│   ├── fill-generator.cjs   ← Fill Lab: one new fill from Luna, checked against the drum list and claims rules
+│   ├── practice-store.cjs, practice-ipc.cjs ← Students, assignments, practice tries in local SQLite
+│   ├── teacher-summary.cjs  ← Teacher summary drafted by Luna from saved facts only (no names, no score)
+│   └── score-files.cjs, score-session.cjs, score-ipc.cjs ← Save/open/recover and the File menu
+├── eval/recognition/   ← Recognition benchmark: synthetic bars + held-out Songsterr, local / Luna / Gemini
 ├── eval/score-agent/   ← Ask DrumHub question bank, frozen scores, graders; `npm run eval:agent`
 └── test/               ← `npm test` (Node) and `npm run test:desktop` (real Electron app)
 ```
@@ -452,6 +473,8 @@ Changes `cursor.position` (1–10). Does not touch any notes. `render()` moves t
 | `↑` | Move cursor up one vertical slot |
 | `↓` | Move cursor down one vertical slot |
 | `Backspace` | Delete rest / convert drum hit to rest |
+| `S` / `Shift`+`S` | Select the bar at the cursor / extend the selection to it (`score-a11y.js`) |
+| `Space` | Play / stop (`app.js`) |
 | `⌘Z` / `⇧⌘Z` | Undo / redo (Edit menu; inside a text field they edit the text instead) |
 | `⌘N` `⌘O` `⌘S` `⇧⌘S` | New, Open, Save, Save As (File menu) |
 
@@ -469,7 +492,7 @@ User types a number in the input
 → if valid:   state.barsPerRow = val, render()
 ```
 
-Menu open/close uses Tailwind's `-translate-x-full` / `translate-x-0` classes for the slide animation. The backdrop div catches outside clicks to close the menu.
+Menu open/close uses Tailwind's `-translate-x-full` / `translate-x-0` classes for the slide animation. The backdrop div catches outside clicks to close the menu. While closed the menu is `inert` (Tab skips it); opening focuses the input and Escape closes it.
 
 ---
 
@@ -573,7 +596,7 @@ agent-ui.js → ask-request.js (scope + snapshot) → preload window.agent.ask
 Import page or PDF… → main: dialog → service POST /segment (backend/page_segment.py)
   → desktop/page-import.cjs saves page PNGs + suggested boxes (userData/page-imports/<job>)
   → review screen: draw / move / resize / remove boxes; numbers = reading order (page-boxes.js)
-  → Transcribe: main crops each box (nativeImage) → local model (predictData) or Luna
+  → Read (keyboard: arrows move a box, Alt+arrows resize, Delete removes, Add box): main crops each box (nativeImage) → local model (predictData) or Luna
        results saved one by one; a failed box can be retried alone; moving a box redoes it
   → Add bars to score: importBarsCommand in reading order; failed boxes can become
        empty unchecked bars so the order stays right; the job folder is deleted
@@ -581,6 +604,27 @@ Import page or PDF… → main: dialog → service POST /segment (backend/page_s
 
 An import that was opened but not added is offered again (Resume / Discard) the next
 time the app starts. Luna needs cloud help on, like screenshot import.
+
+---
+
+## 12. Playback, library, practice, packaging
+
+- **Playback:** `playback-schedule.js` turns the score into exact times (pure, tested);
+  `playback-engine.js` schedules them a little ahead on the AudioContext clock and moves the
+  note highlight (`showPlayhead` in `score.js`); `drum-synth.js` makes the sounds.
+- **Library and Fill Lab:** everything offline comes from `exercise-catalogue.js` and
+  `exercise-search.js`. Generating a new fill needs cloud help (`fill-generator.cjs`).
+- **Practice:** SQLite in main (`practice-store.cjs`); the page only calls the small
+  `window.practice` API. Teacher summaries send counts and tempos, never names or notes.
+- **Cloud safety:** every OpenAI call goes through `openai-client.cjs`, which asks
+  `cloud-budget.cjs` first (monthly limit, per-minute limit) and records usage and health.
+- **Accessibility:** the score has a hidden word list (`score-description.js`), keypad keys
+  are buttons, dialogs keep focus inside and return it on close. Global key handlers ignore
+  keys typed into inputs, buttons and open dialogs — keep that guard when adding shortcuts.
+- **Packaging:** `npm run dist:dir` builds `dist/mac-arm64/DrumHub.app` with electron-builder.
+  Only `dependencies` (dotenv, vexflow) ship; everything else must stay in `devDependencies`.
+  `backend/` is unpacked beside `app.asar` and the model release is copied to
+  `Resources/model` (`main.js` picks those paths when `app.isPackaged`). Python is not bundled.
 
 ---
 
