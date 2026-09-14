@@ -139,7 +139,7 @@ class ScoreAgent {
         parallel_tool_calls: true,
         reasoning: { effort: 'low' },
         include: ['reasoning.encrypted_content'],
-        max_output_tokens: 3000,
+        max_output_tokens: 12000,  // reasoning counts against this; a cut-off answer would fall back offline
         text: { format: { type: 'json_schema', name: 'drumhub_answer', strict: true, schema: ANSWER_SCHEMA } },
       }, { task: 'the question', setting: 'OPENAI_AGENT_MODEL', signal });
       this.countUsage(body.usage, trace);

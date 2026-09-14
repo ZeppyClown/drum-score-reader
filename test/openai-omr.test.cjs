@@ -153,3 +153,13 @@ test('OpenAI API key never leaks into the URL, request body, results or error me
   for (const message of messages) assert.equal(message.includes(apiKey), false, message);
   assert.match(messages[1], /API key is invalid.*\[redacted\]/);
 });
+
+test('the import leaves room for reasoning and waits long enough for busy bars', async () => {
+  let sent;
+  const { OpenAiOmr: Omr, MAX_OUTPUT_TOKENS, IMPORT_TIMEOUT_MS } = require('../desktop/openai-omr.cjs');
+  const omr = new Omr({ apiKey: 'x', fetchImpl: async (_url, init) => { sent = JSON.parse(init.body); return apiResponse(); } });
+  await omr.recognize(Buffer.from('png'));
+  assert.equal(sent.max_output_tokens, MAX_OUTPUT_TOKENS);
+  assert.ok(MAX_OUTPUT_TOKENS >= 25000, 'reasoning tokens count against this limit');
+  assert.ok(omr.client.timeoutMs >= IMPORT_TIMEOUT_MS && IMPORT_TIMEOUT_MS >= 120000);
+});

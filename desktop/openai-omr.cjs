@@ -77,11 +77,18 @@ function validateResult(result) {
   return result;
 }
 
+// Luna counts its hidden reasoning against max_output_tokens. On busy bars it used
+// all of the old 4,096 on reasoning and never wrote the JSON (2026-09-14), and answers
+// took 30–60 s. OpenAI recommends reserving about 25,000 tokens for reasoning; at
+// $1.20 per million output tokens that is at most about 3 cents per screenshot.
+const MAX_OUTPUT_TOKENS = 25000;
+const IMPORT_TIMEOUT_MS = 180000;
+
 // Screenshot → one bar of notes, through the shared OpenAI transport.
 class OpenAiOmr {
-  constructor({ apiKey = process.env.OPENAI_API_KEY, model = modelSettings().omr, client, ...transport } = {}) {
+  constructor({ apiKey = process.env.OPENAI_API_KEY, model = modelSettings().omr, client, timeoutMs = IMPORT_TIMEOUT_MS, ...transport } = {}) {
     this.model = model;
-    this.client = client ?? new OpenAiClient({ apiKey, ...transport });
+    this.client = client ?? new OpenAiClient({ apiKey, timeoutMs, ...transport });
   }
 
   async recognize(png) {
@@ -93,7 +100,7 @@ class OpenAiOmr {
     const body = await this.client.createResponse({
       model: this.model,
       reasoning: { effort: 'medium' },
-      max_output_tokens: 4096,
+      max_output_tokens: MAX_OUTPUT_TOKENS,
       input: [{ role: 'user', content: [
         { type: 'input_text', text: PROMPT },
         { type: 'input_image', image_url: `data:image/png;base64,${png.toString('base64')}`, detail: 'original' },
@@ -111,4 +118,4 @@ class OpenAiOmr {
   }
 }
 
-module.exports = { OpenAiOmr, RESPONSE_SCHEMA, apiErrorMessage, redactSecret };
+module.exports = { OpenAiOmr, RESPONSE_SCHEMA, apiErrorMessage, redactSecret, MAX_OUTPUT_TOKENS, IMPORT_TIMEOUT_MS };
