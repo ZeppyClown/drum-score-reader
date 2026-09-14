@@ -82,11 +82,16 @@ export function runTool(name, rawArguments, snapshot) {
       return buildPracticePlan(snapshot, { fromBar: args.fromBar, toBar: args.toBar });
     case 'find_exercises': {
       if (!isInt(args.fromBar) || !isInt(args.toBar)) return { error: `fromBar and toBar must be whole bar numbers. ${range}` };
-      const inspected = inspectBars(snapshot, { fromBar: args.fromBar, toBar: Math.min(args.toBar, args.fromBar + MAX_INSPECT_BARS - 1) });
+      const lastLooked = Math.min(args.toBar, args.fromBar + MAX_INSPECT_BARS - 1);
+      const inspected = inspectBars(snapshot, { fromBar: args.fromBar, toBar: lastLooked });
       if (!inspected.bars?.length) return { error: `None of those bars are available. ${range}` };
       const complex = findComplexPassages(snapshot);
       const ranked = complex.error ? [] : complex.ranked;
-      return { exercises: exercisesForPassage({ ...inspected, ranked }).map(({ id, title, reasons }) => ({ id, title, reasons })) };
+      const exercises = exercisesForPassage({ ...inspected, ranked }).map(({ id, title, reasons }) => ({ id, title, reasons }));
+      // Say plainly when only the first bars of a long range were looked at.
+      return lastLooked < args.toBar
+        ? { exercises, lookedAtBars: { fromBar: args.fromBar, toBar: lastLooked }, note: `Only bars ${args.fromBar}–${lastLooked} were looked at (at most ${MAX_INSPECT_BARS} at a time). Do not say these exercises match bars after ${lastLooked}.` }
+        : { exercises };
     }
     default:
       return { error: `Unknown tool "${name}". Available tools: ${TOOL_NAMES.join(', ')}.` };

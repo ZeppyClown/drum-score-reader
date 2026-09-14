@@ -5,6 +5,7 @@
 
 import { execute } from './commands.js';
 import { selectBarsCommand } from './selection.js';
+import { hasHiddenCharacters } from './safe-text.js';
 
 export const ACTION_TYPES = ['select_bars', 'set_loop', 'set_tempo', 'open_exercise'];
 
@@ -97,7 +98,7 @@ function fieldsAreStrict(action, problems, index) {
 }
 
 function validateReason(action, problems) {
-  if (typeof action.reason !== 'string' || !action.reason.trim() || action.reason.length > MAX_REASON_LENGTH || /[\r\n]/.test(action.reason)) {
+  if (typeof action.reason !== 'string' || !action.reason.trim() || action.reason.length > MAX_REASON_LENGTH || /[\r\n]/.test(action.reason) || hasHiddenCharacters(action.reason)) {
     problems.push(`Give each action a short, non-empty reason sentence of at most ${MAX_REASON_LENGTH} characters.`);
     return false;
   }

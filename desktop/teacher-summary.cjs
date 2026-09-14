@@ -2,6 +2,7 @@
 // store; Luna only drafts prose around those facts and never receives score contents,
 // chat, or a student's display name.
 const { OpenAiClient, modelSettings, outputText } = require('./openai-client.cjs');
+const { hasHiddenCharacters } = require('../js/safe-text.js');
 
 const SUMMARY_SCHEMA = {
   type: 'object',
@@ -48,6 +49,9 @@ const numberPattern = /\b\d+(?:\.\d+)?\b/g;
 const judgmentPattern = /\b(?:lazy|gifted|talented|genius|stupid|idiot|adhd|autis(?:m|tic)|diagnos(?:is|ed|e)|personality|talent|behind\s+(?:other\s+)?students?|ahead\s+of\s+(?:other\s+)?students?|better\s+than|worse\s+than|compared\s+with\s+(?:other\s+)?students?|comparison\s+with\s+(?:other\s+)?students?)\b/i;
 
 const escapeRegExp = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// Every string anywhere inside a value (JSON.stringify would escape control characters).
+const stringsIn = value => (typeof value === 'string' ? [value]
+  : value && typeof value === 'object' ? Object.values(value).flatMap(stringsIn) : []);
 const asText = value => typeof value === 'string' && value.trim().length > 0;
 const numberTokens = text => String(text).match(numberPattern)?.map(Number) || [];
 
@@ -149,11 +153,32 @@ function unexpectedName(text, displayName) {
   return null;
 }
 
-function checkTextNumbers(text, allowedValues, label) {
+// A number followed by a unit ("90 minutes", "3 attempts", "80 BPM") or after "bar" must be
+// the value of a fact about that unit, so "practised 90 minutes" can't borrow a 90 BPM target.
+const UNITS = [
+  { after: /^\s*(?:minutes?|mins?)\b/i, fact: /minute/i },
+  { after: /^\s*sessions?\b/i, fact: /session/i },
+  { after: /^\s*(?:attempts?|tries|try)\b/i, fact: /attempt/i },
+  { after: /^\s*bpm\b/i, fact: /bpm/i },
+  { after: /^\s*assignments?\b/i, fact: /assignment/i },
+  { before: /\bbars?\s*$|\bbars?\s+\d+\s*[–-]\s*$/i, fact: /\bbar\b/i },
+];
+
+function checkTextNumbers(text, factRows, label) {
   const problems = [];
-  for (const number of numberTokens(text)) {
-    if (!allowedValues.some(value => Object.is(Number(value), number))) {
-      problems.push(`${label} contains ${number}, which is not a value of a permitted fact.`);
+  const numeric = factRows.filter(fact => typeof fact?.value === 'number' && Number.isFinite(fact.value));
+  const source = String(text);
+  for (const match of source.matchAll(numberPattern)) {
+    const number = Number(match[0]);
+    const before = source.slice(0, match.index);
+    const after = source.slice(match.index + match[0].length);
+    if (/\bassignment\s*$/i.test(before)) continue;   // the "assignment 2" label from cloudFacts, not a count
+    const unit = UNITS.find(u => (u.after && u.after.test(after)) || (u.before && u.before.test(before)));
+    const candidates = unit ? numeric.filter(fact => unit.fact.test(String(fact.text))) : numeric;
+    if (!candidates.some(fact => Object.is(Number(fact.value), number))) {
+      problems.push(unit
+        ? `${label} says "${(match[0] + (after.match(/^\s*\w+/)?.[0] ?? '')).trim()}", but ${number} is not a value of a permitted fact about that.`
+        : `${label} contains ${number}, which is not a value of a permitted fact.`);
     }
   }
   return problems;
@@ -168,10 +193,12 @@ function checkSummary(draft, facts) {
   if (!Array.isArray(draft.highlights)) problems.push('highlights must be a list.');
   if (!Array.isArray(draft.nextSteps)) problems.push('nextSteps must be a list.');
   if (!Array.isArray(draft.caveats) || draft.caveats.some(caveat => !asText(caveat))) problems.push('caveats must be a list of non-empty strings.');
+  if (stringsIn(draft).some(hasHiddenCharacters)) {
+    problems.push('Use plain text only: remove invisible characters and text-direction marks.');
+  }
 
   const factRows = Array.isArray(facts?.facts) ? facts.facts : [];
   const factIds = new Set(factRows.map(fact => fact?.id));
-  const numericValues = factRows.filter(fact => typeof fact?.value === 'number' && Number.isFinite(fact.value)).map(fact => fact.value);
   const displayName = facts?.student?.displayName || '';
   const allText = [draft.summary,
     ...(Array.isArray(draft.highlights) ? draft.highlights.map(item => item?.text) : []),
@@ -182,7 +209,7 @@ function checkSummary(draft, facts) {
   const name = unexpectedName(allText, displayName);
   if (name) problems.push(`Do not mention the name ${name}; refer to the learner as "the student".`);
 
-  if (typeof draft.summary === 'string') problems.push(...checkTextNumbers(draft.summary, numericValues, 'summary'));
+  if (typeof draft.summary === 'string') problems.push(...checkTextNumbers(draft.summary, factRows, 'summary'));
 
   const checkCited = (items, label) => {
     if (!Array.isArray(items)) return;
@@ -200,15 +227,13 @@ function checkSummary(draft, facts) {
       const cited = item.factIds.filter(id => factIds.has(id));
       if (cited.length !== item.factIds.length) problems.push(`${label} ${index + 1} cites a fact id that was not supplied.`);
       if (!cited.length) continue;
-      const citedValues = factRows.filter(fact => cited.includes(fact.id)).map(fact => fact.value)
-        .filter(value => typeof value === 'number' && Number.isFinite(value));
-      problems.push(...checkTextNumbers(item.text, citedValues, `${label} ${index + 1}`));
+      problems.push(...checkTextNumbers(item.text, factRows.filter(fact => cited.includes(fact.id)), `${label} ${index + 1}`));
     }
   };
   checkCited(draft.highlights, 'highlight');
   checkCited(draft.nextSteps, 'next step');
   if (Array.isArray(draft.caveats)) {
-    problems.push(...draft.caveats.flatMap((caveat, index) => checkTextNumbers(caveat, numericValues, `caveat ${index + 1}`)));
+    problems.push(...draft.caveats.flatMap((caveat, index) => checkTextNumbers(caveat, factRows, `caveat ${index + 1}`)));
   }
 
   const unknownTopLevel = Object.keys(draft).filter(key => !['summary', 'highlights', 'nextSteps', 'caveats'].includes(key));
@@ -216,11 +241,35 @@ function checkSummary(draft, facts) {
   return { summary: problems.length ? null : draft, problems };
 }
 
-// What the model receives: no display name and no internal student id.
-function withoutName(facts) {
+// What the model receives: no display name, student id, assignment titles or score ids.
+// Free text a teacher typed (a title like "Avery's recital piece") could hold a name, so
+// assignments become "assignment 1", "assignment 2" and scores "score A", "score B".
+// `labels` maps those back to the real titles for the text shown to the teacher.
+function cloudFacts(facts) {
   const name = facts.student.displayName;
-  const json = JSON.stringify({ ...facts, student: { level: facts.student.level, displayName: 'the student' } });
-  return JSON.parse(json.split(name).join('the student'));
+  const nameAnywhere = new RegExp(escapeRegExp(name), 'gi');
+  const assignmentLabel = new Map(facts.openAssignments.map((a, i) => [a.title, `assignment ${i + 1}`]));
+  const scoreIds = [...new Set(facts.ranges.map(r => r.scoreId))];
+  const scoreLabel = new Map(scoreIds.map((id, i) => [id, `score ${String.fromCharCode(65 + (i % 26))}`]));
+  const relabel = text => {
+    let out = String(text);
+    for (const [title, label] of assignmentLabel) out = out.split(`"${title}"`).join(label);
+    for (const [id, label] of scoreLabel) out = out.split(`Score ${id}`).join(label);
+    return out.replace(nameAnywhere, 'the student');
+  };
+  const safe = {
+    student: { level: facts.student.level, displayName: 'the student' },
+    period: facts.period,
+    sessions: facts.sessions, minutes: facts.minutes, attempts: facts.attempts, completedAssignments: facts.completedAssignments,
+    openAssignments: facts.openAssignments.map(({ title, ...rest }) => ({ label: assignmentLabel.get(title), ...rest })),
+    ranges: facts.ranges.map(({ scoreId, ...rest }) => ({ score: scoreLabel.get(scoreId), ...rest })),
+    facts: facts.facts.map(fact => ({ ...fact, text: relabel(fact.text) })),
+  };
+  const labels = [
+    ...[...assignmentLabel].map(([title, label]) => [label, `"${title}"`]),
+    ...[...scoreLabel].map(([, label]) => [label, 'this score']),
+  ];
+  return { safe, labels };
 }
 
 function offlineText(facts) {
@@ -238,8 +287,9 @@ function offlineText(facts) {
   return lines.join(' ');
 }
 
-function renderDraft(draft, displayName) {
-  const restore = text => String(text).replace(/\bthe student\b/gi, displayName);
+function renderDraft(draft, displayName, labels = []) {
+  const restore = text => labels.reduce((out, [label, real]) => out.replace(new RegExp(`\\b${escapeRegExp(label)}\\b`, 'gi'), real),
+    String(text)).replace(/\bthe student\b/gi, displayName);
   const sections = [restore(draft.summary)];
   if (draft.highlights.length) sections.push(`Highlights: ${draft.highlights.map(item => restore(item.text)).join(' ')}`);
   if (draft.nextSteps.length) sections.push(`Next steps: ${draft.nextSteps.map(item => restore(item.text)).join(' ')}`);
@@ -264,7 +314,7 @@ class TeacherSummaries {
     try { allowed = consented && Boolean(this.cloudAllowed(student)); } catch { allowed = false; }
     if (!allowed) return this.offline(facts);
 
-    const safeFacts = withoutName(facts);
+    const { safe: safeFacts, labels } = cloudFacts(facts);
     const call = async (repair = null) => this.client.createResponse({
       model: this.model,
       instructions: repair ? `${SUMMARY_INSTRUCTIONS}\nRepair the previous draft using these checks:\n- ${repair.map(problem => problem.replace(new RegExp(escapeRegExp(student.displayName), 'gi'), 'the student')).join('\n- ')}` : SUMMARY_INSTRUCTIONS,
@@ -290,11 +340,11 @@ class TeacherSummaries {
       if (!checked.summary) {
         return this.offline(facts, `The cloud draft did not pass the saved-facts checks after one repair round.`);
       }
-      return { mode: 'cloud', text: renderDraft(checked.summary, student.displayName), facts, draft: checked.summary, repaired };
+      return { mode: 'cloud', text: renderDraft(checked.summary, student.displayName, labels), facts, draft: checked.summary, repaired };
     } catch (error) {
       return this.offline(facts, `Cloud help was unavailable (${error.message}), so this summary uses saved practice facts.`);
     }
   }
 }
 
-module.exports = { SUMMARY_SCHEMA, progressFacts, checkSummary, TeacherSummaries };
+module.exports = { SUMMARY_SCHEMA, progressFacts, checkSummary, cloudFacts, TeacherSummaries };

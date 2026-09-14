@@ -19,6 +19,7 @@ const INSTRUCTIONS = `You are Ask DrumHub, a friendly helper inside a drum-score
 Rules:
 - Get every fact about the score from the tools. Do not guess notes, counts, tempos or bar numbers. If no tool result showed you something, you do not know it.
 - Call tools first, then answer. For questions about "this bar" or "these bars", use the selected bars given in the request.
+- Only name drums that tool results showed you. DrumHub scores never contain cowbell, clap, china, splash or other percussion.
 - Put every bar range your answer relies on in "references". Only use bar numbers that tool results showed you.
 - The score only records which drums play, when, and for how long (including dots, triplets and rests), plus tempo and time signature. It does not record accents, dynamics, sticking, which hand or foot to use, ghost notes, flams, rolls, ties, repeat signs or song sections. If asked about those, say the score does not show that, set "abstained" to true, and suggest a question the score can answer.
 - Talk about "notation complexity" or "busy notes". Never say a passage is hard for this particular person.
@@ -128,6 +129,7 @@ class ScoreAgent {
     // A question counts toward the daily limit once its first request is sent.
     this.usage = { ...this.usage, cloudQuestions: this.usage.cloudQuestions + 1 };
     this.saveUsage();
+    let toolOutputs = [];   // what the model was shown; its answer may only name drums found here
     for (;;) {
       if (signal.aborted) throw new Error('Canceled.');
       const mustAnswer = trace.rounds >= this.maxToolRounds;
@@ -150,8 +152,10 @@ class ScoreAgent {
       if (calls.length && !mustAnswer) {
         trace.rounds += 1;
         trace.toolCalls = [...trace.toolCalls, ...calls.map(call => call.name)];
-        input = [...input, ...output, ...calls.map(call => ({
-          type: 'function_call_output', call_id: call.call_id, output: toolOutput(runTool(call.name, call.arguments, snapshot)),
+        const results = calls.map(call => ({ call, output: toolOutput(runTool(call.name, call.arguments, snapshot)) }));
+        toolOutputs = [...toolOutputs, ...results.map(r => r.output)];
+        input = [...input, ...output, ...results.map(({ call, output: text }) => ({
+          type: 'function_call_output', call_id: call.call_id, output: text,
         }))];
         continue;
       }
@@ -159,7 +163,7 @@ class ScoreAgent {
       const text = outputText(body, 'the question');  // a refusal throws → offline answer
       let parsed;
       try { parsed = JSON.parse(text); } catch { parsed = undefined; }
-      const { answer, problems } = checkAnswer(parsed, snapshot);
+      const { answer, problems } = checkAnswer(parsed, snapshot, { toolOutputs });
       if (answer) {
         return { ...finalizeAnswer(answer, snapshot, { mode: 'cloud', model: this.model, scope }), usage: trace };
       }

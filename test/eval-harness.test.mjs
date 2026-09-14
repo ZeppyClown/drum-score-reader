@@ -54,6 +54,11 @@ test('a cloud run grades the model, counts fallbacks, tokens and cost, and fails
     async createResponse(body) {
       const question = body.input[0].content[1].text.replace('Question: ', '');
       const reply = { suggestedQuestions: [], caveats: [], ...replies[question] };
+      // Like a real model, look the score up once before answering.
+      if (!body.input.some(item => item.type === 'function_call_output')) {
+        return { status: 'completed', usage: { input_tokens: 1000, output_tokens: 100 },
+          output: [{ type: 'function_call', call_id: 'c1', name: 'get_score_overview', arguments: '{}' }] };
+      }
       return { status: 'completed', usage: { input_tokens: 1000, output_tokens: 100 },
         output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(reply) }] }] };
     },
@@ -68,7 +73,7 @@ test('a cloud run grades the model, counts fallbacks, tokens and cost, and fails
   assert.equal(metrics.fallbacks, 1);
   assert.equal(metrics.modelAnswerRate, 66.7);
   assert.equal(gates.find(g => g.name.startsWith('Model answered')).passed, false, 'a fallback fails the model gate even when the shown answer is fine');
-  assert.equal(metrics.tokens.input, 4000);
-  assert.equal(metrics.estimatedCostUsd, 0.008);
+  assert.equal(metrics.tokens.input, 7000, 'three tool rounds, three answers and one repair');
+  assert.equal(metrics.estimatedCostUsd, 0.014);
   assert.equal(gates.find(g => g.name.startsWith('Unavailable-fact')).passed, true);
 });

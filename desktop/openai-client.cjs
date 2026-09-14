@@ -78,11 +78,11 @@ class OpenAiClient {
     if (!this.apiKey) {
       throw new Error('OpenAI is not configured. Quit the app and restart it with OPENAI_API_KEY set.');
     }
-    this.budget?.check(body.model);
     const requestBody = JSON.stringify({ ...body, store: false });
     let result;
     for (let attempt = 1; attempt <= this.maxAttempts; attempt += 1) {
       if (signal?.aborted) throw new Error('Canceled.');
+      this.budget?.check(body.model);   // every attempt, retries included, counts toward the limits
       const started = Date.now();
       let response;
       try {

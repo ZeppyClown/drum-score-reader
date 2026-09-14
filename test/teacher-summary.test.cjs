@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { PracticeStore } = require('../desktop/practice-store.cjs');
-const { progressFacts, checkSummary, TeacherSummaries } = require('../desktop/teacher-summary.cjs');
+const { progressFacts, checkSummary, cloudFacts, TeacherSummaries } = require('../desktop/teacher-summary.cjs');
 
 function ids() {
   let number = 0;
@@ -165,5 +165,39 @@ test('ordinary sentence capitals pass; a name mid-sentence is caught; no student
   assert.ok(sent.length > 0);
   assert.equal(sent.includes(student.id), false);
   assert.equal(sent.includes('Kai'), false);
+  store.close();
+});
+
+test('a number must match a fact about the same thing, not any fact', () => {
+  const facts = { student: { displayName: 'Avery' }, facts: [
+    { id: 'f1', text: 'Minutes practised', value: 10 },
+    { id: 'f2', text: 'Open assignment "Groove" target BPM', value: 90 },
+    { id: 'f3', text: 'Open assignment "Groove" starts at bar', value: 3 },
+  ] };
+  const draft = summary => ({ summary, highlights: [], nextSteps: [], caveats: [] });
+  assert.deepEqual(checkSummary(draft('The student practised 10 minutes and is aiming for 90 BPM from bar 3.'), facts).problems, []);
+  assert.match(checkSummary(draft('The student practised 90 minutes.'), facts).problems.join(' '), /"90 minutes", but 90 is not a value of a permitted fact/);
+  assert.match(checkSummary(draft('Keep going at 10 BPM.'), facts).problems.join(' '), /"10 BPM"/);
+  assert.match(checkSummary(draft('Start at bar 10.'), facts).problems.join(' '), /10/);
+});
+
+test('the cloud never sees the name in any spelling, assignment titles or score ids, and the teacher still sees the title', async () => {
+  const store = makeStore();
+  const student = store.addStudent({ displayName: 'Avery', level: 'beginner', consent: { guardianConsent: true, cloudHelp: true } });
+  addSession(store, student.id, { scoreId: 'score-secret-id', attempts: [{ bpm: 90, loops: 1, clean: true }] });
+  store.addAssignment({ studentId: student.id, scoreId: 'score-secret-id', title: 'AVERY recital piece', fromBar: 1, toBar: 2, targetBpm: 90, goal: 'Clean at 90' });
+  const facts = progressFacts(store, student.id);
+  const { safe } = cloudFacts(facts);
+  const sent = JSON.stringify(safe);
+  assert.doesNotMatch(sent, /avery/i);
+  assert.doesNotMatch(sent, /recital|score-secret-id/);
+  assert.match(sent, /assignment 1/);
+  const target = safe.facts.find(fact => /assignment 1 target BPM/.test(fact.text));
+  const client = scripted(message({ summary: 'The student practised 10 minutes.', highlights: [],
+    nextSteps: [{ text: 'Work on assignment 1 at 90 BPM.', factIds: [target.id] }], caveats: [] }));
+  const result = await new TeacherSummaries({ client, cloudAllowed: () => true }).draft(store, student.id, {});
+  assert.doesNotMatch(client.requests[0].input, /avery|recital|score-secret-id/i);
+  assert.equal(result.mode, 'cloud', result.caveats?.join(' '));
+  assert.match(result.text, /Work on "AVERY recital piece" at 90 BPM/);
   store.close();
 });

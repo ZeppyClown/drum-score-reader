@@ -8,6 +8,8 @@ const snap = () => scoreSnapshot(songEditor());
 const call = (name, args, id = `call_${name}`) => ({ type: 'function_call', id: `fc_${id}`, call_id: id, name, arguments: JSON.stringify(args) });
 const reasoning = { type: 'reasoning', id: 'rs_1', summary: [], encrypted_content: 'opaque' };
 const message = answer => ({ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: JSON.stringify(answer) }] });
+// Cloud answers must follow at least one tool call, so most scripts start with this.
+const lookup = () => [call('find_complex_passages', { top: null })];
 const answer = (overrides = {}) => ({ answer: 'Bars 7–8 have the busiest notes: sixteenth notes all the way through.', abstained: false,
   references: [{ fromBar: 7, toBar: 8, label: 'bars 7–8' }], suggestedQuestions: ['How do I count it?'], caveats: [], ...overrides });
 
@@ -61,20 +63,21 @@ test('tool loop: the model calls a tool, gets local facts, then answers with che
 });
 
 test('unchecked imported bars are always disclosed, even if the model forgets', async () => {
-  const client = scripted([message(answer({ answer: 'Bar 10 has triplets.', references: [{ fromBar: 10, toBar: 10, label: 'bar 10' }] }))]);
+  const client = scripted([call('inspect_bars', { fromBar: 10, toBar: 10 })], [message(answer({ answer: 'Bar 10 has triplets.', references: [{ fromBar: 10, toBar: 10, label: 'bar 10' }] }))]);
   const result = await ask(agentWith(client), { scope: { fromBar: 10, toBar: 10 } });
   assert.ok(result.caveats.some(c => /Bar 10 was imported and not checked yet/.test(c)));
 });
 
 test('an invalid reference gets one repair round; a fixed answer is accepted', async () => {
   const client = scripted(
+    lookup(),
     [message(answer({ references: [{ fromBar: 12, toBar: 14, label: 'bars 12–14' }] }))],
     [message(answer())],
   );
   const result = await ask(agentWith(client));
   assert.equal(result.mode, 'cloud');
   assert.equal(result.usage.repaired, true);
-  const repair = client.requests[1].body.input.at(-1).content[0].text;
+  const repair = client.requests[2].body.input.at(-1).content[0].text;
   assert.match(repair, /only bars 1–10 exist here/);
 });
 
@@ -96,7 +99,7 @@ test('API errors, refusals and bad JSON fall back offline; free-text fallback ab
   assert.ok(result.caveats[0].includes('OpenAI timed out'));
   const refused = scripted([{ type: 'message', content: [{ type: 'refusal', refusal: 'no' }] }]);
   assert.equal((await ask(agentWith(refused), { questionId: 'overview' })).mode, 'offline');
-  const garbage = scripted([{ type: 'message', content: [{ type: 'output_text', text: 'not json' }] }], [message(answer())]);
+  const garbage = scripted(lookup(), [{ type: 'message', content: [{ type: 'output_text', text: 'not json' }] }], [message(answer())]);
   assert.equal((await ask(agentWith(garbage))).mode, 'cloud');
 });
 
@@ -139,7 +142,7 @@ test('requests are validated before anything is sent', async () => {
 
 test('one question at a time, a short pause between questions, and a daily limit', async () => {
   let release;
-  const client = scripted(() => new Promise(resolve => { release = () => resolve({ status: 'completed', output: [message(answer())] }); }), [message(answer())]);
+  const client = scripted(() => new Promise(resolve => { release = () => resolve({ status: 'completed', output: lookup() }); }), [message(answer())], lookup(), [message(answer())]);
   let now = 10000;
   const agent = new ScoreAgent({ client, settings: () => ({ cloudEnabled: true }), now: () => now, minIntervalMs: 1500, dailyLimit: 2 });
   const first = ask(agent);
@@ -171,12 +174,12 @@ test('the daily limit is loaded from and saved to the usage store, and counts on
   const saved = [];
   const store = { load: () => ({ day: new Date(0).toISOString().slice(0, 10), cloudQuestions: 1, inputTokens: 5, outputTokens: 1 }), save: u => saved.push(u) };
   let now = 1000;
-  const client = scripted([message(answer())]);
+  const client = scripted(lookup(), [message(answer())]);
   const agent = new ScoreAgent({ client, settings: () => ({ cloudEnabled: true }), now: () => (now += 5000), dailyLimit: 2, usageStore: store });
   assert.equal((await ask(agent)).mode, 'cloud');
   assert.equal(agent.usage.cloudQuestions, 2);
   assert.equal(saved.at(-1).cloudQuestions, 2);
   const limited = await ask(agent, { questionId: 'overview' });
   assert.match(limited.caveats[0], /limit of 2/);
-  assert.equal(client.requests.length, 1);
+  assert.equal(client.requests.length, 2, 'one question: a tool round and its answer');
 });

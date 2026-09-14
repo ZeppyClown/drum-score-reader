@@ -48,6 +48,7 @@ function validateRequest(request) {
   if (!SUBDIVISIONS.includes(request.subdivision)) return `Subdivision must be one of ${SUBDIVISIONS.join(', ')}.`;
   if (!LEVELS.includes(request.level)) return `Level must be beginner, intermediate, or advanced.`;
   if (typeof request.style !== 'string' || request.style.length > 20) return 'Style must be 20 characters or fewer.';
+  if (!/^[\p{L}\p{N} &'/-]*$/u.test(request.style)) return 'Style can only use letters, numbers, spaces, and & \' / -.';
   if (request.bars !== 1) return 'A new fill must be exactly one bar.';
   return null;
 }
