@@ -290,7 +290,9 @@
   "devDependencies": {},
   "scripts": {
     "start": "electron .",
-    "test": "node --test \"test/*.test.mjs\""
+    "test": "node --test \"test/*.test.mjs\" test/openai-omr.test.cjs",
+    "test:service": "node --test test/service.integration.cjs",
+    "test:desktop": "electron test/desktop-smoke.cjs"
   },
   "keywords": [],
   "author": "",

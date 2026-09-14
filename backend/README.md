@@ -9,6 +9,23 @@ pip install -r backend/requirements.txt
 python3 backend/app.py --bundle ml/data/releases/baseline-14drum-v1 --port 8765
 ```
 
+The desktop app starts and health-checks this service automatically, reuses it across
+imports, and stops it on quit. Run `npm start`, then choose **Import bar image…**.
+The initial empty score is filled; later imports append a bar and select it for editing.
+Conversion warnings and all-rest predictions are shown for review. The baseline model
+reads only 12.5% of held-out bars exactly; expect to correct its output.
+
+Set `OMR_PYTHON` to a Python executable or `OMR_BUNDLE` to an alternate released bundle
+directory before `npm start` if needed. Runtime dependencies must be installed first;
+shipping a bundled Python runtime is part of future packaging work.
+
+Electron uses `--port 0`: Python binds an available loopback port and emits a JSON record
+with `port` and `model_sha256`, then Electron polls health before sending predictions.
+The bound socket is handed directly to Uvicorn, avoiding a port reservation race.
+The renderer has no HTTP access; its isolated preload exposes only the native import
+action, and the main process reads only the file selected by the native picker.
+All editor scripts, fonts, and styles are local, so import works without internet access.
+
 The service binds to `127.0.0.1` only. It checks the bundle at startup — config keys,
 class counts, `MODEL_SHA256` against the ONNX file, and the model's input/output names and
 shape — and exits with `OMR service could not start: ...` instead of failing on the first
@@ -21,7 +38,7 @@ itself; the renderer does not call it directly.
 
 ```json
 {"status": "ok", "model_sha256": "59fce5c4...", "drums": ["hi_hat_closed", "..."],
- "durations": ["whole", "..."], "max_upload_bytes": 10485760}
+ "durations": ["whole", "..."], "grid_slots": 32, "max_upload_bytes": 10485760}
 ```
 
 `POST /predict` — multipart form with one field, `image`: a PNG or JPEG of one bar.
@@ -63,8 +80,15 @@ several image sizes. Phone-photo EXIF orientation is applied before preprocessin
 
 ```bash
 python3 -m unittest discover -s backend -p 'test_*.py'
+npm run test:service
+npm run test:desktop
 ```
 
-The tests build a randomly initialized export, so they need the ML dependencies (`torch`,
+The Python tests build a randomly initialized export, so they need the ML dependencies (`torch`,
 `torchvision`, `onnx`, `onnxscript`) in addition to `backend/requirements.txt`. They verify
 the contract and error handling, not model accuracy.
+
+The two npm checks use the local released bundle and crop dataset. The desktop check
+runs the actual Electron renderer, IPC, and Python inference with external HTTP blocked;
+it automates the native picker and checks rendering, editing, append behavior, cancellation,
+invalid files, empty predictions, conversion warnings, and invalid output handling.

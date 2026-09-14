@@ -1,9 +1,9 @@
 # Project Progress Review
 
-Reviewed: 2026-09-13 (first written 2026-09-11)
+Reviewed: 2026-09-14 (first written 2026-09-11)
 
-Baseline: `main` at `58a69c4` (`origin/main`); the working tree is clean apart from the
-unrelated untracked directories below
+Baseline: `main` at `b332e66`, plus the uncommitted Workstream 3 implementation described
+below. Historical verification entries retain their original scope and counts.
 
 Scope: the drum-score reader at the repository root and `ml/`; the unrelated untracked
 `ai-engineer-workshop-2026-project/` and `songsterr/` directories are excluded.
@@ -18,14 +18,33 @@ Workstream 1 is complete with a reproducible 23,660-pair replacement dataset and
 explicit 159-label exclusion for the blank `The Trees` source. Workstream 2 is now complete
 too: the first 14-drum run finished on 2026-09-12 and was evaluated, exported, benchmarked,
 and bundled as `baseline-14drum-v1` on 2026-09-13. Its held-out sequence accuracy is 12.5%,
-which is a reproducible baseline rather than a shippable result, so whether to build the
-import UI on this model is an open product decision. The Python half of Workstream 3 exists
-(local inference service and prediction-to-bar conversion, both tested against a randomly
-initialized model); the Electron app still has no import UI, no service lifecycle, and no
-page import, playback, or export. Workstreams 4 to 6 have not started.
+which is a reproducible baseline rather than a shippable recognition result. Victor
+requested completion of Workstream 3 on 2026-09-14: the Electron app now imports a single
+PNG/JPEG bar through the released local model, appends an editable bar, and manages the
+Python service lifecycle. The UI discloses baseline accuracy and conversion warnings.
+Workstreams 1–3 are complete; page import, playback, and export (4–6) have not started.
 
-Current test suites, all passing: 46 Node tests (`npm test`), 16 service tests
-(`backend/`), and 33 ML tests (`ml/omr/`).
+On 2026-09-14 the broader DrumHub vision was reconciled with the working score-reader
+baseline. `drumhub_master_plan.md` now specifies the score document, deterministic score
+analysis, read-only Ask DrumHub agent, practice/exercise/fill functions, teacher view,
+evaluation gates, delivery phases, and explicit Claude/ChatGPT/Gemini responsibilities.
+No implementation of those new workstreams is claimed here. A provider review also found
+that Gemini's current API terms prohibit clients directed to or likely accessed by people
+under 18, so Gemini is limited to adult developer evaluation on synthetic/licensed data.
+
+An optional GPT-5.6 Luna path was added on 2026-09-14 without replacing the ML pipeline.
+With `OPENAI_API_KEY` set, the user copies a single-bar PNG screenshot and presses Cmd+V
+or **Paste screenshot with GPT-5.6 Luna**. The main process sends the PNG at original
+image detail to the OpenAI Responses API with a strict 32-slot structured-output schema,
+then imports the response as an editable bar and surfaces uncertainty notes. The key is
+not exposed to the renderer. This optional route requires internet and an API project with
+billing. The project-local `/read-drum-bar` workflow also remains available for interactive
+inspection. Transient API failures are retried twice with exponential backoff and jitter.
+
+Verified on 2026-09-14: 53 tests across the editor and OpenAI client (`npm test`), 16 Python service tests
+(`backend/`), two released-service integration tests (`npm run test:service`), and the
+offline Electron workflow (`npm run test:desktop`), all passing. The previous audit's
+33 ML tests (`ml/omr/`) were not rerun for this desktop integration change.
 
 ## Done or present
 
@@ -46,8 +65,8 @@ Current test suites, all passing: 46 Node tests (`npm test`), 16 service tests
 - [x] A draggable keypad and configurable two-to-eight bars per line are present.
 - [x] The current CommonJS entry point and browser ES modules pass syntax parsing.
 
-These are existing foundations, not completion of Workstream 3: `js/import.js` converts a
-model response into an editor bar, but nothing in the app calls it yet.
+`js/import-ui.js` now calls `js/import.js` through the desktop import workflow and renders
+the resulting bar using the same editor state and rules as manual input.
 
 ### ML data and tooling foundations
 
@@ -68,7 +87,7 @@ model response into an editor bar, but nothing in the app calls it yet.
 
 The data and tooling above complete Workstream 1 and are inputs to Workstream 2. The one
 remaining raw-label mismatch is an explicit source exclusion, not an unexplained package
-gap. Workstream 2 still has no valid evaluated model bundle.
+gap. Workstream 2's evaluated model bundle is recorded below.
 
 ## Delivery-plan progress
 
@@ -125,7 +144,7 @@ remains explicitly excluded until a non-blank source PDF is available.
   `ml/omr/evaluate.py` now verifies a non-smoke completion marker, checkpoint hash,
   dataset/model provenance, and the unchanged test-song split before computing the
   documented held-out metrics, and reports an unfinished run in plain words rather than a
-  missing-file traceback. Its four focused tests pass; no real-run metrics exist yet.
+  missing-file traceback. Its four focused tests passed before the real run below.
   A two-batch GPU rehearsal completed head-only training, stopped at the epoch boundary,
   resumed its checkpoint in a new process, and completed full-model fine-tuning. Its
   artifacts are explicitly marked as smoke-test artifacts and are not a model release.
@@ -135,8 +154,7 @@ remains explicitly excluded until a non-blank source PDF is available.
   Best validation loss 0.4036 at fine-tune epoch 23; the final epoch recorded train loss
   0.1786 against validation loss 0.4042, so the train/validation gap seen in the earlier
   19-drum run is still present. Validation exact-drum-bar accuracy was 0.074. These are
-  validation numbers from training, not held-out test metrics: no evaluation, ONNX export,
-  benchmark, or release bundle exists yet.
+  validation numbers from training; the later held-out evaluation and release follow below.
 - [x] Evaluate the model on the held-out test-song split.
   2,184 bars from 28 songs, split by song, on CPU in about three minutes. Sequence accuracy
   0.125, exact-bar accuracy 0.125, cell accuracy 0.967, duration accuracy at hits 0.897,
@@ -183,13 +201,13 @@ The open question is quality, not process: 12.5% of held-out bars are read exact
 No release threshold was ever declared, and the plan says to set one from measured error
 patterns — that decision is now due.
 
-### Workstream 3 — Integrate single-bar local inference: in progress (Python side)
+### Workstream 3 — Integrate single-bar local inference: complete
 
-Started early with Victor's approval while training runs; Electron work still waits for a
-release. Everything below was verified against a randomly initialized export only, so it
-proves the contract and error handling, not recognition quality.
+Completed on 2026-09-14 at Victor's request using `baseline-14drum-v1`. Python contract
+tests use a random export; desktop and lifecycle integration checks use the real release.
 
-- [ ] PNG/JPEG file picker.
+- [x] PNG/JPEG file picker via an isolated preload and main-process IPC handler.
+  Only the native picker's selected path is read. Cancellation leaves the score unchanged.
 - [x] Long-lived local Python/ONNX inference service.
   `backend/app.py` binds to 127.0.0.1, loads the bundle once, and refuses to start on a
   missing config or model, hash mismatch, or wrong input/output names or shape.
@@ -203,20 +221,30 @@ proves the contract and error handling, not recognition quality.
   errors use one envelope with codes for oversized, unsupported, corrupt, or missing
   images and invalid model output. 16 backend tests pass, and a live run on port 8799
   answered `/health`, a real bar image, a text file (415), and a missing field (422).
-- [ ] Electron service lifecycle management.
+- [x] Electron service lifecycle management.
+  Start at app launch, discover the child-bound ephemeral loopback port, poll health,
+  reuse the loaded model, retry after failure, and terminate on app quit with a bounded
+  graceful-shutdown period. Missing Python, dependencies, and bundle errors are actionable.
 - [x] Canonical editable bar representation and model-event conversion.
   The editor note (`{duration, dotted, drums, triplet?}`) now holds every model output:
   chords, all 14 drums, 32nds, and triplets. `js/import.js` turns `/predict` notes into a
   full 4/4 bar: timing from `position`, written durations kept when they fit and
   shortened when they overlap, gaps filled with rests, and triplet hits grouped into
   the nearest slot of their beat. Every adjustment returns a plain-English warning, and
-  malformed output throws a clear error. Tested in Node only; not yet connected to the
-  service or UI.
-- [ ] Imported-bar rendering and editing.
-- [ ] Actionable import and inference errors.
+  malformed output throws a clear error. Connected to the service and UI, using the
+  model's configured grid size from health metadata.
+- [x] Imported-bar rendering and editing.
+  Fill the initial empty score or append after existing bars, select the imported bar,
+  and render it with VexFlow. Keyboard and keypad edits use the existing bar rules.
+- [x] Actionable import and inference errors.
+  Show failures without changing existing bars; display timing adjustments and a clear
+  message for all-rest predictions. The UI reports the baseline's 12.5% exact-bar accuracy.
 
-There is no Electron IPC bridge, service lifecycle management, or import UI in the
-repository yet; those wait for an evaluated model release.
+External CDN dependencies were replaced by local CSS. The desktop smoke check blocks
+external HTTP and exercises real model import, SVG rendering, keyboard/keypad correction,
+append preservation, cancellation, unsupported files, empty predictions, malformed model
+events, and conversion warnings. Service checks cover process reuse, crash recovery,
+startup timeout, missing artifacts/Python, and shutdown. No API key is needed.
 
 ### Workstream 4 — Import complete pages and PDFs: not started
 
@@ -282,21 +310,18 @@ There is no `printToPDF()` call or PDF, MIDI, or MusicXML exporter in the app.
 - [x] Keep generated datasets and model weights out of Git. The regenerated local dataset
   and `ml/data/dataset.zip` are ignored; the ZIP is removed from version control without
   deleting the local copy.
-- [ ] Save versioned manifests, configs, metrics, and reproducibility instructions. The
-  manifest and reconciliation evidence are versioned; model config and metrics await a
-  valid training run.
+- [x] Save versioned manifests, configs, metrics, and reproducibility instructions. The
+  manifest, reconciliation evidence, model config, metrics, and release manifest are
+  versioned; runtime setup and integration verification are in `backend/README.md`.
 
 ## Immediate next milestone
 
-Workstream 2 is done. The next milestone is a decision on `baseline-14drum-v1`'s 12.5%
-sequence accuracy: either accept it as the baseline behind an import screen that expects
-correction, or spend the next round on accuracy first. The evaluation points at one cheap
-experiment before more data — the rare drums are over-predicted because training weights
-positives by rarity, so lowering that weighting or tuning a per-drum threshold on the
-validation split should raise precision without retraining from scratch. After that
-decision, Workstream 3 continues in Electron: the file picker, service lifecycle, imported
-bar rendering, and import errors. `The Trees` can be restored in a
-later dataset version when a complete 159-bar PDF becomes available.
+Workstreams 1–3 are done. The next delivery workstream is complete-page/PDF import,
+starting with page rendering and crop review. Accuracy improvement remains valuable:
+tune per-drum thresholds on validation data to measure whether false positives fall
+without unacceptable recall loss. Changing training weights would require retraining.
+`The Trees` can be restored in a later dataset version when a complete 159-bar PDF is
+available. Single-bar imports currently use the released baseline and require correction.
 
 The user selected a strict supported subset for the first training release. The complete
 23,660-pair crop package is preserved; `ml/omr/prepare_training.py` selects 19,942 bars
@@ -314,8 +339,8 @@ parsers' earlier onset quantization and voice merging are not reversed by filter
 This is target compatibility, not a claim of lossless original-notation support. Model
 metrics must disclose the subset and the 359 excluded bars from the original test split.
 Training finished on 2026-09-12 in the ignored `baseline-14drum-v1` run directory, with a
-non-smoke completion marker. Do not treat the checkpoint as a release until the evaluation,
-export, benchmark, and release-bundle checks pass; report only held-out test metrics, and
+non-smoke completion marker. Evaluation, export, benchmark, and release-bundle checks
+passed on 2026-09-13. Report only held-out test metrics, and
 disclose the supported-subset scope and the 359 excluded bars from the original test split.
 
 ## Verification performed for this review

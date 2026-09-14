@@ -8,6 +8,8 @@ Electron's main process should call this service and poll GET /health for readin
 """
 
 import argparse
+import json
+import socket
 import sys
 from pathlib import Path
 
@@ -39,6 +41,7 @@ def create_app(bundle):
     @app.get('/health')
     def health():
         return {'status': 'ok', 'model_sha256': bundle.model_sha256,
+                'grid_slots': bundle.config['N_BEATS'],
                 'drums': bundle.config['DRUMS'], 'durations': bundle.config['DURATIONS'],
                 'max_upload_bytes': MAX_UPLOAD_BYTES}
 
@@ -65,16 +68,20 @@ def main():
                         help='folder containing omr.onnx and omr_config.json')
     parser.add_argument('--port', type=int, default=8765)
     args = parser.parse_args()
-    if not 1024 <= args.port <= 65535:
-        parser.error('--port must be between 1024 and 65535')
+    if args.port != 0 and not 1024 <= args.port <= 65535:
+        parser.error('--port must be 0 or between 1024 and 65535')
     try:
         bundle = load_bundle(args.bundle)
     except BundleError as error:
         print(f'OMR service could not start: {error}', file=sys.stderr)
         return 1
-    print(f'Loaded model {bundle.model_sha256[:12]}; serving on http://{HOST}:{args.port}',
-          flush=True)
-    uvicorn.run(create_app(bundle), host=HOST, port=args.port, log_level='warning')
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+        listener.bind((HOST, args.port))
+        listener.listen(128)
+        print(json.dumps({'port': listener.getsockname()[1],
+                          'model_sha256': bundle.model_sha256}), flush=True)
+        server = uvicorn.Server(uvicorn.Config(create_app(bundle), log_level='warning'))
+        server.run(sockets=[listener])
     return 0
 
 

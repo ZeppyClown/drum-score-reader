@@ -182,6 +182,7 @@ export function render() {
 
   // Inject the cursor rectangle directly into the SVG DOM
   const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('id',           'score-cursor');
   rect.setAttribute('x',            cx);
   rect.setAttribute('y',            cy);
   rect.setAttribute('width',        SPACE);

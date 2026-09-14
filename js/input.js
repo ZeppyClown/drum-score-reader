@@ -72,7 +72,8 @@ function handleBackspace() {
 // ── Keyboard event handler ────────────────────────────────────────────────────
 export function initKeyboard() {
   document.addEventListener('keydown', (e) => {
-    if (e.repeat) return;
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey ||
+        e.target.closest('input, textarea, select, button, [contenteditable="true"]')) return;
 
     const digit = shiftedDigit(e);
     if (digit) { handleDrumKey(digit, true); return; }

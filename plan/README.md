@@ -1,6 +1,6 @@
 # Drum Score Reader — Current Project Plan
 
-Updated: 2026-09-11
+Updated: 2026-09-14
 
 This is the authoritative project plan. `progress.md` is the dated repository audit that
 supports this plan. `model_training.md` and `score_editor.md` are retained only as
@@ -8,13 +8,22 @@ historical pointers because they describe an obsolete PaliGemma/Claude workflow.
 
 ## Product goal
 
-Build a private, offline desktop app that can:
+Build a local-first desktop app that can:
 
 1. Import a photo, image, or PDF of drum notation.
 2. Detect and read each bar with a locally trained model.
 3. Render the result as an editable drum score.
 4. Play the score back.
 5. Export it to useful interchange and print formats.
+6. Answer grounded questions about the current score with clickable bar references.
+7. Turn difficult passages into playback loops, practice plans, exercises, and progress
+   visible to the student and teacher.
+
+The editor, local OMR, deterministic score analysis, playback, and saved student data must
+work locally. Cloud recognition and conversational explanations are optional, explicit,
+and must degrade safely to local behavior. The detailed product, agent, AI allocation,
+privacy, and delivery plan is in
+[`drumhub_master_plan.md`](drumhub_master_plan.md).
 
 ## Current architecture
 
@@ -27,12 +36,18 @@ Build a private, offline desktop app that can:
 | Model output | Ordered `{duration, drums}` events |
 | Model artifact | ONNX plus `omr_config.json` |
 | Initial local inference bridge | Python and ONNX Runtime, exposed to Electron through a local FastAPI process |
+| Optional cloud recognition | OpenAI Responses API with GPT-5.6 Luna and strict output |
+| Score intelligence | Deterministic, versioned score snapshot and pure analysis tools |
+| Score-aware assistant | Read-only Luna tool loop first; larger orchestration only when memory and actions justify it |
 | Playback | Web Audio API and local drum samples |
 | PDF export | Electron `webContents.printToPDF()` |
 
-PaliGemma and the Claude Vision API are not part of the current implementation plan.
-Inference must remain local and must load dimensions, drum names, duration names, and the
-classification threshold from `omr_config.json` rather than hardcoding them.
+PaliGemma and the Claude Vision API are not part of the current OMR implementation plan.
+Local inference must load dimensions, drum names, duration names, and the classification
+threshold from `omr_config.json` rather than hardcoding them. “Local-first” does not mean
+every optional feature is offline: cloud features require a clear consent, provider-age,
+privacy, and graceful-fallback boundary. Gemini is restricted to adult developer testing
+because its current API terms prohibit clients directed to or likely accessed by under-18s.
 
 ## Verified baseline
 
@@ -180,6 +195,51 @@ Implement in this order:
 Each exporter needs fixture-based tests for timing, simultaneous hits, rests, and dotted
 or tuplet durations before it is considered complete.
 
+### Workstream 7 — Score document and persistence
+
+Goal: give scores stable IDs, revisions, metadata, provenance, review state, undo/redo,
+and safe local save/load. This is the foundation for citations, practice history, and
+teacher assignments.
+
+Exit criteria:
+
+- Existing editor/import behavior remains compatible.
+- Scores recover safely after restart or interrupted writes.
+- Imported bars remain visibly unreviewed until the user confirms them.
+- Every edit produces a new revision and every agent response identifies its revision.
+
+### Workstream 8 — Offline score intelligence and Ask DrumHub
+
+Goal: calculate score facts locally, then provide a read-only score-aware assistant with
+validated, clickable bar references and a useful offline mode.
+
+Build deterministic overview, inspection, pattern, comparison, candidate-fill, complexity,
+and practice-plan tools before connecting Luna. The first agent cannot mutate notation.
+
+Exit criteria:
+
+- Deterministic facts and references are correct on all fixtures.
+- Unavailable notation facts cause abstention rather than invention.
+- Unreviewed OMR content is disclosed in every affected explanation.
+- Cloud failure leaves offline analysis and the score unchanged.
+
+### Workstream 9 — Practice, exercises, and fills
+
+Goal: connect playback/looping to measurable practice sessions, locally retrievable
+exercises, and validated fill previews.
+
+Start with metadata and SQLite full-text search; add embeddings or fine-tuning only when a
+frozen evaluation proves they solve a measured problem better than the simpler system.
+
+### Workstream 10 — Student safety and teacher view
+
+Goal: add local profiles, consent/age controls, assignments, evidence-based progress, and
+teacher-confirmed recommendations.
+
+Cloud AI remains adult-only until provider terms, parent/guardian consent, age-appropriate
+safeguards, and child-privacy requirements are verified. Gemini must not be used in the
+student-facing product under its current under-18 API-client restriction.
+
 ## Cross-cutting work
 
 - Add focused tests around the canonical bar representation, capacity rules, model-output
@@ -193,15 +253,15 @@ or tuplet durations before it is considered complete.
 
 ## Immediate next milestone
 
-Train the 14-drum model on the 19,942 supported bars selected from the reconciled
-23,660-pair dataset, then evaluate and export one internally consistent release bundle
-before adding Electron UI code. Report accuracy as supported-subset accuracy;
-the full notation-import goal remains broader than this first model's contract.
+Workstreams 1–3 and the optional Luna single-bar import are complete. The next foundation
+slice is Workstream 7's versioned score document: stable IDs/revisions, tempo/meter,
+import provenance/review status, and `scoreSnapshot()` with focused tests. That slice
+unlocks grounded questions without coupling the agent to screenshots.
 
-Ordering change (2026-09-11, approved by Victor): while the first training run is in
-progress, the Python side of Workstream 3 — the local inference service and its
-`/predict` contract — may be built and tested against a randomly initialized export.
-Electron import UI still waits for an evaluated release.
+In parallel only where files do not overlap, continue Workstream 4 with page rendering,
+local system/bar segmentation, and crop review. Recognition quality remains a separate
+measured improvement track; the local UI must continue to state the 12.5% exact-bar
+baseline until a reproducible release clears a new threshold.
 
 ## Plan maintenance
 

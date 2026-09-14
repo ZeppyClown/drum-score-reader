@@ -8,7 +8,14 @@ npm-debug.log*
 package-lock.json
 /__pycache__/
 __pycache__/
-/.agents/
+/.agents/*
+!/.agents/skills/
+!/.agents/workflows/
+/.agents/skills/*
+!/.agents/skills/drum-omr/
+!/.agents/skills/drum-omr/**
+/.agents/workflows/*
+!/.agents/workflows/read-drum-bar.md
 /ml/data/dataset/
 /ml/data/dataset.zip
 /ml/data/training.zip

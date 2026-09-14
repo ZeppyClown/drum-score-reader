@@ -9,7 +9,8 @@ Two halves, deliberately kept apart:
 - **The model** — a MobileNetV3-Small optical music recognition (OMR) model trained from
   scratch on 289 real drum charts, served locally through a small FastAPI process.
 
-Everything runs on the machine. No API keys, no uploads, no cloud inference.
+The private local workflow runs entirely on the machine. An optional cloud-assisted
+screenshot importer is available when the user explicitly configures an API key.
 
 **Current release: `baseline-14drum-v1`** — 12.5% of held-out bars read exactly right, 16 ms
 per bar on an M1. That is an honest baseline, not a finished product; see
@@ -282,6 +283,33 @@ position, overlapping durations shortened, gaps filled with rests, triplets grou
 their beat, and every adjustment reported as a plain-English warning for the import screen
 to show.
 
+Run `npm start` and choose **Import bar image…** to load a cropped PNG/JPEG of one 4/4
+bar. Imports fill the initial empty score or append after existing bars, then select the
+new bar for keyboard/keypad correction. Install `backend/requirements.txt` first; the app
+starts and stops the Python service automatically. See [runtime setup](backend/README.md)
+for Python/model path overrides and integration checks. The workflow works offline.
+
+As an alternative recognition path, start the app with an OpenAI API key:
+
+```bash
+OPENAI_API_KEY="your-key" npm start
+```
+
+Copy a tightly cropped PNG screenshot of one 4/4 bar, then press Cmd+V in the editor or
+choose **Paste screenshot with GPT-5.6 Luna**. The main process reads the clipboard image
+and sends it directly to `gpt-5.6-luna` at original image detail with a strict structured
+output schema. The returned transcription becomes an editable bar; internal JSON is never
+shown to the user. The API key remains in the main process and is never exposed to the
+renderer. Temporary demand failures are retried twice with exponential backoff. Set
+`OPENAI_MODEL` to override the model ID.
+
+This route requires internet access, OpenAI API billing, and sends the screenshot to the
+OpenAI Responses API. It does
+not replace or remove the private local MobileNet/ONNX pipeline, which remains available
+through **Import bar image…**. The project-local `/read-drum-bar` Antigravity workflow is
+still available for inspecting a screenshot interactively, but the app does not depend on
+an Antigravity session.
+
 ---
 
 ## The local inference service
@@ -363,8 +391,8 @@ Datasets and weights are gitignored; manifests, configs, metrics and hashes are 
 | Data pipeline, reproducible and reconciled | done |
 | Model trained, evaluated, exported, benchmarked, released | done |
 | Editor: 14 drums, chords, 32nds, triplets | done |
-| Local inference service and prediction → bar conversion | done (tested, not yet wired to the UI) |
-| Import screen in the app, service lifecycle | next, after a decision on the 12.5% baseline |
+| Local inference service and prediction → bar conversion | done, connected to the editor |
+| Single-bar PNG/JPEG import, service lifecycle, offline editing | done; baseline output requires correction |
 | Page/PDF import, playback, PDF/MIDI/MusicXML export | not started |
 
 Longer term (product plan): an AI practice coach with session memory, a retrieval-backed

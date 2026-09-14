@@ -71,9 +71,10 @@ class ServiceTests(unittest.TestCase):
 
     def run_main(self, bundle_folder):
         stderr, stdout = io.StringIO(), io.StringIO()
-        with mock.patch.object(sys, 'argv', ['app.py', '--bundle', bundle_folder]), \
-                mock.patch.object(service.uvicorn, 'run') as run, \
+        with mock.patch.object(sys, 'argv', ['app.py', '--bundle', bundle_folder, '--port', '0']), \
+                mock.patch.object(service.uvicorn.Server, 'run') as run, \
                 contextlib.redirect_stderr(stderr), contextlib.redirect_stdout(stdout):
+            run.side_effect = lambda *, sockets: setattr(run, 'bound_address', sockets[0].getsockname())
             code = service.main()
         return code, run, stderr.getvalue()
 
@@ -87,7 +88,8 @@ class ServiceTests(unittest.TestCase):
     def test_service_binds_only_to_localhost(self):
         code, run, _ = self.run_main(self.folder.name)
         self.assertEqual(code, 0)
-        self.assertEqual(run.call_args.kwargs['host'], '127.0.0.1')
+        self.assertEqual(run.bound_address[0], '127.0.0.1')
+        self.assertGreater(run.bound_address[1], 0)
 
 
 if __name__ == '__main__':
