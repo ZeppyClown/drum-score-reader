@@ -24,14 +24,22 @@ drum score reader/
 ├── js/
 │   ├── constants.js    ← 3. All fixed values (durations, ticks, drum definitions)
 │   ├── state.js        ← 4. The data model. Every other file reads from here
+│   ├── score-document.js ← 4. Saved score format: ids, provenance, validation, parse/serialize (pure)
+│   ├── commands.js     ← 4. Every score change as a command: revision, undo/redo, dirty (pure)
+│   ├── editor-store.js ← 4. The only writer of state.editor: commit → render → listeners
 │   ├── layout.js       ← 5. Bar position math (pixel coords)
 │   ├── score.js        ← 6. Rendering — turns state into SVG via VexFlow
 │   ├── notation.js     ← 6. Drum names → VexFlow keys, noteheads, stem direction (pure)
 │   ├── bar.js          ← 7. Pure editing rules — capacity, place, dot, duration, triplets, cursor moves
-│   ├── input.js        ← 7. Wires keyboard + keypad to bar.js and stores results in state
-│   └── import.js       ← OMR service /predict notes → one editable bar (pure; not wired to the UI yet)
+│   ├── input.js        ← 7. Maps keyboard + keypad to commands
+│   ├── import.js       ← OMR service /predict notes → one editable bar (pure)
+│   ├── import-ui.js    ← Import buttons/paste → importBarCommand with unreviewed provenance
+│   ├── details-ui.js   ← Title and tempo fields (undoable metadata edits)
+│   └── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
-└── test/*.test.mjs     ← Node tests for bar.js, notation.js, import.js — run with `npm test`
+├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
+├── desktop/            ← Main-process modules: OMR service, OpenAI import, score files (see §9)
+└── test/               ← `npm test` (Node) and `npm run test:desktop` (real Electron app)
 ```
 
 ---
@@ -141,15 +149,20 @@ SPACE      = 10    // cursor square size in pixels
 
 ## 4. `js/state.js` — The Data Model
 
-**This is the single source of truth.** Every file that needs to read or change app data imports `state` from here.
+**This is the single source of truth.** Every file that needs to read app data imports `state` from here.
 
 ```js
 state = {
-  bars:       [ { notes: [...] }, { notes: [...] }, ... ],
-  cursor:     { barIndex: 0, noteIndex: 0, position: 1 },
+  editor:     { meta, bars, cursor, history, saved, idFactory },  // see commands.js
   barsPerRow: 4,
+  bars,     // read-only getter → state.editor.bars
+  cursor,   // read-only getter → state.editor.cursor
 }
 ```
+
+`state.editor` is **replaced, never edited**, and only by `editor-store.js` (see §9).
+`score.js`, `layout.js` and the UI keep reading `state.bars` and `state.cursor` exactly as before.
+`barsPerRow` is a view setting, not part of the saved score.
 
 ### `state.bars`
 
@@ -157,9 +170,15 @@ An array of bar objects. Each bar has one property:
 
 ```js
 bar = {
-  notes: [ note, note, note, ... ]   // ordered array — order IS position
+  barId:      'uuid',                                   // stable through edits
+  provenance: { source, reviewed, warnings, model? },   // see score-document.js
+  notes:      [ note, note, note, ... ]                 // ordered array — order IS position
 }
 ```
+
+`provenance.source` is `'manual'`, `'local_omr'` or `'openai_omr'`. Imported bars start
+`reviewed: false` and editing them does not change that — only an explicit "mark reviewed"
+command does.
 
 **There is no beat or position field on notes.** The first note in the array is the first note in the bar. VexFlow reads them in sequence and handles timing from durations.
 
@@ -167,6 +186,7 @@ bar = {
 
 ```js
 {
+  eventId:  'uuid',   // stable id; added automatically by commands.js for new notes
   duration: 'q',      // VexFlow duration string — '32' | '16' | '8' | 'q' | 'h' | 'w'
   triplet:  true,     // optional — one of three same-duration notes taking the time of two
   dotted:   false,    // boolean — extends the note by half its value
@@ -411,6 +431,8 @@ Changes `cursor.position` (1–10). Does not touch any notes. `render()` moves t
 | `↑` | Move cursor up one vertical slot |
 | `↓` | Move cursor down one vertical slot |
 | `Backspace` | Delete rest / convert drum hit to rest |
+| `⌘Z` / `⇧⌘Z` | Undo / redo (Edit menu; inside a text field they edit the text instead) |
+| `⌘N` `⌘O` `⌘S` `⇧⌘S` | New, Open, Save, Save As (File menu) |
 
 ---
 
@@ -433,18 +455,65 @@ Menu open/close uses Tailwind's `-translate-x-full` / `translate-x-0` classes fo
 ## Data Flow — The Golden Rule
 
 ```
-User action  (keyboard / keypad / menu)
+User action  (keyboard / keypad / import / details / Edit menu)
       ↓
-input.js / menu.js  mutates  state
+a command from commands.js  →  dispatch()  in editor-store.js
       ↓
-render()  reads  state  →  draws SVG
+execute() returns a NEW editor (ids filled, revision + 1, history entry)
       ↓
-Screen updates
+render()  reads  state  →  draws SVG   (on error the previous editor is restored)
+      ↓
+listeners: details bar, window title, autosave
 ```
 
 **`score.js` never writes to `state`.**
+**Only `editor-store.js` replaces `state.editor`.** `menu.js` still sets `barsPerRow` (a view setting).
 **`input.js` never touches the DOM directly** (except the keypad button flash).
-**`state.js` is dumb** — it just exports the object, it has no methods.
+
+---
+
+## 9. Commands, undo, and score files
+
+### `js/commands.js`
+
+A command is `{ label, run(editor) }`; `run` returns the changed parts
+(`{ bars?, meta?, cursor? }`) or `null` when refused. `execute(editor, command)`:
+
+- refused → returns the **same** editor (no re-render)
+- cursor-only change → new cursor, **no** revision or history change
+- score change → fills missing ids, `revision + 1`, pushes an undo entry (max 200), clears redo
+
+`undo`/`redo` put back the exact earlier bars, metadata and cursor, but the revision still
+goes **up**. Later agent answers are tied to a revision, so a revision number never means
+two different scores.
+
+`isDirty(editor)` compares with the last saved/opened score by object identity (undo
+restores the same objects), so undoing back to the saved score clears the unsaved marker.
+
+### `js/score-document.js`
+
+The saved file is `{ schemaVersion: 1, scoreId, revision, title, tempoBpm, meter, bars }`
+as human-readable JSON (`.drumhub.json`). `validateDocument` returns plain-language
+problems: unknown fields, bad ids/duplicates, provenance, unknown drums/durations, dotted
+32nds, broken triplet groups, overfilled bars, and meters other than 4/4 (the MVP limit).
+`parseDocument` migrates an old `{ bars }`-only export and refuses files from a newer
+DrumHub without changing them.
+
+### Electron main: `desktop/score-files.cjs`, `score-session.cjs`, `score-ipc.cjs`
+
+- The page never touches the disk. It sends a document; main chooses the path with a
+  native dialog and validates the document again before writing.
+- Save writes a temporary file, flushes it, then renames it over the target, so a crash
+  leaves either the old file or the new one.
+- If the file changed or disappeared since it was opened, Save asks: Save As / Replace / Cancel.
+- Autosave (1 s after an edit) writes a **recovery copy** in the app's data folder, never
+  over the user's file. On launch, DrumHub offers to restore it. Save or "Don't Save" removes it.
+- Closing or quitting with unsaved changes asks Save / Don't Save / Cancel. Only main can
+  close past that prompt (after its own Save succeeds) or delete a recovery copy (after
+  "Don't Save"); the page cannot do either by itself.
+- Save to the already-linked file requires the same `scoreId`; a different score goes
+  through Save As. File operations in main run one at a time.
+- Scores inside the editor are frozen (`commands.js`). Build new objects; never edit in place.
 
 ---
 

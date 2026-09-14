@@ -46,6 +46,45 @@ Verified on 2026-09-14: 53 tests across the editor and OpenAI client (`npm test`
 offline Electron workflow (`npm run test:desktop`), all passing. The previous audit's
 33 ML tests (`ml/omr/`) were not rerun for this desktop integration change.
 
+### 2026-09-14 — Master plan Phase 0 item 3 and Phase 1 (tickets 1–3)
+
+Built from `drumhub_master_plan.md` §3.1, §4 A1–A4, §6 Phases 0–1 and §8 tickets 1–3.
+
+- **API key leak check (Phase 0.3):** a new test sends a key through success, 401, 503,
+  network and failed-response paths and asserts it never appears in the URL, body, result,
+  or any error. It found a real leak — an API error echoing the key was shown verbatim —
+  now redacted at the single exit point of `OpenAiOmr.recognize`.
+- **Ticket 1 — score document:** `js/score-document.js` adds `schemaVersion`, `scoreId`,
+  `revision`, title, tempo, 4/4 meter, per-bar `barId` + provenance (source, reviewed,
+  warnings, model) and per-note `eventId`. Existing bars migrate in memory with the note
+  format unchanged. Validation rejects bad meter, ids, provenance, notes, broken triplet
+  groups and overfilled bars. 14 tests.
+- **Ticket 2 — commands and undo/redo:** `js/commands.js` wraps every edit, import,
+  review and metadata change; each increments the revision exactly once, cursor moves do
+  not, and undo/redo restore the exact score and cursor (revision still moves forward).
+  Keyboard, keypad, both import paths and the new title/tempo fields go through it. 13 tests.
+- **Ticket 3 — save/load/recovery:** `.drumhub.json` Save / Save As / Open / Open Recent /
+  New from a real File menu; atomic temp-file-and-rename writes; conflict prompt when the
+  file changed on disk; 1-second autosave to a recovery copy in the app data folder with a
+  restore prompt at launch; unsaved-changes prompt on close and quit; newer-format files
+  refused without being touched. The page never gets filesystem access. 16 Node tests plus
+  a new real-Electron workflow test (`test/desktop-files-smoke.cjs`).
+- **Independent review (Codex CLI, read-only, per the plan's reviewer role):** 10 findings.
+  Fixed 8: `drums: [undefined]` passed validation; a failing recent-files update could
+  re-link Save to a file the editor was not showing; main-process file operations could
+  interleave (now one at a time); the folder was not flushed after rename; Save to the
+  linked file now requires the same `scoreId`; the page can no longer skip the close
+  prompt or delete a recovery copy without the person choosing "Don't Save"; editor
+  scores are frozen so an in-place edit cannot hide unsaved changes. Not changed: a
+  sub-second window where another app edits the file between the conflict check and
+  the rename (no portable compare-and-swap), and non-4/4 meters are still refused rather
+  than shown as unsupported (decision 3's 4/4 MVP; the plan text allows display-only).
+- Verified: `npm test` 101 passing; `npm run test:desktop` runs both Electron workflows
+  and passes. The original desktop test now uses a temporary data folder and asserts
+  the quit prompt instead of depending on the real app data folder.
+- Not done in this slice: review badges / next-unreviewed UI (ticket 4), score snapshot
+  and analysis (tickets 5–7), and every AI ticket (9–12), which Victor writes himself.
+
 ## Done or present
 
 ### Project planning

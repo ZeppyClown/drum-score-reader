@@ -3,10 +3,12 @@ const path = require('path');
 const { pathToFileURL } = require('url');
 const { OmrService } = require('./desktop/omr-service.cjs');
 const { OpenAiOmr } = require('./desktop/openai-omr.cjs');
+const { initScoreFiles } = require('./desktop/score-ipc.cjs');
 const service = new OmrService({ root: __dirname });
 const openai = new OpenAiOmr();
 let importing = false;
 let quitting = false;
+let scoreFiles = null;
 
 function trustedSender(event) {
   return event.senderFrame === event.sender.mainFrame &&
@@ -26,7 +28,7 @@ ipcMain.handle('omr:import', async event => {
     });
     if (picked.canceled || !picked.filePaths.length) return { canceled: true };
     const prediction = await service.predict(picked.filePaths[0]);
-    return { ...prediction, filename: path.basename(picked.filePaths[0]) };
+    return { ...prediction, model: path.basename(service.bundle), filename: path.basename(picked.filePaths[0]) };
   } catch (error) { return { error: error.message }; }
   finally { importing = false; }
 });
@@ -50,9 +52,11 @@ function createWindow() {
   win.loadFile(path.join(__dirname, 'index.html'));
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', event => event.preventDefault());
+  scoreFiles.attach(win);
 }
 
 app.whenReady().then(() => {
+  scoreFiles = initScoreFiles({ trustedSender });
   createWindow();
   service.start().catch(error => console.error(error.message));
   app.on('activate', () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });

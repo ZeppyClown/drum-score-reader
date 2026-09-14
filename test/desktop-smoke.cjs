@@ -4,6 +4,14 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const { OmrService } = require('../desktop/omr-service.cjs');
 const { OpenAiOmr } = require('../desktop/openai-omr.cjs');
+const fs = require('node:fs');
+const os = require('node:os');
+const userData = fs.mkdtempSync(path.join(os.tmpdir(), 'drumhub-desktop-smoke-'));
+app.setPath('userData', userData);
+// The imports leave unsaved changes, so quitting asks to save: answer "Don't Save".
+const prompts = [];
+dialog.showMessageBoxSync = (_win, options) => { prompts.push(options.message); return 1; };
+process.on('exit', () => fs.rmSync(userData, { recursive: true, force: true }));
 let selection;
 dialog.showOpenDialog = async () => selection;
 const external = [];
@@ -103,6 +111,9 @@ app.whenReady().then(async () => {
   OpenAiOmr.prototype.recognize = recognize;
   assert.equal(await evaluate('typeof window.require'), 'undefined');
   assert.deepEqual(external, []);
-  console.log('PASS: local and Luna clipboard-image import, SVG rendering, editing, append preservation, cancellation, errors, isolated preload.');
+  const closed = new Promise(resolve => win.once('closed', resolve));
   app.quit();
+  await closed;
+  assert.deepEqual(prompts, ['Do you want to save the changes to “Untitled score”?']);
+  console.log('PASS: local and Luna clipboard-image import, SVG rendering, editing, append preservation, cancellation, errors, isolated preload, unsaved-changes prompt on quit.');
 }).catch(error => { console.error(error); app.once('will-quit', () => app.exit(1)); app.quit(); });

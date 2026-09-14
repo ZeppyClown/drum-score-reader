@@ -31,3 +31,9 @@ body > div:first-child { position: fixed; inset: 0 0 auto; height: 40px; backgro
 .key-lbl { font-size: 12px; font-weight: bold; line-height: 1; }
 .key-shift { font-size: 9px; color: #7dd3fc; line-height: 1; margin-top: 2px; }
 .col-span-2 { grid-column: span 2; }
+#score-details { display: flex; align-items: center; gap: 10px; margin-left: auto; font-size: 13px; color: #4b5563; }
+#score-details input { border: 1px solid #d1d5db; border-radius: 5px; padding: 3px 6px; background: white; }
+#score-title { width: 180px; }
+#score-tempo { width: 62px; }
+#score-meter { font-weight: 600; }
+#details-error { color: #b91c1c; max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
