@@ -1,5 +1,5 @@
 // Real Electron app + real Python service + released local model: import a real Songsterr page,
-// edit the suggested boxes with the mouse, transcribe (one bar forced to fail), retry, add the bars
+// edit the suggested boxes with the mouse and keyboard, read (one bar forced to fail), retry, add the bars
 // in reading order, and resume an unfinished import after a reload.
 process.env.DRUMHUB_IGNORE_DOTENV = '1';
 const { app, BrowserWindow, dialog } = require('electron');
@@ -58,6 +58,14 @@ app.whenReady().then(async () => {
   assert.match(await text('#page-status'), new RegExp(`Found ${found} bars`));
   const numbers = await evaluate('[...document.querySelectorAll(".page-box-num")].map(n => Number(n.textContent))');
   assert.deepEqual(numbers, numbers.map((_, i) => i + 1));
+  const firstBoxBefore = await evaluate('parseFloat(document.querySelector(".page-box").style.left)');
+  await evaluate('(() => { const box = document.querySelector(".page-box"); box.focus(); box.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })); })()');
+  const firstBoxAfter = await evaluate('parseFloat(document.querySelector(".page-box").style.left)');
+  assert.notEqual(firstBoxAfter, firstBoxBefore, 'ArrowRight moves a focused box');
+  await evaluate('document.querySelector(".page-box").dispatchEvent(new KeyboardEvent("keydown", { key: "Delete", bubbles: true }))');
+  await waitFor(async () => (await boxCount()) === found - 1, 'keyboard box deletion');
+  await evaluate('document.getElementById("page-add-box").click()');
+  await waitFor(async () => (await boxCount()) === found, 'box added from keyboard-editing controls');
 
   // 2. Remove the last box, then draw it back with real mouse input.
   await evaluate(`[...document.querySelectorAll('.page-box')].at(-1).scrollIntoView({ block: 'center' })`);
@@ -78,10 +86,10 @@ app.whenReady().then(async () => {
   await new Promise(resolve => setTimeout(resolve, 30));
   mouse('mouseUp', last.x + last.w - 3, last.y + last.h - 3);
   await waitFor(async () => (await boxCount()) === found, 'box drawn', 5000);
-  assert.equal(await evaluate(`[...document.querySelectorAll('.page-box')].at(-1).dataset.boxId`), 'drawn-1');
+  assert.equal(await evaluate(`[...document.querySelectorAll('.page-box')].at(-1).dataset.boxId`), 'drawn-2');
   assert.equal(await evaluate(`[...document.querySelectorAll('.page-box-num')].at(-1).textContent`), String(found));
 
-  // 3. Transcribe with the local model; the second bar fails, the rest are kept.
+  // 3. Read with the local model; the second bar fails, the rest are kept.
   failNext = 0;
   let calls = 0;
   OmrService.prototype.predictData = async function (...args) {
@@ -92,7 +100,7 @@ app.whenReady().then(async () => {
   await evaluate('document.getElementById("page-transcribe").click()');
   await waitFor(async () => /bars read/.test(await text('#page-status')) && !(await evaluate('document.getElementById("page-transcribe").hidden')), 'transcription', 300000);
   assert.match(await text('#page-status'), new RegExp(`${found - 1} of ${found} bars read\\. 1 could not be read: retry it or add an empty bar`));
-  assert.equal(await text('#page-transcribe'), 'Transcribe 1 remaining bar');
+  assert.equal(await text('#page-transcribe'), 'Read 1 remaining bar');
   assert.equal(await evaluate('document.querySelectorAll(".page-box-failed").length'), 1);
   assert.equal(await evaluate('document.querySelectorAll(".page-box-done").length'), found - 1);
 
@@ -106,6 +114,7 @@ app.whenReady().then(async () => {
   // 5. Add every bar to the score, in reading order, as unchecked local-model bars.
   await evaluate('document.getElementById("page-add").click()');
   await waitFor(() => evaluate('document.getElementById("page-import").hidden'), 'screen closed');
+  assert.equal(await evaluate('document.activeElement?.id'), 'page-import-btn', 'focus returns to the opener');
   const score = await editor();
   assert.equal(score.bars.length, found);
   assert.ok(score.bars.every(bar => bar.provenance.source === 'local_omr' && bar.provenance.reviewed === false));

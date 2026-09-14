@@ -1,5 +1,5 @@
 // ── Page and PDF import screen ────────────────────────────────────────────────
-// Open a page → check the suggested bar boxes (draw, move, resize, remove) → transcribe
+// Open a page → check the suggested bar boxes (draw, move, resize, remove) → read
 // with the local model or GPT-5.6 Luna → add the bars to the score in reading order.
 // Box positions are page-image pixels; they are drawn as percentages so the page can be
 // shown at any size. Recognition, cropping and saving happen in main (page-import.cjs).
@@ -17,10 +17,17 @@ const bars = n => `${n} bar${n === 1 ? '' : 's'}`;
 
 let job = null;          // { jobId, fileName, pages, boxes, results, recognizer }
 let busy = false;
+let stopping = false;
 let drawnCount = 0;
+let currentPageNumber = null;
+let dialogOpener = null;
 
 const pageOf = number => job.pages.find(p => p.page === number);
 const statusText = message => { $('page-status').textContent = message; };
+const failureText = error => `Page import failed: ${error?.message ?? String(error)}`;
+
+const stateLabel = state => ({ pending: 'waiting', working: 'reading', done: 'done', failed: 'failed' }[state] ?? state);
+const stateVisual = state => ({ pending: 'waiting', working: 'reading', done: '✓', failed: 'failed' }[state] ?? state);
 
 // What the user sees on a box: nothing yet, working, done, or failed (+ retry).
 function boxState(box) {
@@ -41,7 +48,8 @@ function updateButtons() {
   $('page-transcribe').hidden = busy;
   $('page-stop').hidden = !busy;
   $('page-transcribe').disabled = busy || job.boxes.length === 0 || tally.pending + tally.failed === 0;
-  $('page-transcribe').textContent = tally.done ? `Transcribe ${tally.pending + tally.failed} remaining ${tally.pending + tally.failed === 1 ? 'bar' : 'bars'}` : `Transcribe ${bars(job.boxes.length)}`;
+  $('page-stop').disabled = stopping;
+  $('page-transcribe').textContent = tally.done ? `Read ${tally.pending + tally.failed} remaining ${tally.pending + tally.failed === 1 ? 'bar' : 'bars'}` : `Read ${bars(job.boxes.length)}`;
   $('page-add').disabled = busy || tally.done === 0;
   $('page-add').textContent = `Add ${bars($('page-keep-blank').checked ? job.boxes.length : tally.done)} to score`;
   $('page-recognizer').disabled = busy;
@@ -52,9 +60,13 @@ function renumber() {
 }
 
 function boxElement(box, index, page) {
+  const state = boxState(box);
   const element = document.createElement('div');
-  element.className = `page-box page-box-${boxState(box)}`;
+  element.className = `page-box page-box-${state}`;
   element.dataset.boxId = box.id;
+  element.tabIndex = 0;
+  element.setAttribute('role', 'group');
+  element.setAttribute('aria-label', `Bar ${index + 1}, page ${page.page} — ${stateLabel(state)}`);
   Object.assign(element.style, {
     left: `${(box.x / page.width) * 100}%`, top: `${(box.y / page.height) * 100}%`,
     width: `${(box.width / page.width) * 100}%`, height: `${(box.height / page.height) * 100}%`,
@@ -62,6 +74,9 @@ function boxElement(box, index, page) {
   const number = document.createElement('span');
   number.className = 'page-box-num';
   number.textContent = index + 1;
+  const stateText = document.createElement('span');
+  stateText.className = 'page-box-state';
+  stateText.textContent = stateVisual(state);
   const remove = document.createElement('button');
   remove.type = 'button';
   remove.className = 'page-box-remove';
@@ -69,9 +84,9 @@ function boxElement(box, index, page) {
   remove.textContent = '×';
   const handle = document.createElement('span');
   handle.className = 'page-box-handle';
-  element.append(number, remove, handle);
+  element.append(number, stateText, remove, handle);
   const result = job.results[box.id];
-  if (boxState(box) === 'failed') {
+  if (state === 'failed') {
     const retry = document.createElement('button');
     retry.type = 'button';
     retry.className = 'page-box-retry';
@@ -82,7 +97,7 @@ function boxElement(box, index, page) {
   return element;
 }
 
-function render() {
+function render(focusBoxId = document.activeElement?.closest?.('.page-box')?.dataset.boxId) {
   const container = $('page-pages');
   container.replaceChildren(...job.pages.map(page => {
     const wrap = document.createElement('div');
@@ -97,6 +112,7 @@ function render() {
     return wrap;
   }));
   updateButtons();
+  if (focusBoxId) queueMicrotask(() => [...document.querySelectorAll('.page-box')].find(element => element.dataset.boxId === focusBoxId)?.focus());
 }
 
 // ── Editing boxes with the pointer ──────────────────────────────────────────
@@ -115,6 +131,7 @@ function startDrag(event) {
   const sheet = event.target.closest('.page-sheet');
   if (!sheet || event.target.closest('button')) return;
   const page = pageOf(Number(sheet.dataset.page));
+  currentPageNumber = page.page;
   const origin = pagePoint(sheet, event, page);
   const boxEl = event.target.closest('.page-box');
   const box = boxEl ? job.boxes.find(b => b.id === boxEl.dataset.boxId) : null;
@@ -160,12 +177,69 @@ function onPagesClick(event) {
   const boxEl = event.target.closest('.page-box');
   if (!boxEl || busy) return;
   if (event.target.classList.contains('page-box-remove')) {
-    job = { ...job, boxes: job.boxes.filter(box => box.id !== boxEl.dataset.boxId) };
-    renumber();
-    render();
+    const index = job.boxes.findIndex(box => box.id === boxEl.dataset.boxId);
+    focusAfterDelete(index, boxEl.dataset.boxId);
   } else if (event.target.classList.contains('page-box-retry')) {
     runRecognition(() => window.pages.retry(job.jobId, boxEl.dataset.boxId));
   }
+}
+
+function onBoxFocus(event) {
+  const boxEl = event.target.closest('.page-box');
+  if (boxEl) currentPageNumber = job.boxes.find(box => box.id === boxEl.dataset.boxId)?.page ?? currentPageNumber;
+}
+
+function focusAfterDelete(removedIndex, removedId) {
+  const remaining = job.boxes.filter(box => box.id !== removedId);
+  job = { ...job, boxes: remaining };
+  renumber();
+  const next = job.boxes[removedIndex] ?? job.boxes[removedIndex - 1];
+  render(next?.id);
+  if (!next) $('page-add-box').focus();
+}
+
+function onPagesKeydown(event) {
+  const boxEl = event.target.closest('.page-box');
+  if (!boxEl || event.target !== boxEl || busy) return;
+  const index = job.boxes.findIndex(box => box.id === boxEl.dataset.boxId);
+  const box = job.boxes[index];
+  if (!box) return;
+  if (event.key === 'Delete' || event.key === 'Backspace') {
+    event.preventDefault();
+    focusAfterDelete(index, box.id);
+    return;
+  }
+  const direction = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[event.key];
+  if (!direction) return;
+  event.preventDefault();
+  const step = event.shiftKey ? 20 : 4;
+  const page = pageOf(box.page);
+  const [horizontal, vertical] = direction;
+  const next = event.altKey
+    ? clampBox({ ...box, width: box.width + horizontal * step, height: box.height + vertical * step }, page)
+    : clampBox({ ...box, x: box.x + horizontal * step, y: box.y + vertical * step }, page);
+  replaceBox(box.id, next);
+  renumber();
+  render(box.id);
+}
+
+function addBox() {
+  if (busy || !job?.pages.length) return;
+  const page = pageOf(currentPageNumber) ?? job.pages[0];
+  const width = Math.max(DRAG_MIN, Math.round(page.width * 0.2));
+  const height = Math.max(DRAG_MIN, Math.round(page.height * 0.1));
+  const box = clampBox({
+    id: `drawn-${++drawnCount}`,
+    page: page.page,
+    x: (page.width - width) / 2,
+    y: (page.height - height) / 2,
+    width,
+    height,
+  }, page);
+  currentPageNumber = page.page;
+  job = { ...job, boxes: [...job.boxes, box] };
+  renumber();
+  render(box.id);
 }
 
 // ── Recognition ─────────────────────────────────────────────────────────────
@@ -180,24 +254,28 @@ function onProgress(update) {
     replaceBox(box.id, { ...box, working: false });
     job = { ...job, results: { ...job.results, [box.id]: update.result } };
   }
-  const tally = counts();
-  statusText(`Reading bar ${update.index} of ${update.total}… ${tally.done} read, ${tally.failed} could not be read.`);
   render();
 }
 
-async function runRecognition(request) {
+async function runRecognition(request, startMessage = 'Reading bars…') {
   busy = true;
-  render();
+  stopping = false;
+  statusText(startMessage);
   try {
+    render();
     const result = await request();
-    if (result.error) { statusText(result.error); return; }
-    job = { ...job, results: result.results, boxes: job.boxes.map(({ working, ...box }) => box) };
+    if (!result || result.error) { statusText(failureText(result?.error ?? 'The reader returned no result.')); return; }
+    job = { ...job, results: result.results ?? job.results, boxes: job.boxes.map(({ working, ...box }) => box) };
     const tally = counts();
     statusText(result.canceled
       ? `Stopped. ${bars(tally.done)} read so far; they are saved.`
       : `${tally.done} of ${bars(job.boxes.length)} read.${tally.failed ? ` ${tally.failed} could not be read: retry ${tally.failed === 1 ? 'it' : 'them'} or add ${tally.failed === 1 ? 'an empty bar' : 'empty bars'} to fill in by hand.` : ''} Check the result, then add the bars.`);
+  } catch (error) {
+    statusText(failureText(error));
   } finally {
+    if (job) job = { ...job, boxes: job.boxes.map(({ working, ...box }) => box) };
     busy = false;
+    stopping = false;
     render();
   }
 }
@@ -205,6 +283,26 @@ async function runRecognition(request) {
 function transcribe() {
   const boxes = job.boxes.map(({ id, page, x, y, width, height }) => ({ id, page, x, y, width, height }));
   runRecognition(() => window.pages.transcribe(job.jobId, boxes, $('page-recognizer').value));
+}
+
+async function stopRecognition() {
+  if (!busy || !job) return;
+  if (typeof window.pages.cancel !== 'function') {
+    statusText('Stop reading first.');
+    return;
+  }
+  if (stopping) return;
+  stopping = true;
+  statusText('Stopping…');
+  render();
+  try {
+    const result = await window.pages.cancel(job.jobId);
+    if (result?.error) statusText(failureText(result.error));
+  } catch (error) {
+    stopping = false;
+    statusText(failureText(error));
+    render();
+  }
 }
 
 // ── Adding to the score ─────────────────────────────────────────────────────
@@ -251,30 +349,67 @@ async function addToScore() {
 function show(loaded) {
   job = { ...loaded, boxes: loaded.boxes };
   drawnCount = loaded.boxes.filter(b => b.id.startsWith('drawn-')).length;
+  currentPageNumber = loaded.pages[0]?.page ?? null;
   $('page-recognizer').value = loaded.recognizer ?? 'local';
   $('page-import-file').textContent = `${loaded.fileName} — ${loaded.pages.length} page${loaded.pages.length === 1 ? '' : 's'}`;
   statusText(loaded.boxes.length
-    ? `Found ${loaded.boxes.length} bars. Check the boxes, then transcribe.`
+    ? `Found ${loaded.boxes.length} bars. Check the boxes, then read.`
     : 'No bars were found. Drag on the page to draw a box around each bar.');
   $('page-import').hidden = false;
   document.body.classList.add('modal-open');
   render();
+  $('page-recognizer').focus();
 }
 
 function close() {
-  if (busy) return;
+  if (busy) { stopRecognition(); return; }
   $('page-import').hidden = true;
   document.body.classList.remove('modal-open');
   job = null;
+  currentPageNumber = null;
+  const opener = dialogOpener;
+  dialogOpener = null;
+  opener?.focus();
 }
 
 async function openPage() {
   $('import-status').textContent = 'Choose a page image or PDF. Finding the bars may take a moment…';
-  const result = await window.pages.open();
-  if (result.canceled) { $('import-status').textContent = 'Page import canceled.'; return; }
-  if (result.error) { $('import-status').textContent = `Page import failed: ${result.error}`; return; }
-  $('import-status').textContent = '';
-  show(result);
+  try {
+    const result = await window.pages.open();
+    if (result.canceled) { $('import-status').textContent = 'Page import canceled.'; dialogOpener?.focus(); return; }
+    if (result.error) { $('import-status').textContent = failureText(result.error); dialogOpener?.focus(); return; }
+    $('import-status').textContent = '';
+    show(result);
+  } catch (error) {
+    $('import-status').textContent = failureText(error);
+    dialogOpener?.focus();
+  }
+}
+
+function focusableDialogControls() {
+  return [...$('page-import').querySelectorAll('button:not([disabled]), select:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+    .filter(element => !element.hidden && element.offsetParent !== null);
+}
+
+function onDialogKeydown(event) {
+  if (!job || $('page-import').hidden) return;
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    close();
+    return;
+  }
+  if (event.key !== 'Tab') return;
+  const controls = focusableDialogControls();
+  if (!controls.length) return;
+  const current = document.activeElement;
+  const index = controls.indexOf(current);
+  if (event.shiftKey && (index <= 0 || index === -1)) {
+    event.preventDefault();
+    controls.at(-1).focus();
+  } else if (!event.shiftKey && (index === controls.length - 1 || index === -1)) {
+    event.preventDefault();
+    controls[0].focus();
+  }
 }
 
 async function offerResume() {
@@ -285,7 +420,16 @@ async function offerResume() {
   status.textContent = `An unfinished page import is waiting: ${latest.fileName} (${latest.done} of ${latest.total} bars read). `;
   const resume = Object.assign(document.createElement('button'), { type: 'button', id: 'page-resume', textContent: 'Resume' });
   const discard = Object.assign(document.createElement('button'), { type: 'button', id: 'page-discard', textContent: 'Discard' });
-  resume.addEventListener('click', async () => { const loaded = await window.pages.load(latest.jobId); if (loaded.error) status.textContent = loaded.error; else { status.textContent = ''; show(loaded); } });
+  resume.addEventListener('click', async event => {
+    dialogOpener = event.currentTarget;
+    try {
+      const loaded = await window.pages.load(latest.jobId);
+      if (loaded.error) status.textContent = failureText(loaded.error);
+      else { status.textContent = ''; show(loaded); }
+    } catch (error) {
+      status.textContent = failureText(error);
+    }
+  });
   discard.addEventListener('click', async () => { await window.pages.discard(latest.jobId); status.textContent = 'Discarded the unfinished page import.'; });
   status.append(resume, ' ', discard);
 }
@@ -293,15 +437,18 @@ async function offerResume() {
 export function initPageImport() {
   if (!window.pages) { $('page-import-btn').hidden = true; return; }
   window.pages.onProgress(onProgress);
-  $('page-import-btn').addEventListener('click', event => { event.currentTarget.blur(); openPage(); });
+  $('page-import-btn').addEventListener('click', event => { dialogOpener = event.currentTarget; event.currentTarget.blur(); openPage(); });
   $('page-close').addEventListener('click', close);
   $('page-transcribe').addEventListener('click', transcribe);
-  $('page-stop').addEventListener('click', () => window.pages.cancel(job.jobId));
+  $('page-stop').addEventListener('click', stopRecognition);
   $('page-add').addEventListener('click', addToScore);
+  $('page-add-box').addEventListener('click', addBox);
   $('page-keep-blank').addEventListener('change', updateButtons);
   $('page-recognizer').addEventListener('change', render);
   $('page-pages').addEventListener('pointerdown', startDrag);
   $('page-pages').addEventListener('click', onPagesClick);
-  document.addEventListener('keydown', event => { if (event.key === 'Escape' && job) close(); });
+  $('page-pages').addEventListener('focusin', onBoxFocus);
+  $('page-pages').addEventListener('keydown', onPagesKeydown);
+  document.addEventListener('keydown', onDialogKeydown);
   offerResume();
 }
