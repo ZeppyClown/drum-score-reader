@@ -27,7 +27,7 @@ const refsFor = numbers => [...new Set(numbers)].sort((a, b) => a - b).reduce((r
   return [...ranges, ref(n)];
 }, []);
 const reply = (answer, references = [], extra = {}) => ({
-  answer, abstained: false, references, suggestedQuestions: [], caveats: [], ...extra,
+  answer, abstained: false, references, suggestedQuestions: [], caveats: [], actions: [], ...extra,
 });
 
 function describeBar(bar) {
@@ -74,14 +74,19 @@ const ANSWERS = {
     const plan = buildPracticePlan(snap, { fromBar, toBar });
     if (plan.error) return reply(plan.error, [], { abstained: true });
     const steps = plan.steps.map((s, i) => `${i + 1}. ${s.title}${s.bpm ? ` at ${s.bpm} BPM` : ''}: ${s.instruction} Done when: ${s.successCondition}`);
-    return reply(steps.join(' '), [ref(fromBar, toBar)]);
+    const slow = plan.steps.find(s => s.bpm)?.bpm;
+    return reply(steps.join(' '), [ref(fromBar, toBar)], { actions: [
+      { type: 'set_loop', fromBar, toBar, tempoBpm: null, exerciseId: null, reason: 'Loop the passage while you practise it.' },
+      ...(slow && slow >= snap.tempoBpm * 0.6 ? [{ type: 'set_tempo', fromBar: null, toBar: null, tempoBpm: slow, exerciseId: null, reason: 'Start slowly.' }] : []),
+    ] });
   },
   'find-complex': snap => {
     const result = findComplexPassages(snap);
     const [top] = result.passages;
     const reasons = result.ranked.filter(b => b.barNumber >= top.fromBar && b.barNumber <= top.toBar).flatMap(b => b.reasons).slice(0, 3);
     return reply(`The busiest notation is in ${label(top.fromBar, top.toBar)} (notation score ${top.score} out of 100): ${list(reasons) || 'it has the most notes'}. This is about how busy the notes are, not how hard they will feel for you.`,
-      result.passages.map(p => ref(p.fromBar, p.toBar)));
+      result.passages.map(p => ref(p.fromBar, p.toBar)),
+      { actions: [{ type: 'select_bars', fromBar: top.fromBar, toBar: top.toBar, tempoBpm: null, exerciseId: null, reason: 'Look at the busiest bars.' }] });
   },
   'find-repeats': snap => {
     const { exactGroups, nearMatches } = findPatterns(snap);

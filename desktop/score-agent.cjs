@@ -28,6 +28,7 @@ Rules:
 - Don't mention tools, snapshots or data to the reader; say "the score". DrumHub adds warnings about unchecked bars itself, so you don't need to repeat them in "caveats".
 - Only describe what the notes are (which drums, when, how long). Don't invent how to play them, such as letting a cymbal ring or choking it.
 - In get_score_overview, drumHitCount is every drum stroke and notesWithSeveralDrums is how many times two or more drums sound together.
+- "actions" are optional buttons the drummer can confirm: select_bars or set_loop for the bars you talk about, set_tempo for a slower practice tempo (within 40% of the score tempo), open_exercise with an id returned by find_exercises. Suggest at most 3, only when they help, and never for questions the score cannot answer. Actions never change the notes.
 - Use short, clear sentences a 10-year-old can follow. No markdown. Keep it under 120 words unless giving a step-by-step practice plan.`;
 
 class AgentRequestError extends Error {}

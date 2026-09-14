@@ -128,3 +128,6 @@ body.modal-open { overflow: hidden; }
   #score svg { width: 100% !important; height: auto !important; }
   #score-cursor, .bar-unreviewed, .bar-selected { display: none; }
 }
+#ask-actions { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.ask-action { font-size: 12px; padding: 3px 10px; border-radius: 12px; background: #ecfdf5; border-color: #6ee7b7; color: #065f46; }
+#ask-answer.stale .ask-action { pointer-events: none; }

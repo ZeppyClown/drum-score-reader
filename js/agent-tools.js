@@ -11,6 +11,7 @@ import {
   getScoreOverview, inspectBars, findComplexPassages, findPatterns, comparePassages,
   buildPracticePlan, findFillCandidates,
 } from './score-analysis.js';
+import { exercisesForPassage } from './exercise-search.js';
 
 export const MAX_INSPECT_BARS = 8;
 const MAX_OUTPUT_CHARS = 20000;
@@ -37,6 +38,8 @@ export const TOOL_DEFINITIONS = [
     { barA: int('First bar number.'), barB: int('Second bar number.') }),
   tool('find_fill_candidates', 'Bars that might be fills or transitions, with the reasons. These are candidates, not confirmed fills.'),
   tool('build_practice_plan', 'A step-by-step practice plan for a bar range, with tempos and a success condition for each step.',
+    { fromBar: int('First bar number.'), toBar: int('Last bar number, inclusive.') }),
+  tool('find_exercises', "Up to 3 exercises from DrumHub's own library that practise what a bar range needs, with the reasons. Use their ids for open_exercise actions.",
     { fromBar: int('First bar number.'), toBar: int('Last bar number, inclusive.') }),
 ];
 
@@ -77,6 +80,14 @@ export function runTool(name, rawArguments, snapshot) {
     case 'build_practice_plan':
       if (!isInt(args.fromBar) || !isInt(args.toBar)) return { error: `fromBar and toBar must be whole bar numbers. ${range}` };
       return buildPracticePlan(snapshot, { fromBar: args.fromBar, toBar: args.toBar });
+    case 'find_exercises': {
+      if (!isInt(args.fromBar) || !isInt(args.toBar)) return { error: `fromBar and toBar must be whole bar numbers. ${range}` };
+      const inspected = inspectBars(snapshot, { fromBar: args.fromBar, toBar: Math.min(args.toBar, args.fromBar + MAX_INSPECT_BARS - 1) });
+      if (!inspected.bars?.length) return { error: `None of those bars are available. ${range}` };
+      const complex = findComplexPassages(snapshot);
+      const ranked = complex.error ? [] : complex.ranked;
+      return { exercises: exercisesForPassage({ ...inspected, ranked }).map(({ id, title, reasons }) => ({ id, title, reasons })) };
+    }
     default:
       return { error: `Unknown tool "${name}". Available tools: ${TOOL_NAMES.join(', ')}.` };
   }

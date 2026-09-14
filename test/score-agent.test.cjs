@@ -47,7 +47,7 @@ test('tool loop: the model calls a tool, gets local facts, then answers with che
   const [first, second] = client.requests;
   assert.equal(first.body.model, 'agent-model');
   assert.equal(first.body.instructions, INSTRUCTIONS);
-  assert.deepEqual(first.body.tools.map(t => t.name).length, 7);
+  assert.deepEqual(first.body.tools.map(t => t.name).length, 8);
   assert.equal(first.body.text.format.strict, true);
   assert.deepEqual(first.body.include, ['reasoning.encrypted_content']);
   assert.equal(first.options.setting, 'OPENAI_AGENT_MODEL');

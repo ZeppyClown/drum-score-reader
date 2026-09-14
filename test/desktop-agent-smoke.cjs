@@ -86,6 +86,20 @@ app.whenReady().then(async () => {
   await click('#ask-references .cite');
   const ids = (await editor()).barIds;
   await waitFor(async () => (await editor()).selection?.toBarId === ids[7], 'reference selects bars');
+  // Suggested action: pressing it is the confirmation; selecting bars is not a score edit.
+  assert.equal(await text('#ask-actions .ask-action'), 'Select bars 7–8');
+  const beforeAction = (await editor()).revision;
+  await evaluate(`import('./js/editor-store.js').then(async ({ dispatch }) => { const { selectBarsCommand } = await import('./js/selection.js'); dispatch(selectBarsCommand(null)); })`);
+  await click('#ask-actions .ask-action');
+  await waitFor(async () => (await editor()).selection?.fromBarId === ids[6], 'action selects bars 7–8');
+  assert.equal((await editor()).revision, beforeAction);
+  // A practice-plan answer suggests looping the passage and a slower tempo (a playback effect).
+  await evaluate(`window.__effects = []; window.addEventListener('drumhub:effect', e => window.__effects.push(e.detail)); 1`);
+  await suggestion('How should I practise these bars?');
+  await waitFor(async () => (await evaluate('document.querySelectorAll("#ask-actions .ask-action").length')) === 2, 'plan actions');
+  assert.deepEqual(await evaluate('[...document.querySelectorAll("#ask-actions .ask-action")].map(b => b.textContent)'), ['Loop bars 7–8', 'Practise at 60 BPM (the score is 100 BPM)']);
+  await evaluate('document.querySelectorAll("#ask-actions .ask-action")[1].click()');
+  assert.deepEqual(await evaluate('window.__effects'), [{ kind: 'playback', tempoBpm: 60 }]);
 
   // 2. Unchecked imported bars are disclosed.
   await evaluate(`import('./js/editor-store.js').then(async ({ dispatch }) => { const { selectBarsCommand } = await import('./js/selection.js');

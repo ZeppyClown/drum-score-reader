@@ -89,7 +89,9 @@ test('required caveats cover truncated snapshots', () => {
 
 test('tools: strict definitions, local results, and errors instead of crashes', () => {
   assert.deepEqual(TOOL_NAMES, ['get_score_overview', 'inspect_bars', 'find_complex_passages', 'find_patterns',
-    'compare_passages', 'find_fill_candidates', 'build_practice_plan']);
+    'compare_passages', 'find_fill_candidates', 'build_practice_plan', 'find_exercises']);
+  const found = runTool('find_exercises', '{"fromBar":7,"toBar":8}', snap());
+  assert.ok(found.exercises.length > 0 && found.exercises.every(e => e.id && e.title && e.reasons.length));
   for (const def of TOOL_DEFINITIONS) {
     assert.equal(def.strict, true);
     assert.equal(def.parameters.additionalProperties, false);

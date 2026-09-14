@@ -29,7 +29,7 @@ const { OpenAiClient, modelSettings } = require('../../desktop/openai-client.cjs
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const REPORT_VERSION = 1;
 const READ_ONLY_TOOLS = ['get_score_overview', 'inspect_bars', 'find_complex_passages', 'find_patterns',
-  'compare_passages', 'find_fill_candidates', 'build_practice_plan'];
+  'compare_passages', 'find_fill_candidates', 'build_practice_plan', 'find_exercises'];
 const sha = text => crypto.createHash('sha256').update(text).digest('hex');
 
 function loadFixtures() {

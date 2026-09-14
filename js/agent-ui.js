@@ -9,6 +9,8 @@ import { onEditorChange } from './editor-store.js';
 import { buildAskRequest } from './ask-request.js';
 import { SUGGESTED_QUESTIONS } from './offline-answers.js';
 import { citationButton } from './insights-ui.js';
+import { replaceEditor } from './editor-store.js';
+import { applyConfirmed } from './agent-actions.js';
 
 const $ = id => document.getElementById(id);
 let status = { cloudEnabled: false, cloudConfigured: false, model: null };
@@ -47,6 +49,23 @@ function showAnswer(question, answer) {
   $('ask-text').textContent = answer.answer;
   $('ask-references').replaceChildren(...answer.references.map(ref => citationButton(answer, ref, report)));
   $('ask-caveats').replaceChildren(...answer.caveats.map(c => item('li', c)));
+  // Suggested actions: pressing one is the confirmation. Selection changes happen here;
+  // playback tempo, loops and exercises are announced as a 'drumhub:effect' event.
+  $('ask-actions').replaceChildren(...(answer.actions ?? []).map(action => {
+    const button = item('button', action.preview, 'ask-action');
+    button.type = 'button';
+    button.title = action.reason;
+    button.addEventListener('click', () => {
+      const { editor, effect } = applyConfirmed(state.editor, action, { confirmed: true });
+      const stale = editor === state.editor && !effect && (action.revision !== state.editor.meta.revision || action.scoreId !== state.editor.meta.scoreId);
+      if (stale) { $('ask-status').textContent = 'The score has changed since this was suggested. Ask again.'; return; }
+      if (editor !== state.editor) replaceEditor(editor);
+      if (effect) window.dispatchEvent(new CustomEvent('drumhub:effect', { detail: effect }));
+      $('ask-status').textContent = `Done: ${action.preview}.`;
+      button.blur();
+    });
+    return button;
+  }));
   $('ask-followups').replaceChildren(...answer.suggestedQuestions.map(text => {
     const suggested = SUGGESTED_QUESTIONS.find(q => q.text === text);
     if (!suggested && !status.cloudEnabled) return item('span', '');
