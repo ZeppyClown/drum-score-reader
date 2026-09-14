@@ -37,6 +37,9 @@ drum score reader/
 │   ├── details-ui.js   ← Title and tempo fields (undoable metadata edits)
 │   ├── review.js       ← Which imported bars still need checking (pure)
 │   ├── review-ui.js    ← "N imported bars to check", Next bar to check, Mark bar checked
+│   ├── sha256.js       ← Synchronous SHA-256 (same hash in page and main)
+│   ├── score-snapshot.js ← Compact, hash-checked score facts for analysis and the agent (pure)
+│   ├── score-analysis.js ← Overview, bar inspection, repeats, fills, complexity, practice plan (pure)
 │   └── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
