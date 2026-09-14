@@ -163,3 +163,36 @@ test('the import leaves room for reasoning and waits long enough for busy bars',
   assert.ok(MAX_OUTPUT_TOKENS >= 25000, 'reasoning tokens count against this limit');
   assert.ok(omr.client.timeoutMs >= IMPORT_TIMEOUT_MS && IMPORT_TIMEOUT_MS >= 120000);
 });
+
+test('a reply cut off by the token limit is retried once with low reasoning, and progress is logged', async () => {
+  const { OpenAiOmr: Omr } = require('../desktop/openai-omr.cjs');
+  const efforts = []; const lines = [];
+  const apiKey = 'sk-test-omr-log-12345678';
+  const omr = new Omr({ apiKey, log: line => lines.push(line), fetchImpl: async (_url, init) => {
+    const body = JSON.parse(init.body);
+    efforts.push(body.reasoning.effort);
+    if (efforts.length === 1) {
+      return { ok: true, status: 200, json: async () => ({ status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' }, output: [{ type: 'reasoning' }],
+        usage: { input_tokens: 700, output_tokens: 25000, output_tokens_details: { reasoning_tokens: 25000 } } }) };
+    }
+    return apiResponse();
+  } });
+  const result = await omr.recognize(Buffer.from('png'));
+  assert.equal(result.status, 'ok');
+  assert.deepEqual(efforts, ['medium', 'low']);
+  const log = lines.join('\n');
+  assert.match(log, /max_output_tokens 25000/);
+  assert.match(log, /stopped: max_output_tokens.*25000 reasoning, 0 answer/);
+  assert.match(log, /retrying once with reasoning effort "low"/);
+  assert.match(log, /output \(.*\): \{"schemaVersion":1/);
+  assert.equal(log.includes(apiKey) || log.includes('base64'), false);
+});
+
+test('a second cut-off reply is reported, not retried forever', async () => {
+  const { OpenAiOmr: Omr } = require('../desktop/openai-omr.cjs');
+  let calls = 0;
+  const omr = new Omr({ apiKey: 'x', fetchImpl: async () => { calls++; return { ok: true, status: 200, json: async () => ({
+    status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' }, output: [] }) }; } });
+  await assert.rejects(omr.recognize(Buffer.from('png')), /incomplete.*max_output_tokens/);
+  assert.equal(calls, 2);
+});

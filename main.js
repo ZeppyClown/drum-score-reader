@@ -9,7 +9,8 @@ const { OpenAiOmr } = require('./desktop/openai-omr.cjs');
 const { initScoreFiles } = require('./desktop/score-ipc.cjs');
 const { initAgent } = require('./desktop/agent-ipc.cjs');
 const service = new OmrService({ root: __dirname });
-const openai = new OpenAiOmr();
+// Luna import progress and raw output go to the terminal that runs `npm start`.
+const openai = new OpenAiOmr({ log: line => console.log(`[luna] ${line}`) });
 let importing = false;
 let quitting = false;
 let scoreFiles = null;

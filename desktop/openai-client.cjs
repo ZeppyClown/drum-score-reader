@@ -52,7 +52,8 @@ function outputText(body, task) {
 }
 
 class OpenAiClient {
-  // log(event) receives { attempt, status, ms } per HTTP attempt — never content or the key.
+  // log(event) receives { attempt, status, ms } per HTTP attempt, then { response: { status,
+  // incomplete, usage, outputTypes } } for the final body — never content or the key.
   constructor({ apiKey = process.env.OPENAI_API_KEY, fetchImpl = fetch, timeoutMs = 60000, maxAttempts = 3,
     retryDelayMs = 1000, sleepImpl = sleep, randomImpl = Math.random, log = () => {} } = {}) {
     Object.assign(this, { apiKey, fetchImpl, timeoutMs, maxAttempts, retryDelayMs, sleepImpl, randomImpl, log });
@@ -107,6 +108,12 @@ class OpenAiClient {
       }
       throw new Error(apiErrorMessage(response, result, body.model, setting));
     }
+    this.log({ response: {
+      status: result.status ?? null,
+      incomplete: result.incomplete_details?.reason ?? null,
+      usage: result.usage ?? null,
+      outputTypes: Array.isArray(result.output) ? result.output.map(item => item.type) : [],
+    } });
     if (result.status === 'failed' || result.error) {
       throw new Error(`OpenAI failed on ${task}: ${result.error?.message || 'unknown error'}`);
     }

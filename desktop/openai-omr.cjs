@@ -84,32 +84,72 @@ function validateResult(result) {
 const MAX_OUTPUT_TOKENS = 25000;
 const IMPORT_TIMEOUT_MS = 180000;
 
+const HEARTBEAT_MS = 10000;
+
+// One line per transport event, for the terminal running the app. No key, image or prompt.
+function describeEvent(event) {
+  if (event.response) {
+    const { status, incomplete, usage, outputTypes } = event.response;
+    const reasoning = usage?.output_tokens_details?.reasoning_tokens ?? 0;
+    const output = usage?.output_tokens ?? 0;
+    return `response ${status}${incomplete ? ` (stopped: ${incomplete})` : ''} — input ${usage?.input_tokens ?? '?'} tokens, ` +
+      `output ${output} tokens (${reasoning} reasoning, ${output - reasoning} answer), items: ${outputTypes.join(', ') || 'none'}`;
+  }
+  return `attempt ${event.attempt}: HTTP ${event.status} after ${(event.ms / 1000).toFixed(1)} s`;
+}
+
 // Screenshot → one bar of notes, through the shared OpenAI transport.
+// log(line): progress for the terminal (main.js prints it with a [luna] prefix).
 class OpenAiOmr {
-  constructor({ apiKey = process.env.OPENAI_API_KEY, model = modelSettings().omr, client, timeoutMs = IMPORT_TIMEOUT_MS, ...transport } = {}) {
+  constructor({ apiKey = process.env.OPENAI_API_KEY, model = modelSettings().omr, client, timeoutMs = IMPORT_TIMEOUT_MS,
+    log = () => {}, ...transport } = {}) {
     this.model = model;
-    this.client = client ?? new OpenAiClient({ apiKey, timeoutMs, ...transport });
+    this.log = log;
+    this.client = client ?? new OpenAiClient({ apiKey, timeoutMs, log: event => log(describeEvent(event)), ...transport });
   }
 
+  // If the reply is cut off by the token limit, try once more with less reasoning.
   async recognize(png) {
+    try {
+      return await this.recognizeWith(png, 'medium');
+    } catch (error) {
+      if (!/incomplete.*max_output_tokens/.test(error.message)) throw error;
+      this.log('ran out of output tokens while reasoning; retrying once with reasoning effort "low"');
+      return this.recognizeWith(png, 'low');
+    }
+  }
+
+  async recognizeWith(png, effort) {
     if (!this.client.configured) {
       throw new Error('OpenAI is not configured. Quit the app and restart it with OPENAI_API_KEY set.');
     }
     if (!Buffer.isBuffer(png) || !png.length) throw new Error('Copy a PNG screenshot, then retry.');
     if (png.length > 20 * 1024 * 1024) throw new Error('The clipboard image is over 20 MB. Crop it to one bar and retry.');
-    const body = await this.client.createResponse({
-      model: this.model,
-      reasoning: { effort: 'medium' },
-      max_output_tokens: MAX_OUTPUT_TOKENS,
-      input: [{ role: 'user', content: [
-        { type: 'input_text', text: PROMPT },
-        { type: 'input_image', image_url: `data:image/png;base64,${png.toString('base64')}`, detail: 'original' },
-      ] }],
-      text: { format: { type: 'json_schema', name: 'drum_bar_transcription', strict: true, schema: RESPONSE_SCHEMA } },
-    }, { task: 'the screenshot', setting: 'OPENAI_OMR_MODEL' });
+    const started = Date.now();
+    this.log(`sending ${(png.length / 1024).toFixed(0)} KB screenshot to ${this.model} (reasoning ${effort}, max_output_tokens ${MAX_OUTPUT_TOKENS}, timeout ${this.client.timeoutMs / 1000} s)`);
+    const heartbeat = setInterval(() => this.log(`still waiting… ${Math.round((Date.now() - started) / 1000)} s`), HEARTBEAT_MS);
+    let body;
+    try {
+      body = await this.client.createResponse({
+        model: this.model,
+        reasoning: { effort },
+        max_output_tokens: MAX_OUTPUT_TOKENS,
+        input: [{ role: 'user', content: [
+          { type: 'input_text', text: PROMPT },
+          { type: 'input_image', image_url: `data:image/png;base64,${png.toString('base64')}`, detail: 'original' },
+        ] }],
+        text: { format: { type: 'json_schema', name: 'drum_bar_transcription', strict: true, schema: RESPONSE_SCHEMA } },
+      }, { task: 'the screenshot', setting: 'OPENAI_OMR_MODEL' });
+    } catch (error) {
+      this.log(`failed after ${((Date.now() - started) / 1000).toFixed(1)} s: ${error.message}`);
+      throw error;
+    } finally {
+      clearInterval(heartbeat);
+    }
     let text;
     try { text = outputText(body, 'the screenshot'); }
     catch (error) { throw new Error(redactSecret(error.message, this.client.apiKey)); }
+    this.log(`output (${((Date.now() - started) / 1000).toFixed(1)} s): ${text || '(empty)'}`);
     if (!text) throw new Error('OpenAI returned no transcription. Try a clearer one-bar crop.');
     let result;
     try { result = JSON.parse(text); }
