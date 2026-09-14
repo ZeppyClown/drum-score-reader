@@ -110,6 +110,11 @@ function outputText(body) {
   return content.filter(item => item.type === 'output_text').map(item => item.text || '').join('');
 }
 
+// Real keys are long; very short test placeholders are left alone so they cannot mangle text.
+function redactSecret(text, secret) {
+  return secret && secret.length >= 8 ? String(text).split(secret).join('[redacted]') : String(text);
+}
+
 class OpenAiOmr {
   constructor({ apiKey = process.env.OPENAI_API_KEY, model = MODEL, fetchImpl = fetch,
     timeoutMs = 60000, maxAttempts = 3, retryDelayMs = 1000, sleepImpl = sleep,
@@ -118,7 +123,14 @@ class OpenAiOmr {
       sleepImpl, randomImpl });
   }
 
+  // Every message leaving this class passes through redact(), so an API or network error
+  // that echoes the key can never show it in the UI or logs.
   async recognize(png) {
+    try { return await this.recognizeUnredacted(png); }
+    catch (error) { throw new Error(redactSecret(error.message, this.apiKey), { cause: error.name }); }
+  }
+
+  async recognizeUnredacted(png) {
     if (!this.apiKey) {
       throw new Error('OpenAI is not configured. Quit the app and restart it with OPENAI_API_KEY set.');
     }
@@ -184,4 +196,4 @@ class OpenAiOmr {
   }
 }
 
-module.exports = { OpenAiOmr, RESPONSE_SCHEMA, apiErrorMessage };
+module.exports = { OpenAiOmr, RESPONSE_SCHEMA, apiErrorMessage, redactSecret };

@@ -125,3 +125,31 @@ test('OpenAI does not retry a bad request', async () => {
   await assert.rejects(openai.recognize(Buffer.from('x')), /request configuration/);
   assert.equal(calls, 1);
 });
+
+test('OpenAI API key never leaks into the URL, request body, results or error messages', async () => {
+  const apiKey = 'sk-proj-SECRET-leak-check-1234567890';
+  const calls = [];
+  const echoKey = `Incorrect API key provided: ${apiKey}.`;
+  const fetches = [
+    async (...args) => { calls.push(args); return apiResponse(); },
+    async (...args) => { calls.push(args); return apiResponse(echoKey, { ok: false, status: 401 }); },
+    async (...args) => { calls.push(args); return apiResponse(echoKey, { ok: false, status: 503 }); },
+    async (...args) => { calls.push(args); throw new Error(`connect failed for ${apiKey}`); },
+    async (...args) => { calls.push(args); return { ok: true, status: 200, json: async () => ({
+      status: 'failed', error: { message: echoKey }, output: [] }) }; },
+  ];
+  const messages = [];
+  for (const fetchImpl of fetches) {
+    const openai = new OpenAiOmr({ apiKey, fetchImpl, sleepImpl: async () => {} });
+    try { messages.push(JSON.stringify(await openai.recognize(Buffer.from('png')))); }
+    catch (error) { messages.push(error.message); }
+  }
+  assert.equal(messages.length, fetches.length);
+  for (const [url, init] of calls) {
+    assert.equal(url.includes(apiKey), false);
+    assert.equal(init.body.includes(apiKey), false);
+    assert.equal(init.headers.authorization, `Bearer ${apiKey}`);
+  }
+  for (const message of messages) assert.equal(message.includes(apiKey), false, message);
+  assert.match(messages[1], /API key is invalid.*\[redacted\]/);
+});
