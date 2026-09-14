@@ -62,28 +62,31 @@ class OpenAiClient {
 
   // body: a Responses API request. task: words for errors, e.g. "the screenshot".
   // setting: the environment variable that names this model, for the 404 hint.
-  async createResponse(body, { task = 'the request', setting = 'OPENAI_MODEL' } = {}) {
-    try { return await this.send(body, task, setting); }
+  // signal: optional AbortSignal; aborting rejects with "Canceled."
+  async createResponse(body, { task = 'the request', setting = 'OPENAI_MODEL', signal } = {}) {
+    try { return await this.send(body, task, setting, signal); }
     catch (error) { throw new Error(redactSecret(error.message, this.apiKey)); }
   }
 
-  async send(body, task, setting) {
+  async send(body, task, setting, signal) {
     if (!this.apiKey) {
       throw new Error('OpenAI is not configured. Quit the app and restart it with OPENAI_API_KEY set.');
     }
     const requestBody = JSON.stringify({ ...body, store: false });
     let result;
     for (let attempt = 1; attempt <= this.maxAttempts; attempt += 1) {
+      if (signal?.aborted) throw new Error('Canceled.');
       const started = Date.now();
       let response;
       try {
         response = await this.fetchImpl(ENDPOINT, {
           method: 'POST',
           headers: { 'content-type': 'application/json', authorization: `Bearer ${this.apiKey}` },
-          signal: AbortSignal.timeout(this.timeoutMs),
+          signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(this.timeoutMs)]) : AbortSignal.timeout(this.timeoutMs),
           body: requestBody,
         });
       } catch (error) {
+        if (signal?.aborted) throw new Error('Canceled.');
         if (error.name === 'TimeoutError') throw new Error('OpenAI timed out. Check your connection and retry.');
         throw new Error(`OpenAI could not be reached: ${error.message}`);
       }
@@ -95,6 +98,7 @@ class OpenAiClient {
         const backoff = this.retryDelayMs * (2 ** (attempt - 1));
         const jitter = Math.floor(this.randomImpl() * Math.min(250, this.retryDelayMs));
         await this.sleepImpl(backoff + jitter);
+        if (signal?.aborted) throw new Error('Canceled.');
         continue;
       }
       if (response.status >= 500 && attempt === this.maxAttempts) {

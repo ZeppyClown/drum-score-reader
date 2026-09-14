@@ -44,10 +44,13 @@ drum score reader/
 │   ├── selection-ui.js ← Maps clicks on the score to bars
 │   ├── insights.js     ← Offline insight cards with bar citations; stale-revision check (pure)
 │   ├── insights-ui.js  ← Side panel "Insights" tab; followCitation() shared with Ask DrumHub
+│   ├── agent-tools.js  ← The 7 read-only tools Ask DrumHub may call, run on the snapshot (pure)
+│   ├── agent-contract.js ← Answer JSON schema, local answer checks, caveats added by code (pure)
+│   ├── offline-answers.js ← Suggested questions and their offline answers (pure)
 │   └── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
-├── desktop/            ← Main-process modules: OMR service, OpenAI import, score files (see §9)
+├── desktop/            ← Main-process modules: OMR service, OpenAI client + import, Ask DrumHub agent, score files (see §9)
 └── test/               ← `npm test` (Node) and `npm run test:desktop` (real Electron app)
 ```
 

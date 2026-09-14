@@ -54,3 +54,18 @@ test('screenshot import uses the OMR model setting through the shared client', a
   assert.equal(sent.model, 'omr-model');
   assert.equal(result.model, 'omr-model');
 });
+
+test('an aborted request rejects with Canceled and does not retry', async () => {
+  const controller = new AbortController();
+  let calls = 0;
+  const client = new OpenAiClient({ apiKey: 'x', sleepImpl: async () => {}, fetchImpl: async (_url, init) => {
+    calls++;
+    controller.abort();
+    if (init.signal.aborted) throw Object.assign(new Error('aborted'), { name: 'AbortError' });
+    return ok({});
+  } });
+  await assert.rejects(client.createResponse({ model: 'm' }, { signal: controller.signal }), /^Error: Canceled\.$/);
+  assert.equal(calls, 1);
+  await assert.rejects(client.createResponse({ model: 'm' }, { signal: controller.signal }), /Canceled/);
+  assert.equal(calls, 1);
+});

@@ -364,7 +364,7 @@ export function buildPracticePlan(snap, { fromBar, toBar = fromBar }) {
   const label = from === to ? `bar ${from}` : `bars ${from}–${to}`;
   const complexity = findComplexPassages(snap, { top: snap.bars.length }).ranked
     .filter(b => b.barNumber >= from && b.barNumber <= to);
-  const counting = bars.map(b => b.counting.replace(/(\d)(e|&|a|trip|let)\b/g, '$1 $2')).join(' | ');
+  const counting = bars.map(b => b.counting.replace(/(\d)(e|&|a|trip|let)(?![a-z])/g, '$1 $2')).join(' | ');
   const clean = n => `Play it ${n} times in a row without stopping or missing a note.`;
   return {
     range: { fromBar: from, toBar: to },
