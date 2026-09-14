@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 
 import { resolveSelection, selectBarsCommand, clickBarCommand, rangeLabel } from '../js/selection.js';
 import { buildInsights, citationTarget } from '../js/insights.js';
-import { execute, toggleDrumCommand, undo } from '../js/commands.js';
+import { execute, toggleDrumCommand, undo, createEditor } from '../js/commands.js';
+import { createMeta, importedProvenance } from '../js/score-document.js';
 import { scoreSnapshot } from '../js/score-snapshot.js';
 import { songEditor } from './fixture-scores.mjs';
 
@@ -64,4 +65,12 @@ test('a citation only resolves on the same score and revision, by bar id', () =>
   assert.match(citationTarget(undo(edited), insights, citation).reason, /changed/);  // revision moved on
   const other = songEditor();
   assert.match(citationTarget(other, { ...insights, scoreId: 'another' }, citation).reason, /different score/);
+});
+
+test('scores longer than a model snapshot are analysed in full for insights', () => {
+  const bars = Array.from({ length: 70 }, (_, i) => ({ notes: [{ duration: 'w', dotted: false, drums: ['kick'] }],
+    ...(i === 69 ? { provenance: importedProvenance({ source: 'local_omr' }) } : {}) }));
+  const editor = createEditor({ meta: createMeta(), bars });
+  const review = buildInsights(scoreSnapshot(editor, { maxBars: editor.bars.length })).cards.find(c => c.kind === 'review');
+  assert.deepEqual(review.items.map(i => i.citation?.fromBar), [70]);
 });

@@ -125,6 +125,8 @@ app.whenReady().then(async () => {
   await evaluate('document.getElementById("review-next").click()');
   assert.equal((await state()).cursor.barIndex, 3);
   assert.match(await text('import-warnings'), /shortened/);
+  await evaluate('document.getElementById("review-mark").click()');
+  assert.equal(await text('import-warnings'), '', 'warnings clear once the bar is checked');
   const beforeEmptyClipboard = await state();
   clipboard.clear();
   await evaluate('document.body.dispatchEvent(new Event("paste", {bubbles:true,cancelable:true}))');

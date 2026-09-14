@@ -35,7 +35,8 @@ test('events have exact onset and duration ticks, including dots and triplets', 
   assert.equal(triplets.barNumber, 10);
   assert.equal(triplets.reviewed, false);
   assert.equal(triplets.source, 'local_omr');
-  assert.deepEqual(triplets.warnings, ['The note on beat 3 was shortened so it ends before the next note']);
+  assert.equal(triplets.warningCount, 1);
+  assert.equal(JSON.stringify(triplets).includes('shortened'), false, 'warning text never enters a snapshot');
   assert.deepEqual(triplets.events.map(e => [e.onsetTicks, e.durationTicks, e.writtenDuration, e.dotted, e.triplet, e.isRest]), [
     [0, 16, '8', false, true, false],
     [16, 16, '8', false, true, false],
@@ -46,7 +47,7 @@ test('events have exact onset and duration ticks, including dots and triplets', 
   ]);
   assert.deepEqual(snap.bars[0].events[0].drums, ['hi_hat_closed', 'kick']);  // sorted, stable
   assert.equal(snap.bars[0].reviewed, true);
-  assert.equal(snap.bars[0].warnings, undefined);
+  assert.equal(snap.bars[0].warningCount, 0);
 });
 
 test('the hash is stable for the same score and changes with any edit or revision', () => {
@@ -86,6 +87,10 @@ test('validateSnapshot accepts a real snapshot and rejects tampering', () => {
     [{ ...snap, bars: snap.bars.map((b, i) => (i ? b : { ...b, events: [{ ...b.events[0], drums: ['cowbell'] }] })) }, /drum/],
     [{ ...snap, bars: [...snap.bars, snap.bars[0]] }, /Duplicate|bar numbers/],
     [{ ...snap, extra: 'hi' }, /Unknown field/],
+    [{ ...snap, selection: { barId: 'bogus', eventId: null, barNumber: 3 } }, /selection/],
+    [{ ...snap, selection: { ...snap.selection, barNumber: 999 } }, /selection/],
+    [{ ...snap, selection: { ...snap.selection, eventId: 'not-an-event' } }, /selection/],
+    [{ ...snap, truncated: true }, /truncated/],
     [{ ...snap, bars: snap.bars.slice(0, 3) }, /bar numbers/],
     [null, /object/],
   ];

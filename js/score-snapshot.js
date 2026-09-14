@@ -3,14 +3,18 @@
 // and the Ask DrumHub agent. Pure: tested in Node and re-validated in Electron main
 // before any model call.
 //
-// It holds timing facts, not display data: no title, cursor pixels, or images. Titles
-// and imported text are untrusted, so they never reach a model through the snapshot.
+// It holds timing facts, not display data: no title, cursor pixels, images, or import
+// warning text (only a count). Titles and warnings can contain text copied from an
+// image or file, so they never reach a model through the snapshot.
+//
+// snapshotHash detects accidental corruption and ties answers to one exact version. It
+// is not proof of authenticity: the page computes it, and the page owns the score.
 //
 // snapshot = {
 //   schemaVersion, scoreId, revision, snapshotHash,
 //   meter, tempoBpm, totalBars, range: { fromBar, toBar }, truncated,
 //   selection: { barId, eventId, barNumber } | null,
-//   bars: [{ barId, barNumber, reviewed, source, warnings?, events: [{
+//   bars: [{ barId, barNumber, reviewed, source, warningCount, events: [{
 //     eventId, onsetTicks, durationTicks, writtenDuration, dotted, triplet, drums, isRest }] }]
 // }
 // Bar numbers are 1-based, as a person reads them. Ticks are 48 per quarter note.
@@ -27,7 +31,7 @@ export const MAX_EVENTS_PER_BAR = 64;
 
 const SNAPSHOT_FIELDS = ['schemaVersion', 'scoreId', 'revision', 'snapshotHash', 'meter', 'tempoBpm',
   'totalBars', 'range', 'truncated', 'selection', 'bars'];
-const BAR_FIELDS = ['barId', 'barNumber', 'reviewed', 'source', 'warnings', 'events'];
+const BAR_FIELDS = ['barId', 'barNumber', 'reviewed', 'source', 'warningCount', 'events'];
 const EVENT_FIELDS = ['eventId', 'onsetTicks', 'durationTicks', 'writtenDuration', 'dotted', 'triplet', 'drums', 'isRest'];
 
 function snapshotBar(bar, index) {
@@ -47,11 +51,7 @@ function snapshotBar(bar, index) {
     return event;
   });
   const { reviewed, source, warnings } = bar.provenance;
-  return {
-    barId: bar.barId, barNumber: index + 1, reviewed, source,
-    ...(warnings.length ? { warnings: [...warnings] } : {}),
-    events,
-  };
+  return { barId: bar.barId, barNumber: index + 1, reviewed, source, warningCount: warnings.length, events };
 }
 
 // Hash of every field except snapshotHash itself. Objects are built with a fixed key
@@ -123,6 +123,21 @@ function checkEvents(bar, where, capacity, seen, errors) {
   if (onset > capacity) errors.push(`${where}: events overfill the bar`);
 }
 
+// The selection must point at the bar it names; a bar outside the shared range may only
+// be named by number and id pairs we cannot check, so it is refused.
+function checkSelection(snap, errors) {
+  const { selection } = snap;
+  if (selection === null) return;
+  const bar = isObject(selection) && Number.isInteger(selection.barNumber) && Array.isArray(snap.bars)
+    ? snap.bars.find(b => b?.barNumber === selection.barNumber) : null;
+  const inRange = isObject(selection) && isObject(snap.range) && Number.isInteger(selection.barNumber) &&
+    selection.barNumber >= 1 && selection.barNumber <= snap.totalBars;
+  if (!inRange || !isId(selection.barId) || (bar && bar.barId !== selection.barId) ||
+      !(selection.eventId === null || (isId(selection.eventId) && (!bar || bar.events?.some(e => e?.eventId === selection.eventId))))) {
+    errors.push('selection is invalid');
+  }
+}
+
 export function validateSnapshot(snap) {
   if (!isObject(snap)) return ['A snapshot must be an object'];
   const errors = [];
@@ -140,6 +155,10 @@ export function validateSnapshot(snap) {
     errors.push('range is invalid');
   }
   if (typeof snap.truncated !== 'boolean') errors.push('truncated must be true or false');
+  else if (isObject(snap.range) && Number.isInteger(snap.totalBars) &&
+      snap.truncated !== (snap.range.fromBar > 1 || snap.range.toBar < snap.totalBars) && snap.truncated) {
+    errors.push('truncated does not match the range');
+  }
   if (!Array.isArray(snap.bars) || snap.bars.length > MAX_SNAPSHOT_BARS) {
     errors.push(`bars must be a list of at most ${MAX_SNAPSHOT_BARS}`);
     return errors;
@@ -158,12 +177,10 @@ export function validateSnapshot(snap) {
     else seen.add(bar.barId);
     if (typeof bar.reviewed !== 'boolean') errors.push(`${where}: reviewed must be true or false`);
     if (!['manual', 'local_omr', 'openai_omr'].includes(bar.source)) errors.push(`${where}: unknown source`);
-    if (bar.warnings !== undefined && (!Array.isArray(bar.warnings) || bar.warnings.length > 50 ||
-        bar.warnings.some(w => typeof w !== 'string' || w.length > 500))) errors.push(`${where}: warnings are invalid`);
+    if (!Number.isInteger(bar.warningCount) || bar.warningCount < 0 || bar.warningCount > 50) errors.push(`${where}: warningCount is invalid`);
     checkEvents(bar, where, capacity, seen, errors);
   });
-  if (snap.selection !== null && (!isObject(snap.selection) || !isId(snap.selection.barId) ||
-      !Number.isInteger(snap.selection.barNumber))) errors.push('selection is invalid');
+  checkSelection(snap, errors);
   if (!errors.length) {
     const { snapshotHash: hash, ...rest } = snap;
     const { schemaVersion, scoreId, revision, ...others } = rest;

@@ -148,7 +148,7 @@ export function inspectBars(snap, { fromBar, toBar = fromBar }) {
     const small = smallestEvent(bar);
     bars.push({
       barNumber: n, barId: bar.barId, reviewed: bar.reviewed, source: bar.source,
-      warnings: bar.warnings ?? [],
+      warningCount: bar.warningCount,
       counting: countingOf(bar),
       smallestNote: small ? durationLabel(small) : null,
       hits: hitsOf(bar).length,

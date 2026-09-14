@@ -61,7 +61,7 @@ test('C2 inspect gives beat-by-beat facts, counting and changes from the previou
   assert.equal(ten.counting, '1 trip let (2) 3 4&');
   assert.equal(ten.reviewed, false);
   assert.equal(ten.source, 'local_omr');
-  assert.equal(ten.warnings.length, 1);
+  assert.equal(ten.warningCount, 1);
 });
 
 test('C2 inspect reports bars that are not in the snapshot instead of inventing them', () => {

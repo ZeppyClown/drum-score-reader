@@ -61,7 +61,8 @@ export function initInsights() {
   const tabs = [...panel.querySelectorAll('[role="tab"]')];
 
   function recompute() {
-    insights = buildInsights(scoreSnapshot(state.editor));
+    // Local analysis covers every bar; only snapshots sent to a model are capped at 64.
+    insights = buildInsights(scoreSnapshot(state.editor, { maxBars: state.editor.bars.length }));
     renderCards(cards, status);
     status.textContent = '';
     panel.classList.remove('stale');

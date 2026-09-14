@@ -27,8 +27,8 @@ export function initReview() {
     mark.disabled = !needsReview(bar);
     mark.textContent = needsReview(bar) ? `Mark bar ${i + 1} checked` : `Bar ${i + 1} is checked`;
     const movedBar = !previous || previous.cursor.barIndex !== i || previous.bars[i] !== bar;
-    if (movedBar && needsReview(bar)) {
-      warnings.replaceChildren(...bar.provenance.warnings.map(message => {
+    if (movedBar) {
+      warnings.replaceChildren(...(needsReview(bar) ? bar.provenance.warnings : []).map(message => {
         const item = document.createElement('li'); item.textContent = message; return item;
       }));
     }
