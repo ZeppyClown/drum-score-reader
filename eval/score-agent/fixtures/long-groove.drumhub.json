@@ -1,0 +1,6253 @@
+{
+  "schemaVersion": 1,
+  "scoreId": "long-1",
+  "revision": 0,
+  "title": "Long groove",
+  "tempoBpm": 120,
+  "meter": {
+    "beats": 4,
+    "beatUnit": 4
+  },
+  "bars": [
+    {
+      "barId": "long-2",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-3",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-4",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-5",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-6",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-7",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-8",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-9",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-10",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-11",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-12",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-13",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-14",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-15",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-16",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-17",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-18",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-19",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-20",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-21",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-22",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-23",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-24",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-25",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-26",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-27",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-28",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-29",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-30",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-31",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-32",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-33",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-34",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-35",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-36",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-37",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-38",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-39",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-40",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-41",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-42",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-43",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-44",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-45",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-46",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-47",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-48",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-49",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-50",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-51",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-52",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-53",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-54",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-55",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-56",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-57",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-58",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-59",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-60",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-61",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-62",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-63",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-64",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-65",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-66",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-67",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-68",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-69",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-70",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-71",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-72",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-73",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-74",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-75",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-76",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-77",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-78",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-79",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-80",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-81",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-82",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-83",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-84",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-85",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-86",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-87",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-88",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-89",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-90",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-91",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-92",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-93",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-94",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-95",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-96",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-97",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-98",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-99",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-100",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-101",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-102",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-103",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-104",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-105",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-106",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-107",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-108",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-109",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-110",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-111",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-112",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-113",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-114",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-115",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-116",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-117",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-118",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-119",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-120",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-121",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-122",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-123",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-124",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-125",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-126",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-127",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-128",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-129",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-130",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-131",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-132",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-133",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-134",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-135",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-136",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-137",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-138",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-139",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-140",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-141",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-142",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-143",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-144",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-145",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-146",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-147",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-148",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-149",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-150",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-151",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-152",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-153",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-154",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-155",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-156",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-157",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-158",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-159",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-160",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-161",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-162",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-163",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-164",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-165",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-166",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-167",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-168",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-169",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-170",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-171",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-172",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-173",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-174",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-175",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-176",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-177",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-178",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-179",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-180",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-181",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-182",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-183",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-184",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-185",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-186",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-187",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-188",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-189",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-190",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-191",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-192",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-193",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-194",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-195",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-196",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-197",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-198",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-199",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-200",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-201",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-202",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-203",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-204",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-205",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-206",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-207",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-208",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-209",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-210",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-211",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-212",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-213",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-214",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-215",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-216",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-217",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-218",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-219",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-220",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-221",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-222",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-223",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-224",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-225",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-226",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-227",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-228",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-229",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-230",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-231",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-232",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-233",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-234",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-235",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-236",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-237",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-238",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-239",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-240",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-241",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-242",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-243",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-244",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-245",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-246",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-247",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-248",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-249",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-250",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-251",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-252",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-253",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-254",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-255",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-256",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-257",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-258",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-259",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-260",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-261",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-262",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-263",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-264",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-265",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-266",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-267",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-268",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-269",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-270",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-271",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-272",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-273",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-274",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-275",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-276",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-277",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-278",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-279",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-280",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-281",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-282",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-283",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-284",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-285",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-286",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-287",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-288",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-289",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-290",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-291",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-292",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-293",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-294",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-295",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-296",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-297",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-298",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-299",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-300",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-301",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-302",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-303",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-304",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-305",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-306",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-307",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-308",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-309",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-310",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-311",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-312",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-313",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-314",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-315",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-316",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-317",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-318",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-319",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-320",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-321",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-322",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-323",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-324",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-325",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-326",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-327",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-328",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-329",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-330",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-331",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-332",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-333",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-334",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-335",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-336",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-337",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-338",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-339",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-340",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-341",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-342",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-343",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-344",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-345",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-346",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-347",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-348",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-349",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-350",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-351",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-352",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-353",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-354",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-355",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-356",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-357",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-358",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-359",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-360",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-361",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-362",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-363",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-364",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-365",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-366",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-367",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-368",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-369",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-370",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-371",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-372",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-373",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-374",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-375",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-376",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-377",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-378",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-379",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-380",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-381",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-382",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-383",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-384",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-385",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-386",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-387",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-388",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-389",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-390",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-391",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-392",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-393",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-394",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-395",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-396",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-397",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-398",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-399",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-400",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-401",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-402",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-403",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-404",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-405",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-406",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-407",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-408",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-409",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-410",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-411",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-412",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-413",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-414",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-415",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-416",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-417",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-418",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-419",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-420",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-421",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-422",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-423",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-424",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-425",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-426",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-427",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-428",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-429",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-430",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-431",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-432",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-433",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-434",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-435",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-436",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-437",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-438",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-439",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-440",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-441",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-442",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-443",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-444",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-445",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-446",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-447",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-448",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-449",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-450",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-451",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-452",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-453",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-454",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-455",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-456",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-457",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-458",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-459",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-460",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-461",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-462",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-463",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-464",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-465",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-466",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-467",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-468",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-469",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-470",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-471",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-472",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-473",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-474",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-475",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-476",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-477",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-478",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-479",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-480",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-481",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-482",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-483",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-484",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-485",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-486",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-487",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-488",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-489",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-490",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-491",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-492",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-493",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-494",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-495",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-496",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-497",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-498",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-499",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-500",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-501",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-502",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-503",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-504",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-505",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-506",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-507",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-508",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-509",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-510",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-511",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-512",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-513",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-514",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-515",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-516",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-517",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-518",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-519",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-520",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-521",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-522",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-523",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-524",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-525",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-526",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-527",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-528",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-529",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-530",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-531",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-532",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-533",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-534",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-535",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-536",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-537",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-538",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-539",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-540",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-541",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-542",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-543",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-544",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-545",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-546",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-547",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-548",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-549",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-550",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-551",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-552",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-553",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-554",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-555",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-556",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-557",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-558",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-559",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-560",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-561",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-562",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-563",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-564",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-565",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-566",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-567",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-568",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-569",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-570",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-571",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-572",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-573",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-574",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-575",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-576",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-577",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-578",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-579",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-580",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-581",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-582",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-583",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-584",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-585",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-586",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-587",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-588",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-589",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-590",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-591",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-592",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-593",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-594",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-595",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-596",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-597",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-598",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-599",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-600",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-601",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-602",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-603",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-604",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-605",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-606",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-607",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-608",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-609",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-610",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-611",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-612",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-613",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-614",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-615",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-616",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-617",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-618",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-619",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-620",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-621",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-622",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-623",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-624",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-625",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-626",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-627",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-628",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-629",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-630",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-631",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-632",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-633",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-634",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-635",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-636",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-637",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-638",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-639",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-640",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-641",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-642",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-643",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-644",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-645",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-646",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-647",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-648",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-649",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-650",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-651",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-652",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-653",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-654",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-655",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-656",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-657",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-658",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-659",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-660",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-661",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-662",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-663",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-664",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-665",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-666",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-667",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-668",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-669",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-670",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-671",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-672",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-673",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-674",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-675",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-676",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-677",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-678",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-679",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-680",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-681",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-682",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-683",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-684",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-685",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-686",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-687",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-688",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-689",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-690",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-691",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-692",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-693",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-694",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-695",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-696",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-697",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-698",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-699",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-700",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-701",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-702",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-703",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-704",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-705",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-706",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-707",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-708",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-709",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-710",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-711",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-712",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    },
+    {
+      "barId": "long-713",
+      "provenance": {
+        "source": "manual",
+        "reviewed": true,
+        "warnings": []
+      },
+      "notes": [
+        {
+          "eventId": "long-714",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-715",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-716",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-717",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-718",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "kick",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-719",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-720",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "snare",
+            "hi_hat_closed"
+          ]
+        },
+        {
+          "eventId": "long-721",
+          "duration": "8",
+          "dotted": false,
+          "drums": [
+            "hi_hat_closed"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -53,6 +53,7 @@ drum score reader/
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
 ├── desktop/            ← Main-process modules: OMR service, OpenAI client + import, Ask DrumHub agent, score files (see §9)
+├── eval/score-agent/   ← Ask DrumHub question bank, frozen scores, graders; `npm run eval:agent`
 └── test/               ← `npm test` (Node) and `npm run test:desktop` (real Electron app)
 ```
 

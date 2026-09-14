@@ -89,18 +89,20 @@ class ScoreAgent {
     this.lastCloudAt = this.now();
     this.usage.cloudQuestions += 1;
     const started = this.now();
+    // Usage is kept even when the answer falls back, so cost reports include failed attempts.
+    const trace = { rounds: 0, toolCalls: [], repaired: false, inputTokens: 0, outputTokens: 0, reasoningTokens: 0 };
     try {
-      const result = await this.cloudAnswer(valid, controller.signal);
+      const result = await this.cloudAnswer(valid, controller.signal, trace);
       return { ...result, latencyMs: this.now() - started };
     } catch (error) {
-      if (controller.signal.aborted) return { canceled: true };
-      return { ...offline(`Cloud help could not answer (${error.message}), so this is an offline answer.`), latencyMs: this.now() - started };
+      if (controller.signal.aborted) return { canceled: true, usage: trace };
+      return { ...offline(`Cloud help could not answer (${error.message}), so this is an offline answer.`), usage: trace, latencyMs: this.now() - started };
     } finally {
       this.inFlight = null;
     }
   }
 
-  async cloudAnswer({ text, scope, snapshot }, signal) {
+  async cloudAnswer({ text, scope, snapshot }, signal, trace) {
     const selection = snapshot.selection;
     const context = [
       `Score: ${snapshot.totalBars} bars; ${rangeText(snapshot.range.fromBar, snapshot.range.toBar)} shared with the tools; revision ${snapshot.revision}.`,
@@ -111,8 +113,6 @@ class ScoreAgent {
       { type: 'input_text', text: context },
       { type: 'input_text', text: `Question: ${text}` },
     ] }];
-    const trace = { rounds: 0, toolCalls: [], repaired: false, inputTokens: 0, outputTokens: 0, reasoningTokens: 0 };
-
     for (;;) {
       const mustAnswer = trace.rounds >= this.maxToolRounds;
       const body = await this.client.createResponse({

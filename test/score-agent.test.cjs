@@ -84,6 +84,7 @@ test('an answer that still fails the checks falls back to a true offline answer'
   const result = await ask(agentWith(client), { questionId: 'find-complex', question: undefined });
   assert.equal(result.mode, 'offline');
   assert.match(result.answer, /busiest notation is in bars 7–8/);
+  assert.equal(result.usage.inputTokens, 200, 'tokens from the failed attempts are still reported');
   assert.ok(result.caveats.some(c => /Cloud help could not answer \(the answer did not pass DrumHub's checks: The score does not record/.test(c)));
 });
 
@@ -162,6 +163,6 @@ test('cancel stops the question and reports it as canceled', async () => {
   const agent = agentWith(client);
   const pending = ask(agent);
   agent.cancel();
-  assert.deepEqual(await pending, { canceled: true });
+  assert.equal((await pending).canceled, true);
   assert.equal(agent.inFlight, null);
 });
