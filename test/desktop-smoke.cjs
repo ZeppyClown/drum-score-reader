@@ -102,6 +102,29 @@ app.whenReady().then(async () => {
   await waitFor(() => evaluate('!document.getElementById("ai-import-btn").disabled'));
   assert.match(await evaluate('document.getElementById("import-status").textContent'), /gpt-5.6-luna screenshot as bar 5/);
   assert.match(await evaluate('document.getElementById("import-warnings").textContent'), /Luna flagged position 8/);
+  // Review: five imported bars start unchecked; editing one does not check it.
+  const text = id => evaluate(`document.getElementById("${id}").textContent`);
+  assert.equal(await text('review-count'), '5 imported bars to check');
+  assert.equal(await evaluate('document.querySelectorAll("#score .bar-unreviewed").length'), 5);
+  assert.equal(await evaluate('document.querySelectorAll("#import-warnings li").length'), 1);
+  const reviewed = async () => (await state()).bars.map(bar => bar.provenance.reviewed);
+  assert.deepEqual(await reviewed(), [false, false, false, false, false]);
+  assert.deepEqual((await state()).bars.map(bar => bar.provenance.source),
+    ['local_omr', 'local_omr', 'local_omr', 'local_omr', 'openai_omr']);
+  assert.equal((await state()).bars[4].provenance.model, 'gpt-5.6-luna');
+  assert.equal((await state()).bars[0].provenance.model, 'baseline-14drum-v1');
+  await evaluate('document.getElementById("review-next").click()');
+  assert.equal((await state()).cursor.barIndex, 0);
+  await evaluate('document.getElementById("review-mark").click()');
+  assert.deepEqual(await reviewed(), [true, false, false, false, false]);
+  assert.equal(await text('review-mark'), 'Bar 1 is checked');
+  assert.equal(await text('review-count'), '4 imported bars to check');
+  await evaluate('document.getElementById("review-next").click()');
+  assert.equal((await state()).cursor.barIndex, 1);
+  await evaluate('document.getElementById("review-next").click()');
+  await evaluate('document.getElementById("review-next").click()');
+  assert.equal((await state()).cursor.barIndex, 3);
+  assert.match(await text('import-warnings'), /shortened/);
   const beforeEmptyClipboard = await state();
   clipboard.clear();
   await evaluate('document.body.dispatchEvent(new Event("paste", {bubbles:true,cancelable:true}))');

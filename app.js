@@ -8,6 +8,7 @@ import { initMenu }                 from './js/menu.js';
 import { initImport } from './js/import-ui.js';
 import { initDetails } from './js/details-ui.js';
 import { initFiles } from './js/file-ui.js';
+import { initReview } from './js/review-ui.js';
 
 // Register keyboard shortcuts and the floating keypad click handlers
 initKeyboard();
@@ -18,6 +19,7 @@ initMenu();
 initImport();
 
 initDetails();
+initReview();
 
 // Draw the initial empty score, then offer to restore anything unsaved from a crash
 render();

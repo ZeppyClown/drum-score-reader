@@ -8,11 +8,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid #2563eb; outline-
 body > div:first-child { position: fixed; inset: 0 0 auto; height: 40px; background: #f3f4f6; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 12px; padding: 0 12px; z-index: 50; }
 #import-btn { background: #2563eb; color: white; border-color: #2563eb; }
 #ai-import-btn { background: #fff; color: #1d4ed8; border-color: #93c5fd; }
-#import-panel { position: fixed; top: 40px; left: 0; right: 0; height: 116px; padding: 8px 20px; overflow: auto; background: #eff6ff; border-bottom: 1px solid #bfdbfe; }
+#import-panel { position: fixed; top: 40px; left: 0; right: 0; height: 146px; padding: 8px 20px; overflow: auto; background: #eff6ff; border-bottom: 1px solid #bfdbfe; }
 #import-panel p { margin: 4px 0; }
 #import-status { font-weight: 600; }
 #import-warnings { margin: 4px 0; padding-left: 20px; color: #92400e; }
-#score { position: fixed; inset: 156px 0 0; overflow: auto; padding: 20px; }
+#score { position: fixed; inset: 186px 0 0; overflow: auto; padding: 20px; }
 #backdrop { position: fixed; inset: 40px 0 0; z-index: 30; }
 #side-menu { position: fixed; top: 40px; left: 0; bottom: 0; width: 240px; background: #f9fafb; border-right: 1px solid #e5e7eb; z-index: 40; padding: 20px; transition: transform .2s; }
 #side-menu.-translate-x-full { transform: translateX(-100%); }
@@ -37,3 +37,9 @@ body > div:first-child { position: fixed; inset: 0 0 auto; height: 40px; backgro
 #score-tempo { width: 62px; }
 #score-meter { font-weight: 600; }
 #details-error { color: #b91c1c; max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#review-bar { display: flex; align-items: center; gap: 8px; margin: 2px 0; }
+#review-bar button { padding: 2px 8px; font-size: 13px; }
+#review-count { font-size: 13px; color: #166534; }
+#review-count.needs-review { color: #92400e; font-weight: 600; }
+.bar-unreviewed { fill: #fef3c7; stroke: #f59e0b; stroke-dasharray: 4 3; }
+.bar-unreviewed-label { font-size: 10px; fill: #92400e; font-family: system-ui, sans-serif; }

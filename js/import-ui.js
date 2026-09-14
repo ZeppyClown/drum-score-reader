@@ -6,7 +6,7 @@ import { state } from './state.js';
 
 // source: 'local_omr' | 'openai_omr'. The bar is added through a command, so it is
 // undoable, gets fresh ids, and starts unreviewed with the model name and warnings.
-function applyPrediction(result, sourceName, source, status, warnings) {
+function applyPrediction(result, sourceName, source, status) {
   const converted = barFromPrediction(result.notes, { gridSlots: result.gridSlots });
   const messages = converted.warnings.map(warning => warning.message);
   for (const uncertainty of result.uncertainties ?? []) {
@@ -19,9 +19,7 @@ function applyPrediction(result, sourceName, source, status, warnings) {
   }
   const index = state.cursor.barIndex;
   status.textContent = `Imported ${sourceName} as bar ${index + 1}. Use the arrow keys and drum keypad to correct it.`;
-  for (const message of messages) {
-    const item = document.createElement('li'); item.textContent = message; warnings.append(item);
-  }
+  // The review panel (review-ui.js) lists the new bar's warnings from its provenance.
   document.getElementById('score-cursor')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
 
@@ -39,7 +37,7 @@ export function initImport() {
       const result = await window.omr.importBar();
       if (result.canceled) { status.textContent = 'Import canceled.'; return; }
       if (result.error) throw new Error(result.error);
-      applyPrediction(result, result.filename, 'local_omr', status, warnings);
+      applyPrediction(result, result.filename, 'local_omr', status);
     } catch (error) { status.textContent = `Import failed: ${error.message}`; }
     finally { button.disabled = aiButton.disabled = false; button.blur(); }
   });
@@ -53,7 +51,7 @@ export function initImport() {
       if (!window.omr) throw new Error('Open the desktop app with npm start to import images.');
       const result = await window.omr.pasteAiImage();
       if (result.error) throw new Error(result.error);
-      applyPrediction(result, `${result.model} screenshot`, 'openai_omr', status, warnings);
+      applyPrediction(result, `${result.model} screenshot`, 'openai_omr', status);
     } catch (error) { status.textContent = `Luna import failed: ${error.message}`; }
     finally { button.disabled = aiButton.disabled = false; aiButton.blur(); }
   }

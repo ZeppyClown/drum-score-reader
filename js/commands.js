@@ -183,6 +183,16 @@ export const moveLeftCommand = () => ({
   },
 });
 
+// Jump to the start of a bar (review navigation, clicked bars, agent citations).
+export const goToBarCommand = barIndex => ({
+  label: 'Go to bar',
+  run: editor => {
+    if (!Number.isInteger(barIndex) || barIndex < 0 || barIndex >= editor.bars.length) return null;
+    if (editor.cursor.barIndex === barIndex && editor.cursor.noteIndex === 0) return null;
+    return { cursor: { ...editor.cursor, barIndex, noteIndex: 0 } };
+  },
+});
+
 export const moveCursorCommand = delta => ({
   label: 'Move cursor',
   run: editor => {

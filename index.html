@@ -25,6 +25,11 @@
   <section id="import-panel" aria-label="Bar import">
     <p>Copy a tightly cropped PNG of one 4/4 bar, then press ⌘V or use the Luna button. The screenshot is sent to OpenAI; local import remains available.</p>
     <p id="import-status" role="status" aria-live="polite">New imports are added after your existing bars.</p>
+    <div id="review-bar">
+      <span id="review-count" role="status">All bars checked</span>
+      <button id="review-next" type="button">Next bar to check</button>
+      <button id="review-mark" type="button">Mark bar checked</button>
+    </div>
     <ul id="import-warnings" aria-label="Import adjustments"></ul>
   </section>
 
@@ -57,7 +62,7 @@
   <div id="score" class="fixed top-10 left-0 right-0 bottom-0 overflow-auto p-5"></div>
 
   <!-- Floating drum keypad -->
-  <div id="keypad" class="fixed z-50 rounded-xl shadow-2xl bg-gray-800 text-white select-none" style="top:176px;right:24px;width:152px;">
+  <div id="keypad" class="fixed z-50 rounded-xl shadow-2xl bg-gray-800 text-white select-none" style="top:206px;right:24px;width:152px;">
 
     <!-- Drag handle -->
     <div id="keypad-handle" class="px-3 py-2 border-b border-gray-700 cursor-grab flex items-center gap-2">

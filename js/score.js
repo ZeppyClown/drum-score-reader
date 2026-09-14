@@ -3,6 +3,9 @@ import { state } from './state.js';
 import { barRow, barCol, barY, cursorCentreY } from './layout.js';
 import { isRest, tripletStarts } from './bar.js';
 import { noteKeys, noteStemDir } from './notation.js';
+import { needsReview } from './review.js';
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
 
 // Destructure the VexFlow classes we need from the global VexFlow object.
 // VexFlow is loaded as a CJS bundle via <script> in index.html, so it's a global.
@@ -181,8 +184,10 @@ export function render() {
   const cy  = cursorCentreY(cs, state.cursor.position) - SPACE / 2;
   const svg = div.querySelector('svg');
 
+  drawBarOverlays(svg, staves);
+
   // Inject the cursor rectangle directly into the SVG DOM
-  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  const rect = document.createElementNS(SVG_NS, 'rect');
   rect.setAttribute('id',           'score-cursor');
   rect.setAttribute('x',            cx);
   rect.setAttribute('y',            cy);
@@ -193,4 +198,40 @@ export function render() {
   rect.setAttribute('stroke-width', '1.5');
   rect.setAttribute('rx',           '2');
   svg.appendChild(rect);
+}
+
+// ── Bar overlays ──────────────────────────────────────────────────────────────
+// Tinted boxes drawn BEHIND the notation (inserted first in the SVG): amber for
+// imported bars that still need review. barBoxes keeps each bar's box so clicks can
+// be mapped back to a bar (see barAt).
+let barBoxes = [];
+
+function box(stave) {
+  const top = stave.getYForLine(0) - 14;
+  return { x: stave.getX(), y: top, width: stave.getWidth(), height: stave.getYForLine(4) + 14 - top };
+}
+
+function overlayRect(svg, { x, y, width, height }, className) {
+  const rect = document.createElementNS(SVG_NS, 'rect');
+  Object.entries({ x, y, width, height, class: className, rx: 3 }).forEach(([k, v]) => rect.setAttribute(k, v));
+  svg.insertBefore(rect, svg.firstChild);
+  return rect;
+}
+
+function drawBarOverlays(svg, staves) {
+  barBoxes = staves.map(box);
+  state.bars.forEach((bar, i) => {
+    if (!needsReview(bar)) return;
+    overlayRect(svg, barBoxes[i], 'bar-unreviewed');
+    const label = document.createElementNS(SVG_NS, 'text');
+    Object.entries({ x: barBoxes[i].x + 4, y: barBoxes[i].y - 3, class: 'bar-unreviewed-label' })
+      .forEach(([k, v]) => label.setAttribute(k, v));
+    label.textContent = 'Check this bar';
+    svg.appendChild(label);
+  });
+}
+
+// Index of the bar under an SVG coordinate, or -1.
+export function barAt(x, y) {
+  return barBoxes.findIndex(b => x >= b.x && x <= b.x + b.width && y >= b.y - 14 && y <= b.y + b.height);
 }

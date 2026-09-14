@@ -35,6 +35,8 @@ drum score reader/
 │   ├── import.js       ← OMR service /predict notes → one editable bar (pure)
 │   ├── import-ui.js    ← Import buttons/paste → importBarCommand with unreviewed provenance
 │   ├── details-ui.js   ← Title and tempo fields (undoable metadata edits)
+│   ├── review.js       ← Which imported bars still need checking (pure)
+│   ├── review-ui.js    ← "N imported bars to check", Next bar to check, Mark bar checked
 │   └── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
@@ -178,7 +180,8 @@ bar = {
 
 `provenance.source` is `'manual'`, `'local_omr'` or `'openai_omr'`. Imported bars start
 `reviewed: false` and editing them does not change that — only an explicit "mark reviewed"
-command does.
+command does. Unreviewed bars are drawn with a dashed amber box and "Check this bar"
+(`drawBarOverlays` in `score.js`); the review bar under the import buttons jumps between them.
 
 **There is no beat or position field on notes.** The first note in the array is the first note in the bar. VexFlow reads them in sequence and handles timing from durations.
 
