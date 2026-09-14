@@ -15,7 +15,7 @@
     <button id="import-btn" type="button">Import bar image…</button>
     <button id="page-import-btn" type="button">Import page or PDF…</button>
     <button id="ai-import-btn" type="button">Paste screenshot with GPT-5.6 Luna</button>
-    <button id="panel-btn" type="button" aria-expanded="false" aria-controls="side-panel">Insights &amp; Ask</button>
+    <button id="panel-btn" type="button" aria-expanded="false" aria-controls="side-panel">Insights, Ask &amp; Practice</button>
     <div id="score-details">
       <label>Title <input id="score-title" type="text" maxlength="200" spellcheck="false" /></label>
       <label>Tempo <input id="score-tempo" type="number" min="20" max="300" step="1" /> BPM</label>
@@ -91,12 +91,16 @@
     <div role="tablist" class="panel-tabs">
       <button type="button" role="tab" id="tab-insights" aria-controls="insights-tab" aria-selected="true">Insights</button>
       <button type="button" role="tab" id="tab-ask" aria-controls="ask-tab" aria-selected="false">Ask DrumHub</button>
+      <button type="button" role="tab" id="tab-library" aria-controls="library-tab" aria-selected="false">Library</button>
+      <button type="button" role="tab" id="tab-practice" aria-controls="practice-tab" aria-selected="false">Practice</button>
     </div>
     <p id="selection-label" class="panel-note"></p>
     <section id="insights-tab" role="tabpanel" aria-labelledby="tab-insights">
       <div class="panel-row"><span id="insights-status" role="status"></span><button id="insights-refresh" type="button">Refresh</button></div>
       <div id="insights-cards"></div>
     </section>
+    <section id="library-tab" role="tabpanel" aria-labelledby="tab-library" hidden></section>
+    <section id="practice-tab" role="tabpanel" aria-labelledby="tab-practice" hidden></section>
     <section id="ask-tab" role="tabpanel" aria-labelledby="tab-ask" hidden>
       <div class="ask-mode"><span id="ask-mode-text"></span><button id="ask-cloud-toggle" type="button">Turn on cloud help…</button></div>
       <h3 class="ask-heading">Suggested questions</h3>

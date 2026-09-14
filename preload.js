@@ -36,3 +36,10 @@ contextBridge.exposeInMainWorld('pages', {
   discard: jobId => ipcRenderer.invoke('page:discard', jobId),
   onProgress: callback => ipcRenderer.on('page:progress', (_event, update) => callback(update)),
 });
+// Practice history, students, assignments and teacher summaries (stored on this computer).
+const PRACTICE = ['students', 'add-student', 'consent', 'delete-student', 'export-student', 'start-session', 'log-attempt',
+  'end-session', 'assignments', 'add-assignment', 'complete-assignment', 'summary', 'difficulty', 'reset-difficulty', 'teacher-summary'];
+const camel = name => name.replace(/-(\w)/g, (_, c) => c.toUpperCase());
+contextBridge.exposeInMainWorld('practice', Object.fromEntries(PRACTICE.map(name => [camel(name), input => ipcRenderer.invoke(`practice:${name}`, input)])));
+// Fill Lab: generate a new fill with GPT-5.6 Luna (main checks cloud help and the result).
+contextBridge.exposeInMainWorld('fills', { generate: request => ipcRenderer.invoke('fills:generate', request) });

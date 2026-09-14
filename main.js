@@ -9,6 +9,9 @@ const { OpenAiOmr } = require('./desktop/openai-omr.cjs');
 const { initScoreFiles } = require('./desktop/score-ipc.cjs');
 const { initAgent } = require('./desktop/agent-ipc.cjs');
 const { initPageImport } = require('./desktop/page-import-ipc.cjs');
+const { initPractice } = require('./desktop/practice-ipc.cjs');
+const { FillGenerator } = require('./desktop/fill-generator.cjs');
+const { OpenAiClient } = require('./desktop/openai-client.cjs');
 const service = new OmrService({ root: __dirname });
 // Luna import progress and raw output go to the terminal that runs `npm start`.
 const openai = new OpenAiOmr({ log: line => console.log(`[luna] ${line}`) });
@@ -70,6 +73,14 @@ app.whenReady().then(() => {
   scoreFiles = initScoreFiles({ trustedSender });
   agentIpc = initAgent({ trustedSender });
   initPageImport({ trustedSender, service, openai, settings: agentIpc.settings });
+  initPractice({ trustedSender, dataDir: app.getPath('userData'), settings: agentIpc.settings });
+  // Fill Lab: a new fill from GPT-5.6 Luna, only with cloud help on, always checked by DrumHub.
+  const fills = new FillGenerator({ client: new OpenAiClient(), cloudEnabled: () => agentIpc.settings.cloudEnabled });
+  ipcMain.handle('fills:generate', async (event, request) => {
+    if (!trustedSender(event)) return { error: 'Fill Lab is only available in the score editor.' };
+    await agentIpc.ready;
+    return fills.generate(request);
+  });
   createWindow();
   service.start().catch(error => console.error(error.message));
   app.on('activate', () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });

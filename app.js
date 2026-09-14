@@ -14,6 +14,9 @@ import { initInsights } from './js/insights-ui.js';
 import { initAgentPanel } from './js/agent-ui.js';
 import { initPageImport } from './js/page-import-ui.js';
 import { mountTransport } from './js/transport-ui.js';
+import { mountLibrary } from './js/library-ui.js';
+import { mountPractice } from './js/practice-ui.js';
+import { dispatch } from './js/editor-store.js';
 import { showPlayhead } from './js/score.js';
 import { onEditorChange } from './js/editor-store.js';
 import { state } from './js/state.js';
@@ -39,8 +42,19 @@ const transport = mountTransport(document.getElementById('transport'), {
   onChange: onEditorChange,
   onPosition: showPlayhead,
 });
-// Suggested actions from Ask DrumHub ("Practise at 60 BPM", "Loop bars 7–8").
-window.addEventListener('drumhub:effect', event => transport.applyPlaybackEffect(event.detail));
+// Side panel tabs: exercise library and Fill Lab, practice and teacher view.
+const library = mountLibrary(document.getElementById('library-tab'), { getEditor: () => state.editor, dispatch, onChange: onEditorChange });
+if (window.practice) {
+  mountPractice(document.getElementById('practice-tab'), { getEditor: () => state.editor, getPlaybackTempo: () => null });
+} else {
+  document.getElementById('tab-practice').hidden = true;
+}
+// Suggested actions from Ask DrumHub ("Practise at 60 BPM", "Loop bars 7–8", "Open the exercise …").
+window.addEventListener('drumhub:effect', event => {
+  const effect = event.detail;
+  if (effect?.kind === 'playback') transport.applyPlaybackEffect(effect);
+  if (effect?.kind === 'exercise' && library.openExercise(effect.exerciseId)) document.getElementById('tab-library').click();
+});
 // Space starts and stops playback when not typing.
 document.addEventListener('keydown', event => {
   if (event.key !== ' ' || event.repeat || document.body.classList.contains('modal-open') ||
