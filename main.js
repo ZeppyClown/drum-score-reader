@@ -8,6 +8,7 @@ const { OmrService } = require('./desktop/omr-service.cjs');
 const { OpenAiOmr } = require('./desktop/openai-omr.cjs');
 const { initScoreFiles } = require('./desktop/score-ipc.cjs');
 const { initAgent } = require('./desktop/agent-ipc.cjs');
+const { initPageImport } = require('./desktop/page-import-ipc.cjs');
 const service = new OmrService({ root: __dirname });
 // Luna import progress and raw output go to the terminal that runs `npm start`.
 const openai = new OpenAiOmr({ log: line => console.log(`[luna] ${line}`) });
@@ -68,6 +69,7 @@ function createWindow() {
 app.whenReady().then(() => {
   scoreFiles = initScoreFiles({ trustedSender });
   agentIpc = initAgent({ trustedSender });
+  initPageImport({ trustedSender, service, openai, settings: agentIpc.settings });
   createWindow();
   service.start().catch(error => console.error(error.message));
   app.on('activate', () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });

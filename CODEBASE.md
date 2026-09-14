@@ -49,7 +49,12 @@ drum score reader/
 │   ├── offline-answers.js ← Suggested questions and their offline answers (pure)
 │   ├── ask-request.js  ← Which bars a question covers; builds the snapshot sent to main (pure)
 │   ├── agent-ui.js     ← Side panel "Ask DrumHub" tab: suggestions, typed questions, answers, Stop
-│   └── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
+│   ├── page-boxes.js   ← Page-import bar boxes: reading order, clamping, validation (pure)
+│   ├── page-import-ui.js ← Import page or PDF: review/edit boxes, transcribe, retry, add, resume
+│   ├── playback-schedule.js ← Exact hit/click times for playback, loops, count-in (pure)
+│   ├── export-midi.js  ← Score → Standard MIDI File on the General MIDI drum channel (pure)
+│   └── export-musicxml.js ← Score → MusicXML 4.0 drum part (pure)
+│   ├── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
 ├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
 ├── desktop/            ← Main-process modules: OMR service, OpenAI client + import, Ask DrumHub agent, score files (see §9)
@@ -559,6 +564,23 @@ agent-ui.js → ask-request.js (scope + snapshot) → preload window.agent.ask
   or hands/feet (a sentence saying the score doesn't show them is fine).
 - Warnings about unchecked imported bars and partial scores are added by code every time.
 - Limits: 500-character questions, one at a time, 1.5 s between cloud questions, 100 per day.
+
+---
+
+## 11. Page and PDF import
+
+```
+Import page or PDF… → main: dialog → service POST /segment (backend/page_segment.py)
+  → desktop/page-import.cjs saves page PNGs + suggested boxes (userData/page-imports/<job>)
+  → review screen: draw / move / resize / remove boxes; numbers = reading order (page-boxes.js)
+  → Transcribe: main crops each box (nativeImage) → local model (predictData) or Luna
+       results saved one by one; a failed box can be retried alone; moving a box redoes it
+  → Add bars to score: importBarsCommand in reading order; failed boxes can become
+       empty unchecked bars so the order stays right; the job folder is deleted
+```
+
+An import that was opened but not added is offered again (Resume / Discard) the next
+time the app starts. Luna needs cloud help on, like screenshot import.
 
 ---
 

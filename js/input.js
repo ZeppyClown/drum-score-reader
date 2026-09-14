@@ -47,7 +47,7 @@ const KEY_COMMANDS = {
 // Undo/redo and file shortcuts use ⌘ and come from the app menu (see desktop/score-ipc.cjs).
 export function initKeyboard() {
   document.addEventListener('keydown', (e) => {
-    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey ||
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || document.body.classList.contains('modal-open') ||
         e.target.closest('input, textarea, select, button, [contenteditable="true"]')) return;
 
     const digit = shiftedDigit(e);

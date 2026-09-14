@@ -12,6 +12,7 @@ import { initReview } from './js/review-ui.js';
 import { initSelection } from './js/selection-ui.js';
 import { initInsights } from './js/insights-ui.js';
 import { initAgentPanel } from './js/agent-ui.js';
+import { initPageImport } from './js/page-import-ui.js';
 
 // Register keyboard shortcuts and the floating keypad click handlers
 initKeyboard();
@@ -26,6 +27,7 @@ initReview();
 initSelection();
 initInsights();
 initAgentPanel();
+initPageImport();
 
 // Draw the initial empty score, then offer to restore anything unsaved from a crash
 render();

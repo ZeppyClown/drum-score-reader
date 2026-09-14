@@ -97,6 +97,7 @@ export function initImport() {
 
   aiButton.addEventListener('click', pasteScreenshot);
   document.addEventListener('paste', event => {
+    if (document.body.classList.contains('modal-open')) return;
     if (event.target instanceof Element &&
         event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
     event.preventDefault();

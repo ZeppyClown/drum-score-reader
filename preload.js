@@ -24,3 +24,14 @@ contextBridge.exposeInMainWorld('agent', {
   cancel: () => ipcRenderer.invoke('agent:cancel'),
   setCloud: enabled => ipcRenderer.invoke('agent:set-cloud', Boolean(enabled)),
 });
+// Page and PDF import: main opens the file, crops boxes and runs recognition.
+contextBridge.exposeInMainWorld('pages', {
+  open: () => ipcRenderer.invoke('page:open'),
+  transcribe: (jobId, boxes, recognizer) => ipcRenderer.invoke('page:transcribe', jobId, boxes, recognizer),
+  retry: (jobId, boxId) => ipcRenderer.invoke('page:retry', jobId, boxId),
+  cancel: jobId => ipcRenderer.invoke('page:cancel', jobId),
+  recoverable: () => ipcRenderer.invoke('page:recoverable'),
+  load: jobId => ipcRenderer.invoke('page:load', jobId),
+  discard: jobId => ipcRenderer.invoke('page:discard', jobId),
+  onProgress: callback => ipcRenderer.on('page:progress', (_event, update) => callback(update)),
+});

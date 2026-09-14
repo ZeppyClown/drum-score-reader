@@ -85,8 +85,16 @@ class OmrService {
       data = data.subarray(0, total);
       if (data.length > health.max_upload_bytes) throw new Error('Choose a PNG or JPEG image of 10 MB or smaller.');
     } finally { await file.close(); }
+    return this.predictData(data, path.basename(filePath), health);
+  }
+
+  // One bar image already in memory (a crop from page import).
+  async predictData(data, name = 'bar.png', health = null) {
+    const ready = health ?? await this.start();
+    if (!data?.length) throw new Error('The bar image is empty.');
+    if (data.length > ready.max_upload_bytes) throw new Error('Choose a PNG or JPEG image of 10 MB or smaller.');
     const form = new FormData();
-    form.append('image', new Blob([data]), path.basename(filePath));
+    form.append('image', new Blob([data]), name);
     let response;
     try {
       response = await fetch(`${this.url}/predict`, { method: 'POST', body: form, signal: AbortSignal.timeout(30000) });
@@ -99,7 +107,25 @@ class OmrService {
     if (!Array.isArray(result.notes) || result.model_sha256 !== this.modelHash) {
       throw new Error('The model returned invalid output. Check the released bundle and retry.');
     }
-    return { ...result, gridSlots: health.grid_slots };
+    return { ...result, gridSlots: ready.grid_slots };
+  }
+
+  // Suggested bar boxes for every page of a PNG, JPEG or PDF (backend/page_segment.py).
+  async segment(filePath) {
+    await this.start();
+    const data = await fs.readFile(filePath);
+    if (data.length > 40 * 1024 * 1024) throw new Error('Choose a page image or PDF of 40 MB or smaller.');
+    const form = new FormData();
+    form.append('file', new Blob([data]), path.basename(filePath));
+    let response;
+    try {
+      response = await fetch(`${this.url}/segment`, { method: 'POST', body: form, signal: AbortSignal.timeout(180000) });
+    } catch {
+      throw new Error('Finding the bars took too long. Try a smaller file or fewer pages.');
+    }
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error?.message || 'The page could not be read.');
+    return result;
   }
 
   async stop() {

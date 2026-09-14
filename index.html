@@ -13,6 +13,7 @@
       ☰
     </button>
     <button id="import-btn" type="button">Import bar image…</button>
+    <button id="page-import-btn" type="button">Import page or PDF…</button>
     <button id="ai-import-btn" type="button">Paste screenshot with GPT-5.6 Luna</button>
     <button id="panel-btn" type="button" aria-expanded="false" aria-controls="side-panel">Insights &amp; Ask</button>
     <div id="score-details">
@@ -57,6 +58,29 @@
       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
     />
 
+  </div>
+
+  <!-- Page and PDF import: review boxes, transcribe, add to score -->
+  <div id="page-import" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="page-import-title">
+    <div class="modal-card">
+      <header class="modal-header">
+        <h2 id="page-import-title">Import page</h2>
+        <span id="page-import-file"></span>
+        <label>Read bars with
+          <select id="page-recognizer"><option value="local">the local model (offline)</option><option value="luna">GPT-5.6 Luna (cloud)</option></select>
+        </label>
+        <button id="page-close" type="button">Close</button>
+      </header>
+      <p class="page-help">Check the boxes. Drag on the page to add a bar, drag a box to move it, drag its corner to resize, and press × to remove it. The numbers show the order the bars will be added.</p>
+      <div id="page-pages"></div>
+      <footer class="modal-footer">
+        <span id="page-status" role="status" aria-live="polite"></span>
+        <label class="page-keep"><input type="checkbox" id="page-keep-blank" checked /> Add an empty bar for each box that could not be read</label>
+        <button id="page-transcribe" type="button">Transcribe bars</button>
+        <button id="page-stop" type="button" hidden>Stop</button>
+        <button id="page-add" type="button" disabled>Add bars to score</button>
+      </footer>
+    </div>
   </div>
 
   <!-- Side panel: offline insights and Ask DrumHub -->
