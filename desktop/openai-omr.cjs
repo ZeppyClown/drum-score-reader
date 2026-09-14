@@ -79,10 +79,14 @@ function validateResult(result) {
 
 // Luna counts its hidden reasoning against max_output_tokens. On busy bars it used
 // all of the old 4,096 on reasoning and never wrote the JSON (2026-09-14), and answers
-// took 30–60 s. OpenAI recommends reserving about 25,000 tokens for reasoning; at
-// $1.20 per million output tokens that is at most about 3 cents per screenshot.
-const MAX_OUTPUT_TOKENS = 25000;
-const IMPORT_TIMEOUT_MS = 180000;
+// took 30–60 s at medium effort. Victor chose high effort for accuracy (2026-09-14), which
+// thinks longer, so the budget is 40,000 tokens (at most about 5 cents per screenshot at
+// $1.20 per million output tokens) and the wait is 5 minutes. A reply that is still cut
+// off is retried once at medium effort.
+const REASONING_EFFORT = 'high';
+const FALLBACK_EFFORT = 'medium';
+const MAX_OUTPUT_TOKENS = 40000;
+const IMPORT_TIMEOUT_MS = 300000;
 
 const HEARTBEAT_MS = 10000;
 
@@ -111,11 +115,11 @@ class OpenAiOmr {
   // If the reply is cut off by the token limit, try once more with less reasoning.
   async recognize(png) {
     try {
-      return await this.recognizeWith(png, 'medium');
+      return await this.recognizeWith(png, REASONING_EFFORT);
     } catch (error) {
       if (!/incomplete.*max_output_tokens/.test(error.message)) throw error;
-      this.log('ran out of output tokens while reasoning; retrying once with reasoning effort "low"');
-      return this.recognizeWith(png, 'low');
+      this.log(`ran out of output tokens while reasoning; retrying once with reasoning effort "${FALLBACK_EFFORT}"`);
+      return this.recognizeWith(png, FALLBACK_EFFORT);
     }
   }
 
@@ -158,4 +162,4 @@ class OpenAiOmr {
   }
 }
 
-module.exports = { OpenAiOmr, RESPONSE_SCHEMA, apiErrorMessage, redactSecret, MAX_OUTPUT_TOKENS, IMPORT_TIMEOUT_MS };
+module.exports = { OpenAiOmr, RESPONSE_SCHEMA, apiErrorMessage, redactSecret, REASONING_EFFORT, MAX_OUTPUT_TOKENS, IMPORT_TIMEOUT_MS };

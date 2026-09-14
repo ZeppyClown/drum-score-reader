@@ -63,7 +63,7 @@ export function initImport() {
   async function pasteScreenshot() {
     if (aiButton.disabled) return;
     button.disabled = aiButton.disabled = true;
-    status.textContent = 'Sending the clipboard screenshot to GPT-5.6 Luna… busy bars can take up to a minute.';
+    status.textContent = 'Sending the clipboard screenshot to GPT-5.6 Luna… busy bars can take a minute or two.';
     warnings.replaceChildren();
     try {
       if (!window.omr) throw new Error('Open the desktop app with npm start to import images.');

@@ -30,7 +30,7 @@ test('OpenAI sends the clipboard PNG to Luna at original detail with a strict sc
   const request = JSON.parse(call[1].body);
   assert.equal(request.model, 'gpt-5.6-luna');
   assert.equal(request.store, false);
-  assert.equal(request.reasoning.effort, 'medium');
+  assert.equal(request.reasoning.effort, 'high');
   assert.equal(request.input[0].content[1].type, 'input_image');
   assert.equal(request.input[0].content[1].detail, 'original');
   assert.equal(request.input[0].content[1].image_url,
@@ -160,8 +160,8 @@ test('the import leaves room for reasoning and waits long enough for busy bars',
   const omr = new Omr({ apiKey: 'x', fetchImpl: async (_url, init) => { sent = JSON.parse(init.body); return apiResponse(); } });
   await omr.recognize(Buffer.from('png'));
   assert.equal(sent.max_output_tokens, MAX_OUTPUT_TOKENS);
-  assert.ok(MAX_OUTPUT_TOKENS >= 25000, 'reasoning tokens count against this limit');
-  assert.ok(omr.client.timeoutMs >= IMPORT_TIMEOUT_MS && IMPORT_TIMEOUT_MS >= 120000);
+  assert.ok(MAX_OUTPUT_TOKENS >= 40000, 'high reasoning counts against this limit');
+  assert.ok(omr.client.timeoutMs >= IMPORT_TIMEOUT_MS && IMPORT_TIMEOUT_MS >= 300000);
 });
 
 test('a reply cut off by the token limit is retried once with low reasoning, and progress is logged', async () => {
@@ -179,11 +179,11 @@ test('a reply cut off by the token limit is retried once with low reasoning, and
   } });
   const result = await omr.recognize(Buffer.from('png'));
   assert.equal(result.status, 'ok');
-  assert.deepEqual(efforts, ['medium', 'low']);
+  assert.deepEqual(efforts, ['high', 'medium']);
   const log = lines.join('\n');
-  assert.match(log, /max_output_tokens 25000/);
+  assert.match(log, /reasoning high, max_output_tokens 40000, timeout 300 s/);
   assert.match(log, /stopped: max_output_tokens.*25000 reasoning, 0 answer/);
-  assert.match(log, /retrying once with reasoning effort "low"/);
+  assert.match(log, /retrying once with reasoning effort "medium"/);
   assert.match(log, /output \(.*\): \{"schemaVersion":1/);
   assert.equal(log.includes(apiKey) || log.includes('base64'), false);
 });
