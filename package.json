@@ -1,9 +1,13 @@
 {
-  "name": "drum-score-reader",
+  "name": "drumhub",
   "version": "1.0.0",
-  "description": "",
+  "description": "Drum score editor with local sheet-music recognition, playback, practice tools and Ask DrumHub.",
   "main": "main.js",
   "dependencies": {
+    "dotenv": "^16.6.1",
+    "vexflow": "^5.0.0"
+  },
+  "devDependencies": {
     "7zip-bin": "^5.2.0",
     "abbrev": "^4.0.0",
     "acorn": "^8.16.0",
@@ -68,7 +72,6 @@
     "dir-compare": "^4.2.0",
     "dmg-builder": "^26.8.1",
     "dmg-license": "^1.0.11",
-    "dotenv": "^16.6.1",
     "dotenv-expand": "^11.0.7",
     "dunder-proto": "^1.0.1",
     "ejs": "^3.1.10",
@@ -269,7 +272,6 @@
     "uri-js": "^4.4.1",
     "utf8-byte-length": "^1.0.5",
     "verror": "^1.10.1",
-    "vexflow": "^5.0.0",
     "watchpack": "^2.5.1",
     "webpack": "^5.106.2",
     "webpack-cli": "^7.0.2",
@@ -287,16 +289,58 @@
     "yauzl": "^2.10.0",
     "yocto-queue": "^0.1.0"
   },
-  "devDependencies": {},
   "scripts": {
     "start": "electron .",
     "test": "node --test \"test/*.test.mjs\" test/openai-omr.test.cjs test/openai-client.test.cjs test/score-agent.test.cjs test/score-files.test.cjs test/page-import.test.cjs test/practice-store.test.cjs test/teacher-summary.test.cjs test/practice-ipc.test.cjs test/fill-generator.test.cjs test/cloud-budget.test.cjs",
     "test:service": "node --test test/service.integration.cjs",
     "eval:agent": "node eval/score-agent/run.mjs",
-    "test:desktop": "electron test/desktop-smoke.cjs && electron test/desktop-files-smoke.cjs && electron test/desktop-insights-smoke.cjs && electron test/desktop-agent-smoke.cjs && electron test/desktop-page-import-smoke.cjs && electron test/desktop-playback-smoke.cjs && electron test/desktop-library-practice-smoke.cjs"
+    "test:desktop": "electron test/desktop-smoke.cjs && electron test/desktop-files-smoke.cjs && electron test/desktop-insights-smoke.cjs && electron test/desktop-agent-smoke.cjs && electron test/desktop-page-import-smoke.cjs && electron test/desktop-playback-smoke.cjs && electron test/desktop-library-practice-smoke.cjs",
+    "dist:dir": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": [],
-  "author": "",
+  "author": "Victor Chua",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "productName": "DrumHub",
+  "build": {
+    "appId": "com.drumhub.app",
+    "productName": "DrumHub",
+    "files": [
+      "index.html",
+      "app.js",
+      "main.js",
+      "preload.js",
+      "styles.css",
+      "js/**/*",
+      "desktop/**/*",
+      "backend/{app,omr_bundle,page_segment}.py",
+      "backend/requirements.txt",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "backend/**"
+    ],
+    "extraResources": [
+      {
+        "from": "ml/data/releases/baseline-14drum-v1",
+        "to": "model",
+        "filter": [
+          "omr.onnx",
+          "omr_config.json",
+          "*.json"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "target": [
+        "dmg"
+      ],
+      "identity": null
+    },
+    "directories": {
+      "output": "dist"
+    }
+  }
 }

@@ -365,6 +365,19 @@ python3 -m unittest discover -s backend -p 'test_*.py'   # 16 service tests
 python3 -m unittest discover -s ml/omr -p 'test_*.py'    # 35 ML tests
 ```
 
+Build a desktop app (macOS, unsigned) that you can double-click:
+
+```bash
+npm run dist:dir     # dist/mac-arm64/DrumHub.app, about 300 MB
+npm run dist         # the same app inside a .dmg
+```
+
+The app includes the model release and the Python service code, but **not Python itself**.
+The computer still needs Python with `backend/requirements.txt` installed. An app started
+from Finder does not see your terminal's PATH, so put `OMR_PYTHON=/full/path/to/python3`
+(and `OPENAI_API_KEY` if you want cloud help) in
+`~/Library/Application Support/DrumHub/.env`. A signed build and bundled Python are still to do.
+
 Full model pipeline, from charts to a release bundle:
 
 ```bash

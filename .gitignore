@@ -36,3 +36,4 @@ __pycache__/
 .env
 .env.*
 eval/recognition/reports/.gemini-schema.json
+dist/

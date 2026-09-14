@@ -2,7 +2,12 @@ const { app, BrowserWindow, ipcMain, dialog, clipboard } = require('electron');
 const path = require('path');
 // OPENAI_API_KEY and model settings can live in a git-ignored .env next to this file.
 // Real environment variables win. Tests set DRUMHUB_IGNORE_DOTENV so they never use a real key.
-if (!process.env.DRUMHUB_IGNORE_DOTENV) require('dotenv').config({ path: path.join(__dirname, '.env'), quiet: true });
+// A packaged app has no project folder, so it reads .env from its user-data folder instead
+// (for example OMR_PYTHON=/path/to/python3 when the app is started from Finder).
+if (!process.env.DRUMHUB_IGNORE_DOTENV) {
+  const envDir = app.isPackaged ? app.getPath('userData') : __dirname;
+  require('dotenv').config({ path: path.join(envDir, '.env'), quiet: true });
+}
 const { pathToFileURL } = require('url');
 const { OmrService } = require('./desktop/omr-service.cjs');
 const { OpenAiOmr } = require('./desktop/openai-omr.cjs');
@@ -12,7 +17,11 @@ const { initPageImport } = require('./desktop/page-import-ipc.cjs');
 const { initPractice } = require('./desktop/practice-ipc.cjs');
 const { FillGenerator } = require('./desktop/fill-generator.cjs');
 const { OpenAiClient } = require('./desktop/openai-client.cjs');
-const service = new OmrService({ root: __dirname });
+// In a packaged app the Python service is unpacked next to the archive (Python cannot run
+// files inside app.asar) and the model release is a bundled resource.
+const service = new OmrService(app.isPackaged
+  ? { root: __dirname.replace('app.asar', 'app.asar.unpacked'), bundle: path.join(process.resourcesPath, 'model') }
+  : { root: __dirname });
 // One monthly cloud spending limit shared by every OpenAI request (desktop/cloud-budget.cjs).
 const { CloudBudget } = require('./desktop/cloud-budget.cjs');
 const budget = new CloudBudget({ file: path.join(app.getPath('userData'), 'cloud-budget.json') });
