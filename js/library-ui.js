@@ -167,7 +167,7 @@ export function mountLibrary(container, { getEditor, dispatch, onChange, fills =
     .${MODULE}-root { font: 14px system-ui, sans-serif; color: #1f2937; padding: 12px; max-width: 760px; }
     .${MODULE}-tabs, .${MODULE}-filters, .${MODULE}-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
     .${MODULE}-tabs { margin-bottom: 12px; }
-    .${MODULE}-tab[aria-selected="true"] { background: #1d4ed8; color: white; }
+    .${MODULE}-tab[aria-pressed="true"] { background: #1d4ed8; color: white; }
     .${MODULE}-label { display: flex; flex-direction: column; gap: 3px; font-weight: 600; }
     .${MODULE}-input, .${MODULE}-select { min-height: 32px; padding: 4px 7px; border: 1px solid #9ca3af; border-radius: 4px; font: inherit; }
     .${MODULE}-search { flex: 1 1 220px; }
@@ -191,8 +191,9 @@ export function mountLibrary(container, { getEditor, dispatch, onChange, fills =
   const exerciseTab = add('button', 'button tab', 'Exercises');
   const fillTab = add('button', 'button tab', 'Fill Lab');
   exerciseTab.type = fillTab.type = 'button';
-  exerciseTab.setAttribute('aria-selected', 'true');
-  fillTab.setAttribute('aria-selected', 'false');
+  // Two toggle buttons (not tabs): aria-pressed says which section is showing.
+  exerciseTab.setAttribute('aria-pressed', 'true');
+  fillTab.setAttribute('aria-pressed', 'false');
   tabs.append(exerciseTab, fillTab);
   root.append(add('h2', 'section-title', 'Exercise library and Fill Lab'), tabs);
   const status = add('p', 'status');
@@ -358,7 +359,7 @@ export function mountLibrary(container, { getEditor, dispatch, onChange, fills =
   });
   const showTab = fill => {
     exerciseSection.hidden = fill; fillSection.hidden = !fill;
-    exerciseTab.setAttribute('aria-selected', String(!fill)); fillTab.setAttribute('aria-selected', String(fill));
+    exerciseTab.setAttribute('aria-pressed', String(!fill)); fillTab.setAttribute('aria-pressed', String(fill));
     if (fill) updateFillContext();
   };
   exerciseTab.addEventListener('click', () => showTab(false));

@@ -101,8 +101,12 @@ const COMMANDS = {
 function scheduleAutosave() {
   clearTimeout(autosaveTimer);
   autosaveTimer = setTimeout(() => serially(async () => {
-    const result = await api().autosave(documentOf(state.editor), isDirty(state.editor));
-    if (result?.error) status(`Autosave failed: ${result.error}`);
+    try {
+      const result = await api().autosave(documentOf(state.editor), isDirty(state.editor));
+      if (result?.error) status(`Autosave failed: ${result.error}`);
+    } catch (error) {
+      status(`Autosave failed: ${error.message}`);
+    }
   }), AUTOSAVE_DELAY_MS);
 }
 

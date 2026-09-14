@@ -67,11 +67,13 @@ export function initImport() {
     turnOn.textContent = 'Turn on cloud help…';
     turnOn.addEventListener('click', async () => {
       turnOn.disabled = true;
-      const next = await window.agent.setCloud(true);
+      let next;
+      try { next = await window.agent.setCloud(true); }
+      catch (error) { status.textContent = `Could not turn on cloud help: ${error.message}`; return; }
+      finally { turnOn.disabled = false; }
       window.dispatchEvent(new CustomEvent('cloud-help-changed', { detail: next }));
       if (next.error) { status.textContent = next.error; return; }
       if (next.cloudEnabled) pasteScreenshot();
-      else turnOn.disabled = false;
     });
     status.append(' ', turnOn);
   }

@@ -89,6 +89,8 @@ export function initKeypad() {
 
   // Shift-click a keypad cell to enter its extra drum.
   keypad.querySelectorAll('.key-cell').forEach(cell => {
+    // A mouse click keeps focus where it was, so number keys keep working afterwards.
+    cell.addEventListener('mousedown', (e) => e.preventDefault());
     cell.addEventListener('click', (e) => handleDrumKey(cell.dataset.key, e.shiftKey));
   });
 }

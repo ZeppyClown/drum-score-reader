@@ -263,7 +263,7 @@ export function mountPractice(container, { getEditor, practice = window.practice
   const attemptLoops = field(doc, 'Loops', { type: 'number', min: 1, step: 1, value: 1 });
   const cleanLabel = node(doc, 'label', null, 'practice-ui-check');
   const clean = doc.createElement('input'); clean.type = 'checkbox'; clean.id = idFor('clean');
-  cleanLabel.append(clean, node(doc, 'span', 'Clean?'));
+  cleanLabel.append(clean, node(doc, 'span', 'Played without mistakes?'));
   attemptGrid.append(attemptBpm.wrap, attemptLoops.wrap, cleanLabel);
   const logTry = node(doc, 'button', 'Log a try'); logTry.type = 'button';
   attemptPanel.append(attemptGrid, logTry);
@@ -467,9 +467,15 @@ export function mountPractice(container, { getEditor, practice = window.practice
       invoke('difficulty', { studentId: id, scoreId: currentScoreId() || 'current-score' }),
     ]);
     if (mine !== refreshNumber) return;
-    if (apiError(assignmentResult)) report(`Could not load assignments: ${assignmentResult.error}`);
-    else assignments = Array.isArray(assignmentResult) ? assignmentResult : [];
+    if (!apiError(assignmentResult)) assignments = Array.isArray(assignmentResult) ? assignmentResult : [];
     renderAssignments();
+    // Show every failed request, not just the first, and still draw whatever loaded.
+    const failures = [
+      apiError(assignmentResult) && `Could not load assignments: ${apiError(assignmentResult)}`,
+      apiError(summaryResult) && `Could not load practice history: ${apiError(summaryResult)}`,
+      apiError(difficultyResult) && `Could not load the hardest bars: ${apiError(difficultyResult)}`,
+    ].filter(Boolean);
+    if (failures.length) report(failures.join(' '));
     renderDashboard(apiError(summaryResult) ? {} : summaryResult, apiError(difficultyResult) ? [] : difficultyResult);
   }
 

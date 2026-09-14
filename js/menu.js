@@ -33,18 +33,24 @@ export function initMenu() {
   // ── Menu open / close ─────────────────────────────────────────────────────
   // Tailwind's -translate-x-full slides the panel off screen to the left.
   // translate-x-0 brings it back into view. The backdrop covers the rest of
-  // the screen so clicking outside the menu closes it.
-  menuBtn.addEventListener('click', () => {
-    const isOpen = !sideMenu.classList.contains('-translate-x-full');
-    sideMenu.classList.toggle('-translate-x-full', isOpen);   // hide if open
-    sideMenu.classList.toggle('translate-x-0', !isOpen);      // show if closed
-    backdrop.classList.toggle('hidden', isOpen);
-  });
+  // the screen so clicking outside the menu closes it. While closed the menu is
+  // `inert`, so Tab never lands on its off-screen input.
+  const setOpen = open => {
+    sideMenu.classList.toggle('-translate-x-full', !open);
+    sideMenu.classList.toggle('translate-x-0', open);
+    backdrop.classList.toggle('hidden', !open);
+    sideMenu.inert = !open;
+    menuBtn.setAttribute('aria-expanded', String(open));
+    if (open) bplInput.focus();
+  };
+  const isOpen = () => menuBtn.getAttribute('aria-expanded') === 'true';
 
-  // Clicking outside the menu (on the backdrop) closes it
-  backdrop.addEventListener('click', () => {
-    sideMenu.classList.add('-translate-x-full');
-    sideMenu.classList.remove('translate-x-0');
-    backdrop.classList.add('hidden');
+  menuBtn.addEventListener('click', () => setOpen(!isOpen()));
+  backdrop.addEventListener('click', () => setOpen(false));
+  // Escape closes the menu and puts focus back on the ☰ button.
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || !isOpen()) return;
+    setOpen(false);
+    menuBtn.focus();
   });
 }

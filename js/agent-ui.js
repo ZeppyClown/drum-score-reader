@@ -100,6 +100,8 @@ async function ask(spec) {
     if (answer.canceled) { $('ask-status').textContent = 'Stopped.'; return; }
     if (answer.error) { $('ask-status').textContent = answer.error; return; }
     showAnswer(label, answer);
+    // One short announcement instead of reading out every part of the answer as it is filled in.
+    $('ask-status').textContent = 'Answer ready below.';
   } catch (error) {
     $('ask-status').textContent = `Ask DrumHub failed: ${error.message}`;
   } finally {
@@ -134,7 +136,9 @@ export async function initAgentPanel() {
   });
   $('ask-cancel').addEventListener('click', () => window.agent.cancel());
   $('ask-cloud-toggle').addEventListener('click', async () => {
-    const next = await window.agent.setCloud(!status.cloudEnabled);
+    let next;
+    try { next = await window.agent.setCloud(!status.cloudEnabled); }
+    catch (error) { $('ask-status').textContent = `Could not change cloud help: ${error.message}`; return; }
     if (next.error) $('ask-status').textContent = next.error;
     status = { ...status, ...next };
     showMode();
@@ -148,7 +152,12 @@ export async function initAgentPanel() {
     $('ask-stale').hidden = !isStale(current);
     $('ask-answer').classList.toggle('stale', isStale(current));
   });
-  const loaded = await window.agent.status();
-  if (!loaded.error) status = loaded;
+  try {
+    const loaded = await window.agent.status();
+    if (loaded.error) $('ask-status').textContent = loaded.error;
+    else status = loaded;
+  } catch (error) {
+    $('ask-status').textContent = `Could not check cloud help: ${error.message}`;
+  }
   showMode();
 }

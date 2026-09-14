@@ -97,6 +97,20 @@ app.whenReady().then(async () => {
   assert.equal(await text('#selection-label'), 'Selected: bars 3–5');
   assert.equal((await editor()).meta.revision, revision, 'selecting is not an edit');
 
+  // Keyboard: S selects the bar under the cursor; the hidden word list says so.
+  await evaluate('document.activeElement?.blur()');
+  press('s');
+  await waitFor(async () => { const e = await editor(); return e.selection?.fromBarId === ids[4] && e.selection?.toBarId === ids[4]; }, 'S selects cursor bar');
+  assert.match(await text('#score-description li:nth-child(5)'), /^Bar 5 \(cursor here, selected\): /);
+  assert.equal(await evaluate('document.getElementById("score-description").children.length'), 10);
+  // The closed layout menu is inert; opening it focuses its input; Escape closes it again.
+  assert.equal(await evaluate('document.getElementById("side-menu").inert'), true);
+  await evaluate('document.getElementById("menu-btn").click()');
+  assert.equal(await evaluate('document.activeElement.id'), 'bpl-input');
+  press('Escape');
+  await waitFor(() => evaluate('document.getElementById("side-menu").inert && document.activeElement.id === "menu-btn"'), 'Escape closes menu');
+  await evaluate('document.activeElement?.blur()');
+
   if (screenshot) fs.writeFileSync(screenshot, (await win.webContents.capturePage()).toPNG());
 
   // Editing makes the cards out of date: citations stop working until Refresh.
@@ -115,7 +129,7 @@ app.whenReady().then(async () => {
   await evaluate('document.getElementById("insights-refresh").click()');
   await waitFor(() => evaluate('!document.getElementById("side-panel").classList.contains("stale")'), 'refreshed');
 
-  console.log('PASS: insights panel, citations select bars by id, click/shift-click selection, stale results after edits.');
+  console.log('PASS: insights panel, citations select bars by id, click/shift-click and keyboard selection, bars in words, layout menu keyboard, stale results after edits.');
   fs.rmSync(temp, { recursive: true, force: true });
   app.quit();
 }).catch(error => {

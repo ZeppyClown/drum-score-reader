@@ -9,7 +9,7 @@
 
   <!-- Top bar -->
   <div class="fixed top-0 left-0 right-0 h-10 bg-gray-100 border-b border-gray-200 flex items-center px-3 z-50">
-    <button id="menu-btn" class="text-gray-600 hover:bg-gray-200 rounded px-2 py-1 text-base leading-none">
+    <button id="menu-btn" type="button" aria-label="Layout menu" aria-expanded="false" aria-controls="side-menu" class="text-gray-600 hover:bg-gray-200 rounded px-2 py-1 text-base leading-none">
       ☰
     </button>
     <button id="import-btn" type="button">Import bar image…</button>
@@ -42,9 +42,9 @@
   <div id="backdrop" class="hidden fixed top-10 inset-0 z-30"></div>
 
   <!-- Side menu -->
-  <div id="side-menu" class="fixed top-10 left-0 bottom-0 w-60 bg-gray-50 border-r border-gray-200 z-40 p-5 -translate-x-full transition-transform duration-200 ease-in-out">
+  <div id="side-menu" role="region" aria-label="Layout menu" inert class="fixed top-10 left-0 bottom-0 w-60 bg-gray-50 border-r border-gray-200 z-40 p-5 -translate-x-full transition-transform duration-200 ease-in-out">
 
-    <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Bars per line</p>
+    <label for="bpl-input" class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3" style="display:block">Bars per line</label>
 
     <!-- Flowbite warning alert (hidden until triggered) -->
     <div id="bpl-alert" class="hidden flex items-start gap-2 p-3 mb-3 text-sm text-yellow-800 rounded-lg bg-yellow-50 border border-yellow-300" role="alert">
@@ -57,6 +57,9 @@
     <input
       id="bpl-input"
       type="number"
+      min="2"
+      max="8"
+      aria-describedby="bpl-alert"
       placeholder="4"
       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
     />
@@ -109,12 +112,12 @@
         <label class="panel-note">Typed questions are about
           <select id="ask-scope"><option value="selection">the selected bars</option><option value="score">the whole score</option></select>
         </label>
-        <textarea id="ask-input" rows="2" maxlength="500"></textarea>
+        <textarea id="ask-input" rows="2" maxlength="500" aria-label="Your question about the score"></textarea>
         <button id="ask-submit" type="submit">Ask</button>
       </form>
       <div id="ask-busy" hidden>Working it out… <button id="ask-cancel" type="button">Stop</button></div>
       <p id="ask-status" role="status"></p>
-      <article id="ask-answer" hidden aria-live="polite">
+      <article id="ask-answer" hidden aria-labelledby="ask-question">
         <p id="ask-stale" hidden>This answer is about an earlier version of the score. Ask again to update it.</p>
         <p id="ask-question"></p>
         <p id="ask-text"></p>
@@ -131,34 +134,36 @@
   <h1 id="print-title"></h1>
 
   <!-- Score area -->
-  <div id="score" class="fixed top-10 left-0 right-0 bottom-0 overflow-auto p-5"></div>
+  <div id="score" class="fixed top-10 left-0 right-0 bottom-0 overflow-auto p-5" role="region" aria-label="Score" aria-describedby="score-help"></div>
+  <p id="score-help" class="sr-only">Arrow keys move the cursor, number keys add drums, S selects the bar at the cursor and Shift+S extends the selection. The bars are listed in words below.</p>
+  <ol id="score-description" class="sr-only" aria-label="Bars in words"></ol>
 
   <!-- Floating drum keypad -->
-  <div id="keypad" class="fixed z-50 rounded-xl shadow-2xl bg-gray-800 text-white select-none" style="top:252px;right:24px;width:152px;">
+  <div id="keypad" role="group" aria-labelledby="keypad-title" class="fixed z-50 rounded-xl shadow-2xl bg-gray-800 text-white select-none" style="top:252px;right:24px;width:152px;">
 
     <!-- Drag handle -->
     <div id="keypad-handle" class="px-3 py-2 border-b border-gray-700 cursor-grab flex items-center gap-2">
       <span class="text-gray-500 text-sm">⠿</span>
-      <span class="text-xs font-semibold text-gray-300 tracking-wide">Drum Keys</span>
+      <span class="text-xs font-semibold text-gray-300 tracking-wide" id="keypad-title">Drum Keys</span>
     </div>
 
     <!-- Numpad grid (mirrors a standard numpad layout) -->
     <div class="p-2 grid grid-cols-3 gap-1.5">
 
-      <div class="key-cell" data-key="7"><span class="key-num">7</span><span class="key-lbl">HHx</span></div>
-      <div class="key-cell" data-key="8"><span class="key-num">8</span><span class="key-lbl">sn</span></div>
-      <div class="key-cell" data-key="9"><span class="key-num">9</span><span class="key-lbl">rd</span><span class="key-shift">⇧ bell</span></div>
+      <button type="button" class="key-cell" data-key="7" aria-label="Key 7: closed hi-hat"><span class="key-num">7</span><span class="key-lbl">HHx</span></button>
+      <button type="button" class="key-cell" data-key="8" aria-label="Key 8: snare"><span class="key-num">8</span><span class="key-lbl">sn</span></button>
+      <button type="button" class="key-cell" data-key="9" aria-label="Key 9: ride; Shift for ride bell"><span class="key-num">9</span><span class="key-lbl">rd</span><span class="key-shift">⇧ bell</span></button>
 
-      <div class="key-cell" data-key="4"><span class="key-num">4</span><span class="key-lbl">HHo</span><span class="key-shift">⇧ HH½</span></div>
-      <div class="key-cell" data-key="5"><span class="key-num">5</span><span class="key-lbl">SS</span></div>
-      <div class="key-cell" data-key="6"><span class="key-num">6</span><span class="key-lbl">Lt</span><span class="key-shift">⇧ Lt2</span></div>
+      <button type="button" class="key-cell" data-key="4" aria-label="Key 4: open hi-hat; Shift for half-open hi-hat"><span class="key-num">4</span><span class="key-lbl">HHo</span><span class="key-shift">⇧ HH½</span></button>
+      <button type="button" class="key-cell" data-key="5" aria-label="Key 5: side stick"><span class="key-num">5</span><span class="key-lbl">SS</span></button>
+      <button type="button" class="key-cell" data-key="6" aria-label="Key 6: floor tom; Shift for low floor tom"><span class="key-num">6</span><span class="key-lbl">Lt</span><span class="key-shift">⇧ Lt2</span></button>
 
-      <div class="key-cell" data-key="1"><span class="key-num">1</span><span class="key-lbl">cr</span></div>
-      <div class="key-cell" data-key="2"><span class="key-num">2</span><span class="key-lbl">ht</span></div>
-      <div class="key-cell" data-key="3"><span class="key-num">3</span><span class="key-lbl">MT</span></div>
+      <button type="button" class="key-cell" data-key="1" aria-label="Key 1: crash"><span class="key-num">1</span><span class="key-lbl">cr</span></button>
+      <button type="button" class="key-cell" data-key="2" aria-label="Key 2: high tom"><span class="key-num">2</span><span class="key-lbl">ht</span></button>
+      <button type="button" class="key-cell" data-key="3" aria-label="Key 3: mid tom"><span class="key-num">3</span><span class="key-lbl">MT</span></button>
 
-      <div class="key-cell col-span-2" data-key="0"><span class="key-num">0</span><span class="key-lbl">BD</span><span class="key-shift">⇧ HHp</span></div>
-      <div class="key-cell" data-key="."><span class="key-num">.</span><span class="key-lbl">alt</span></div>
+      <button type="button" class="key-cell col-span-2" data-key="0" aria-label="Key 0: kick; Shift for pedal hi-hat"><span class="key-num">0</span><span class="key-lbl">BD</span><span class="key-shift">⇧ HHp</span></button>
+      <button type="button" class="key-cell" data-key="." aria-label="Key .: dot the note"><span class="key-num">.</span><span class="key-lbl">alt</span></button>
 
     </div>
   </div>
