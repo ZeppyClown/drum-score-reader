@@ -301,7 +301,8 @@ and sends it directly to `gpt-5.6-luna` at original image detail with a strict s
 output schema. The returned transcription becomes an editable bar; internal JSON is never
 shown to the user. The API key remains in the main process and is never exposed to the
 renderer. Temporary demand failures are retried twice with exponential backoff. Set
-`OPENAI_MODEL` to override the model ID.
+`OPENAI_OMR_MODEL` to override the import model (`OPENAI_MODEL` still works) and
+`OPENAI_AGENT_MODEL` for Ask DrumHub questions.
 
 This route requires internet access, OpenAI API billing, and sends the screenshot to the
 OpenAI Responses API. It does

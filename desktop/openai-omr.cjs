@@ -1,5 +1,5 @@
-const MODEL = process.env.OPENAI_MODEL || 'gpt-5.6-luna';
-const ENDPOINT = 'https://api.openai.com/v1/responses';
+const { OpenAiClient, modelSettings, apiErrorMessage, redactSecret, outputText } = require('./openai-client.cjs');
+
 const DRUMS = [
   'kick', 'hi_hat_pedal', 'floor_tom_2', 'floor_tom_1', 'snare', 'snare_rim',
   'tom_mid', 'tom_hi', 'hi_hat_closed', 'hi_hat_open_half', 'hi_hat_open_full',
@@ -9,7 +9,6 @@ const DURATIONS = [
   'whole', 'half', 'dotted_quarter', 'quarter', 'dotted_eighth', 'eighth',
   'sixteenth', 'thirty_second', 'triplet_eighth', 'triplet_sixteenth',
 ];
-const sleep = delay => new Promise(resolve => setTimeout(resolve, delay));
 
 const RESPONSE_SCHEMA = {
   type: 'object', additionalProperties: false,
@@ -78,116 +77,32 @@ function validateResult(result) {
   return result;
 }
 
-function apiErrorMessage(response, body, model) {
-  const detail = body?.error?.message || `HTTP ${response.status}`;
-  const code = body?.error?.code || '';
-  if (response.status === 401 || code === 'invalid_api_key') {
-    return `The OpenAI API key is invalid. Check OPENAI_API_KEY and restart the app. (${detail})`;
-  }
-  if (response.status === 403) {
-    return `This API key is not allowed to use ${model}. Check the key's project permissions. (${detail})`;
-  }
-  if (response.status === 404 || code === 'model_not_found') {
-    return `The OpenAI model is unavailable to this API key. Check OPENAI_MODEL and project access. (${detail})`;
-  }
-  if (response.status === 429) {
-    return `The OpenAI quota or rate limit was reached. Wait briefly or check the project's limits. (${detail})`;
-  }
-  if (response.status === 400 || response.status === 422) {
-    return `OpenAI rejected the request configuration. (${detail})`;
-  }
-  return `OpenAI API request failed. (${detail})`;
-}
-
-function isRetryable(response) {
-  return [408, 409, 429].includes(response.status) || response.status >= 500;
-}
-
-function outputText(body) {
-  const content = body?.output?.flatMap(item => item.content || []) || [];
-  const refusal = content.find(item => item.type === 'refusal')?.refusal;
-  if (refusal) throw new Error(`OpenAI refused the screenshot: ${refusal}`);
-  return content.filter(item => item.type === 'output_text').map(item => item.text || '').join('');
-}
-
-// Real keys are long; very short test placeholders are left alone so they cannot mangle text.
-function redactSecret(text, secret) {
-  return secret && secret.length >= 8 ? String(text).split(secret).join('[redacted]') : String(text);
-}
-
+// Screenshot → one bar of notes, through the shared OpenAI transport.
 class OpenAiOmr {
-  constructor({ apiKey = process.env.OPENAI_API_KEY, model = MODEL, fetchImpl = fetch,
-    timeoutMs = 60000, maxAttempts = 3, retryDelayMs = 1000, sleepImpl = sleep,
-    randomImpl = Math.random } = {}) {
-    Object.assign(this, { apiKey, model, fetchImpl, timeoutMs, maxAttempts, retryDelayMs,
-      sleepImpl, randomImpl });
+  constructor({ apiKey = process.env.OPENAI_API_KEY, model = modelSettings().omr, client, ...transport } = {}) {
+    this.model = model;
+    this.client = client ?? new OpenAiClient({ apiKey, ...transport });
   }
 
-  // Every message leaving this class passes through redact(), so an API or network error
-  // that echoes the key can never show it in the UI or logs.
   async recognize(png) {
-    try { return await this.recognizeUnredacted(png); }
-    catch (error) { throw new Error(redactSecret(error.message, this.apiKey), { cause: error.name }); }
-  }
-
-  async recognizeUnredacted(png) {
-    if (!this.apiKey) {
+    if (!this.client.configured) {
       throw new Error('OpenAI is not configured. Quit the app and restart it with OPENAI_API_KEY set.');
     }
     if (!Buffer.isBuffer(png) || !png.length) throw new Error('Copy a PNG screenshot, then retry.');
     if (png.length > 20 * 1024 * 1024) throw new Error('The clipboard image is over 20 MB. Crop it to one bar and retry.');
-    const requestBody = JSON.stringify({
+    const body = await this.client.createResponse({
       model: this.model,
-      store: false,
       reasoning: { effort: 'medium' },
       max_output_tokens: 4096,
       input: [{ role: 'user', content: [
         { type: 'input_text', text: PROMPT },
-        { type: 'input_image', image_url: `data:image/png;base64,${png.toString('base64')}`,
-          detail: 'original' },
+        { type: 'input_image', image_url: `data:image/png;base64,${png.toString('base64')}`, detail: 'original' },
       ] }],
-      text: { format: {
-        type: 'json_schema', name: 'drum_bar_transcription', strict: true,
-        schema: RESPONSE_SCHEMA,
-      } },
-    });
-    let body;
-    for (let attempt = 1; attempt <= this.maxAttempts; attempt += 1) {
-      let response;
-      try {
-        response = await this.fetchImpl(ENDPOINT, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', authorization: `Bearer ${this.apiKey}` },
-          signal: AbortSignal.timeout(this.timeoutMs),
-          body: requestBody,
-        });
-      } catch (error) {
-        if (error.name === 'TimeoutError') throw new Error('OpenAI timed out. Check your connection and retry.');
-        throw new Error(`OpenAI could not be reached: ${error.message}`);
-      }
-      try { body = await response.json(); }
-      catch { throw new Error(`OpenAI returned an unreadable response (HTTP ${response.status}).`); }
-      if (response.ok) break;
-      if (isRetryable(response) && attempt < this.maxAttempts) {
-        const backoff = this.retryDelayMs * (2 ** (attempt - 1));
-        const jitter = Math.floor(this.randomImpl() * Math.min(250, this.retryDelayMs));
-        await this.sleepImpl(backoff + jitter);
-        continue;
-      }
-      if (response.status >= 500 && attempt === this.maxAttempts) {
-        const detail = body?.error?.message || `HTTP ${response.status}`;
-        throw new Error(`OpenAI is still unavailable after ${this.maxAttempts} attempts. Wait a minute and retry. (${detail})`);
-      }
-      throw new Error(apiErrorMessage(response, body, this.model));
-    }
-    if (body.status === 'failed' || body.error) {
-      throw new Error(`OpenAI failed to transcribe the screenshot: ${body.error?.message || 'unknown error'}`);
-    }
-    if (body.status === 'incomplete') {
-      const reason = body.incomplete_details?.reason || 'unknown reason';
-      throw new Error(`OpenAI returned an incomplete transcription (${reason}). Try again.`);
-    }
-    const text = outputText(body);
+      text: { format: { type: 'json_schema', name: 'drum_bar_transcription', strict: true, schema: RESPONSE_SCHEMA } },
+    }, { task: 'the screenshot', setting: 'OPENAI_OMR_MODEL' });
+    let text;
+    try { text = outputText(body, 'the screenshot'); }
+    catch (error) { throw new Error(redactSecret(error.message, this.client.apiKey)); }
     if (!text) throw new Error('OpenAI returned no transcription. Try a clearer one-bar crop.');
     let result;
     try { result = JSON.parse(text); }
