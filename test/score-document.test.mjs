@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
   SCHEMA_VERSION, DocumentError, createMeta, withIds, toDocument, splitDocument,
   validateDocument, parseDocument, serializeDocument, manualProvenance, importedProvenance,
+  meterTicks, isEditableMeter,
 } from '../js/score-document.js';
 
 // Deterministic ids so documents can be compared exactly.
@@ -85,7 +86,6 @@ test('validation rejects bad metadata and meter', () => {
     [{ tempoBpm: 0 }, /tempo/],
     [{ tempoBpm: 400 }, /tempo/],
     [{ meter: { beats: 0, beatUnit: 4 } }, /meter/],
-    [{ meter: { beats: 3, beatUnit: 4 } }, /4\/4/],
     [{ meter: { beats: 4, beatUnit: 5 } }, /meter/],
     [{ meter: null }, /meter/],
     [{ bars: [] }, /at least one bar/],
@@ -96,6 +96,17 @@ test('validation rejects bad metadata and meter', () => {
     assert.ok(errors.some(e => pattern.test(e)), `${JSON.stringify(override)} → ${errors}`);
   }
   assert.match(validateDocument(null)[0], /object/);
+});
+
+test('other valid meters are allowed but only 4/4 is editable, and bars must fit the meter', () => {
+  assert.deepEqual(meterTicks({ beats: 4, beatUnit: 4 }), 192);
+  assert.deepEqual(meterTicks({ beats: 6, beatUnit: 8 }), 144);
+  assert.equal(isEditableMeter({ beats: 4, beatUnit: 4 }), true);
+  assert.equal(isEditableMeter({ beats: 3, beatUnit: 4 }), false);
+  const waltz = validDoc({ meter: { beats: 3, beatUnit: 4 } });
+  const fits = { ...waltz, bars: [{ ...waltz.bars[0], notes: waltz.bars[0].notes.slice(0, 2).concat({ eventId: 'r1', duration: 'q', dotted: false, drums: [] }) }] };
+  assert.deepEqual(validateDocument(fits), []);
+  assert.ok(validateDocument(waltz).some(e => /overfills a 3\/4 bar/.test(e)));
 });
 
 test('validation rejects bad ids and provenance', () => {

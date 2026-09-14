@@ -292,3 +292,21 @@ test('concurrent save, autosave and open run one at a time', async t => {
   const [entry] = await files.listRecovery();
   assert.equal(entry.diskHash, session.diskHash);
 });
+
+test('a change made by another app during the save is not overwritten', async t => {
+  const { dir, files } = await filesIn(t);
+  const target = path.join(dir, `groove${SCORE_EXTENSION}`);
+  await files.save(target, makeDoc());
+  const session = new ScoreSession({ files, dialogs: scriptedDialogs({ conflict: ['cancel'] }) });
+  await session.open(target);
+  let wroteElsewhere = false;
+  files.fault = step => {
+    if (step === 'check' && !wroteElsewhere) {
+      wroteElsewhere = true;
+      require('node:fs').writeFileSync(target, 'edited by another app');
+    }
+  };
+  assert.deepEqual(await session.save(makeDoc('Mine')), { canceled: true });
+  assert.equal(await fs.readFile(target, 'utf8'), 'edited by another app');
+  assert.deepEqual((await fs.readdir(dir)).filter(name => name.endsWith('.tmp')), []);
+});

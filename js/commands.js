@@ -28,7 +28,7 @@ import {
   backspaceAt, moveRight, moveLeft,
 } from './bar.js';
 import {
-  newId, withIds, toDocument, validateDocument, DocumentError,
+  newId, withIds, toDocument, validateDocument, DocumentError, isEditableMeter,
 } from './score-document.js';
 
 export const HISTORY_LIMIT = 200;
@@ -54,6 +54,8 @@ export function createEditor({ meta, bars, cursor = { barIndex: 0, noteIndex: 0,
 }
 
 export const documentOf = editor => toDocument(editor.meta, editor.bars);
+// Scores in a meter other than 4/4 open view-only: the cursor moves, nothing changes.
+export const isReadOnly = editor => !isEditableMeter(editor.meta.meter);
 export const canUndo = editor => editor.history.past.length > 0;
 export const canRedo = editor => editor.history.future.length > 0;
 
@@ -82,6 +84,7 @@ export function execute(editor, command) {
   if (bars === editor.bars && meta === editor.meta) {
     return cursor === editor.cursor ? editor : { ...editor, cursor };
   }
+  if (isReadOnly(editor)) return editor;
   return {
     ...editor,
     meta: freeze({ ...meta, revision: editor.meta.revision + 1 }),
@@ -97,7 +100,7 @@ export function execute(editor, command) {
 // Move one entry from `from` to `to`, restoring its score and cursor.
 function travel(editor, from, to) {
   const stack = editor.history[from];
-  if (!stack.length) return editor;
+  if (!stack.length || isReadOnly(editor)) return editor;
   const entry = stack.at(-1);
   return {
     ...editor,

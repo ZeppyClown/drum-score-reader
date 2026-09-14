@@ -20,6 +20,15 @@ async function syncDirectory(dir) {
   finally { await handle?.close().catch(() => {}); }
 }
 
+// The file changed on disk between the conflict check and the moment of saving.
+class ConflictError extends Error {
+  constructor(filePath) {
+    super(`${path.basename(filePath)} changed while saving.`);
+    this.name = 'ConflictError';
+    this.code = 'conflict';
+  }
+}
+
 const sha256 = text => crypto.createHash('sha256').update(text).digest('hex');
 
 class ScoreFiles {
@@ -33,8 +42,9 @@ class ScoreFiles {
 
   // Write to a temporary file in the same folder, flush it to disk, then rename it over
   // the target. A crash at any point leaves either the old file or the new one, never
-  // a half-written score.
-  async writeAtomic(filePath, text) {
+  // a half-written score. expectedHash (optional): the target must still have this
+  // content (null = must not exist) right before the rename, else a ConflictError.
+  async writeAtomic(filePath, text, { expectedHash } = {}) {
     const temp = path.join(path.dirname(filePath),
       `.${path.basename(filePath)}.${process.pid}.${crypto.randomBytes(4).toString('hex')}.tmp`);
     let handle;
@@ -46,6 +56,10 @@ class ScoreFiles {
       await handle.sync();
       await handle.close();
       handle = null;
+      this.fault('check');
+      if (expectedHash !== undefined && await this.diskHash(filePath) !== expectedHash) {
+        throw new ConflictError(filePath);
+      }
       this.fault('rename');
       await fs.rename(temp, filePath);
     } catch (error) {
@@ -56,9 +70,9 @@ class ScoreFiles {
     await syncDirectory(path.dirname(filePath));
   }
 
-  async save(filePath, doc) {
+  async save(filePath, doc, { expectedHash } = {}) {
     const text = serializeDocument(doc);  // throws before anything is written
-    await this.writeAtomic(filePath, text);
+    await this.writeAtomic(filePath, text, { expectedHash });
     return { hash: sha256(text) };
   }
 
@@ -137,4 +151,4 @@ class ScoreFiles {
   }
 }
 
-module.exports = { ScoreFiles, SCORE_EXTENSION, MAX_SCORE_BYTES };
+module.exports = { ScoreFiles, ConflictError, SCORE_EXTENSION, MAX_SCORE_BYTES };

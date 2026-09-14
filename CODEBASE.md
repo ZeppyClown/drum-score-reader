@@ -495,7 +495,9 @@ restores the same objects), so undoing back to the saved score clears the unsave
 The saved file is `{ schemaVersion: 1, scoreId, revision, title, tempoBpm, meter, bars }`
 as human-readable JSON (`.drumhub.json`). `validateDocument` returns plain-language
 problems: unknown fields, bad ids/duplicates, provenance, unknown drums/durations, dotted
-32nds, broken triplet groups, overfilled bars, and meters other than 4/4 (the MVP limit).
+32nds, broken triplet groups, and bars that overfill their meter. Any valid meter can be
+saved and opened, but only 4/4 is editable: other meters open **view-only**
+(`isReadOnly` in `commands.js` refuses every score change; the cursor still moves).
 `parseDocument` migrates an old `{ bars }`-only export and refuses files from a newer
 DrumHub without changing them.
 
@@ -506,6 +508,7 @@ DrumHub without changing them.
 - Save writes a temporary file, flushes it, then renames it over the target, so a crash
   leaves either the old file or the new one.
 - If the file changed or disappeared since it was opened, Save asks: Save As / Replace / Cancel.
+  The file is checked again immediately before the rename; a change found then asks again.
 - Autosave (1 s after an edit) writes a **recovery copy** in the app's data folder, never
   over the user's file. On launch, DrumHub offers to restore it. Save or "Don't Save" removes it.
 - Closing or quitting with unsaved changes asks Save / Don't Save / Cancel. Only main can

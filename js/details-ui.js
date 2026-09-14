@@ -4,16 +4,22 @@
 
 import { state } from './state.js';
 import { dispatch, onEditorChange } from './editor-store.js';
-import { setMetadataCommand } from './commands.js';
+import { setMetadataCommand, isReadOnly } from './commands.js';
 
 export function initDetails() {
   const title = document.getElementById('score-title');
   const tempo = document.getElementById('score-tempo');
   const error = document.getElementById('details-error');
+  const meter = document.getElementById('score-meter');
 
   function show(editor) {
     if (document.activeElement !== title) title.value = editor.meta.title;
     if (document.activeElement !== tempo) tempo.value = editor.meta.tempoBpm;
+    const { beats, beatUnit } = editor.meta.meter;
+    const readOnly = isReadOnly(editor);
+    meter.textContent = readOnly ? `${beats}/${beatUnit} · view only` : `${beats}/${beatUnit}`;
+    meter.title = readOnly ? 'Only 4/4 scores can be edited for now. You can view and save this score.' : 'Only 4/4 is supported for now';
+    title.disabled = tempo.disabled = readOnly;
   }
 
   function apply(changes, field) {

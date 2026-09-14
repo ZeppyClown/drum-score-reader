@@ -14,7 +14,9 @@ function applyPrediction(result, sourceName, source, status, warnings) {
   }
   if (!result.notes.length) messages.unshift('No drum hits were detected. A bar of rests was imported; check the crop and add any missing notes.');
   const provenance = importedProvenance({ source, model: result.model, warnings: messages.slice(0, 50) });
-  dispatch(importBarCommand({ bar: converted.bar, provenance }));
+  if (!dispatch(importBarCommand({ bar: converted.bar, provenance }))) {
+    throw new Error('This score is view-only because it is not in 4/4. Start a new score to import bars.');
+  }
   const index = state.cursor.barIndex;
   status.textContent = `Imported ${sourceName} as bar ${index + 1}. Use the arrow keys and drum keypad to correct it.`;
   for (const message of messages) {

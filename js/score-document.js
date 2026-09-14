@@ -16,6 +16,9 @@
 //             an explicit user action marks them reviewed
 //   warnings: plain-language notes from the import, shown for review
 //   model:    optional recogniser name, e.g. 'gpt-5.6-luna'
+//
+// meter: any valid meter can be saved and opened, but only 4/4 is editable for now
+// (isEditableMeter); other meters open view-only.
 
 import { BAR_TICKS, DRUMS, DURATIONS } from './constants.js';
 import { barTicks, tripletStarts } from './bar.js';
@@ -36,6 +39,16 @@ const DOC_FIELDS = ['schemaVersion', 'scoreId', 'revision', 'title', 'tempoBpm',
 const BAR_FIELDS = ['barId', 'provenance', 'notes'];
 const NOTE_FIELDS = ['eventId', 'duration', 'dotted', 'triplet', 'drums'];
 const PROVENANCE_FIELDS = ['source', 'reviewed', 'warnings', 'model'];
+
+// Ticks in one bar of this meter (48 per quarter note), e.g. 4/4 → 192, 3/4 → 144.
+export function meterTicks(meter) {
+  return meter.beats * (BAR_TICKS / meter.beatUnit);
+}
+
+// Only 4/4 can be edited, played, or analysed for now. Other valid meters open view-only.
+export function isEditableMeter(meter) {
+  return meter?.beats === 4 && meter?.beatUnit === 4;
+}
 
 // Thrown for files and inputs that cannot become a valid score.
 // code: 'unreadable' | 'future_version' | 'invalid'
@@ -139,8 +152,6 @@ function checkMeta(doc, errors) {
   if (!isObject(meter) || !Number.isInteger(meter.beats) || meter.beats < 1 || meter.beats > 32 ||
       ![1, 2, 4, 8, 16, 32].includes(meter.beatUnit)) {
     errors.push('meter must have whole beats (1–32) and a beatUnit of 1, 2, 4, 8, 16 or 32');
-  } else if (meter.beats !== 4 || meter.beatUnit !== 4) {
-    errors.push(`meter ${meter.beats}/${meter.beatUnit} is not supported yet; only 4/4 scores can be edited`);
   }
 }
 
@@ -179,7 +190,7 @@ function checkNote(note, where, seen, errors) {
   return ok;
 }
 
-function checkBar(bar, index, seen, errors) {
+function checkBar(bar, index, seen, errors, capacity) {
   const where = `Bar ${index + 1}`;
   if (!isObject(bar)) { errors.push(`${where}: is not a bar`); return; }
   unknownFields(bar, BAR_FIELDS, where, errors);
@@ -194,7 +205,7 @@ function checkBar(bar, index, seen, errors) {
   if (bar.notes.some((note, i) => note.triplet && !grouped.includes(i))) {
     errors.push(`${where}: every triplet note must be part of a triplet group of three`);
   }
-  if (barTicks(bar) > BAR_TICKS) errors.push(`${where}: overfills a 4/4 bar`);
+  if (capacity !== null && barTicks(bar) > capacity.ticks) errors.push(`${where}: overfills a ${capacity.label} bar`);
 }
 
 export function validateDocument(doc) {
@@ -207,7 +218,9 @@ export function validateDocument(doc) {
     return errors;
   }
   const seen = new Set();
-  doc.bars.forEach((bar, i) => checkBar(bar, i, seen, errors));
+  const meterOk = !errors.some(error => error.startsWith('meter'));
+  const capacity = meterOk ? { ticks: meterTicks(doc.meter), label: `${doc.meter.beats}/${doc.meter.beatUnit}` } : null;
+  doc.bars.forEach((bar, i) => checkBar(bar, i, seen, errors, capacity));
   return errors;
 }
 

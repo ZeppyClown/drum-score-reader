@@ -105,7 +105,8 @@ export function render() {
     // First bar: show clef + time signature. First bar of each new row: show clef only.
     if (i === 0) {
       stave.addClef('percussion');
-      stave.addTimeSignature('4/4');
+      const { beats, beatUnit } = state.editor.meta.meter;
+      stave.addTimeSignature(`${beats}/${beatUnit}`);
     } else if (barCol(i) === 0) {
       stave.addClef('percussion');
     }
@@ -120,10 +121,10 @@ export function render() {
       const tuplets = tripletStarts(bar).map(start =>
         new Tuplet(tickables.slice(start, start + 3), { numNotes: 3, notesOccupied: 2 }));
 
-      // Voice tells VexFlow "this bar has 4 beats in 4/4 time".
+      // Voice tells VexFlow the bar's meter (4 beats in 4/4 for every editable score).
       // SOFT mode means VexFlow won't throw an error if the notes don't add up
       // exactly to a full bar — useful while the user is still editing.
-      const voice = new Voice({ numBeats: 4, beatValue: 4 });
+      const voice = new Voice({ numBeats: state.editor.meta.meter.beats, beatValue: state.editor.meta.meter.beatUnit });
       voice.setMode(Voice.Mode.SOFT);
       voice.addTickables(tickables);
 

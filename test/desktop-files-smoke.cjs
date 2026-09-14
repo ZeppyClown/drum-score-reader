@@ -143,6 +143,22 @@ app.whenReady().then(async () => {
   assert.equal(fs.readFileSync(futurePath, 'utf8'), futureText);
   assert.equal((await editor()).meta.title, 'My groove');
 
+  // 7b. A 3/4 score opens view-only: shown as unsupported, keys and imports change nothing.
+  const waltzPath = path.join(temp, 'waltz.drumhub.json');
+  const waltz = { ...crashed, scoreId: 'waltz-score', title: 'Waltz', meter: { beats: 3, beatUnit: 4 },
+    bars: [{ ...crashed.bars[0], notes: [{ ...crashed.bars[0].notes[0], duration: 'h', dotted: true }] }] };
+  fs.writeFileSync(waltzPath, serializeDocument(waltz));
+  answers.open.push(waltzPath);
+  click('Open…');
+  await waitFor(async () => (await editor()).meta.title === 'Waltz', 'waltz opened');
+  assert.equal(await evaluate('document.getElementById("score-meter").textContent'), '3/4 · view only');
+  assert.equal(await evaluate('document.getElementById("score-title").disabled'), true);
+  press('8');
+  await new Promise(resolve => setTimeout(resolve, 200));
+  assert.equal((await editor()).meta.revision, waltz.revision);
+  assert.equal(await dirty(), false);
+  assert.ok(await evaluate('document.querySelectorAll("#score .vf-stavenote").length === 1'), 'the 3/4 bar renders');
+
   // 8. New, then Open the saved file: the same score comes back, clean.
   click('New Score');
   await waitFor(async () => (await editor()).meta.title === 'Untitled score', 'second new score');
@@ -169,7 +185,7 @@ app.whenReady().then(async () => {
   assert.ok(final.revision > saved.revision);
   assert.deepEqual(answers, { message: [], sync: [], save: [], open: [] });
 
-  console.log(`PASS: recovery, New/Open/Save, undo/redo menu, details, autosave, future-version refusal, close prompt (${asked.length} dialogs).`);
+  console.log(`PASS: recovery, New/Open/Save, undo/redo menu, details, autosave, future-version refusal, view-only 3/4, close prompt (${asked.length} dialogs).`);
   fs.rmSync(temp, { recursive: true, force: true });
   app.quit();
 }).catch(error => {

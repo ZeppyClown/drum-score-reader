@@ -51,20 +51,28 @@ class ScoreSession {
 
   async saveNow(doc, saveAs) {
     let target = this.filePath;
+    let expectedHash;  // undefined: the save dialog already confirmed any replacement
     // A different score than the one linked to this file always goes through Save As.
     if (saveAs || !target || doc.scoreId !== this.scoreId) {
       const chosen = await this.dialogs.chooseSavePath(`${safeName(doc.title)}${SCORE_EXTENSION}`);
       if (!chosen) return { canceled: true };
       target = withExtension(chosen);
     } else {
-      const current = await this.files.diskHash(target);
-      if (current !== this.diskHash) {
-        const choice = await this.dialogs.confirmConflict(target, current === null ? 'missing' : 'changed');
+      expectedHash = await this.files.diskHash(target);
+      if (expectedHash !== this.diskHash) {
+        const choice = await this.dialogs.confirmConflict(target, expectedHash === null ? 'missing' : 'changed');
         if (choice === 'saveAs') return this.saveNow(doc, true);
         if (choice !== 'overwrite') return { canceled: true };
       }
     }
-    const { hash } = await this.files.save(target, doc);
+    let hash;
+    try {
+      ({ hash } = await this.files.save(target, doc, { expectedHash }));
+    } catch (error) {
+      // Another app wrote the file during this save: ask again rather than overwrite it.
+      if (error.code !== 'conflict') throw error;
+      return this.saveNow(doc, saveAs);
+    }
     this.link(target, hash, doc.scoreId);
     await this.bestEffort(() => this.files.clearRecovery(doc.scoreId));
     await this.bestEffort(() => this.files.addRecent(target));

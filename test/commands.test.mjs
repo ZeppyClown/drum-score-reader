@@ -5,7 +5,7 @@ import {
   createEditor, execute, undo, redo, canUndo, canRedo, isDirty, markSaved, HISTORY_LIMIT,
   toggleDrumCommand, toggleDotCommand, changeDurationCommand, toggleTripletCommand,
   backspaceCommand, moveRightCommand, moveLeftCommand, moveCursorCommand,
-  importBarCommand, setMetadataCommand, markReviewedCommand, documentOf,
+  importBarCommand, setMetadataCommand, markReviewedCommand, documentOf, isReadOnly,
 } from '../js/commands.js';
 import { createMeta, validateDocument, importedProvenance } from '../js/score-document.js';
 
@@ -176,4 +176,16 @@ test('the score inside the editor is frozen, so in-place edits cannot hide unsav
   assert.throws(() => { editor.meta.title = 'changed'; }, TypeError);
   assert.throws(() => { editor.cursor.position = 3; }, TypeError);
   assert.equal(isDirty(editor), false);
+});
+
+test('a score in an unsupported meter is view-only: edits are refused, the cursor still moves', () => {
+  const ids = counter();
+  const meta = { ...createMeta({ idFactory: ids }), meter: { beats: 3, beatUnit: 4 } };
+  const editor = createEditor({ meta, bars: [{ notes: [{ duration: 'h', dotted: true, drums: ['kick'] }] }], idFactory: ids });
+  assert.equal(isReadOnly(editor), true);
+  for (const command of [toggleDrumCommand('snare'), backspaceCommand(), setMetadataCommand({ tempoBpm: 100 }),
+    importBarCommand({ bar: { notes: [] }, provenance: importedProvenance({ source: 'local_omr' }) })]) {
+    assert.equal(execute(editor, command), editor);
+  }
+  assert.equal(execute(editor, moveCursorCommand(1)).cursor.position, 2);
 });

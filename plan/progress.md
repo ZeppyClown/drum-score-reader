@@ -77,13 +77,15 @@ Built from `drumhub_master_plan.md` §3.1, §4 A1–A4, §6 Phases 0–1 and §8
   prompt or delete a recovery copy without the person choosing "Don't Save"; editor
   scores are frozen so an in-place edit cannot hide unsaved changes. Not changed: a
   sub-second window where another app edits the file between the conflict check and
-  the rename (no portable compare-and-swap), and non-4/4 meters are still refused rather
-  than shown as unsupported (decision 3's 4/4 MVP; the plan text allows display-only).
-- Verified: `npm test` 101 passing; `npm run test:desktop` runs both Electron workflows
+  the rename, and non-4/4 meters being refused. Both were then fixed in a follow-up: the
+  file is re-checked immediately before the rename (a change found there asks again
+  instead of overwriting), and valid non-4/4 scores open **view-only** marked
+  "3/4 · view only" — rendered, savable, but edits, imports and undo are refused.
+- Verified: `npm test` 104 passing; `npm run test:desktop` runs both Electron workflows
   and passes. The original desktop test now uses a temporary data folder and asserts
   the quit prompt instead of depending on the real app data folder.
 - Not done in this slice: review badges / next-unreviewed UI (ticket 4), score snapshot
-  and analysis (tickets 5–7), and every AI ticket (9–12), which Victor writes himself.
+  and analysis (tickets 5–7), and the Ask DrumHub agent tickets (9–12).
 
 ## Done or present
 
