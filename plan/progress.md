@@ -75,8 +75,18 @@ himself" preference was removed at his request).
   same switch. Stop, stale-answer labels and opt-out are covered by a real-app test.
 - **Ticket 12 — evaluation:** `eval/score-agent/` — 20 questions on two frozen scores,
   deterministic graders, the plan's release gates, and versioned reports. Offline baseline:
-  8 questions graded, every measure 100%, all gates passed. **Not yet run against
-  GPT-5.6 Luna** (no API key on this machine): `npm run eval:agent -- --provider openai`.
+  8 questions graded, every measure 100%, all gates passed.
+- **First live GPT-5.6 Luna evaluation (same evening, key in a git-ignored `.env`):** the
+  first run scored 100% on every measure, but reading all 20 answers found four problems
+  the graders missed — 256 "moments with two or more drums" called "drum hits", invented
+  "let it ring" advice, "the tools cover bars 1–64" shown to the reader, and duplicated or
+  irrelevant unchecked-bar warnings. All were fixed and question bank v2 now checks for
+  them. Final run on commit 9959db2: 20/20 answered by Luna without fallback, facts,
+  references, abstention (sticking, accents, hands, bar 30, off-topic), disclosure,
+  grounding and all new checks 100%; p50 4.2 s, p95 7.3 s; 66,311 input and 3,810 output
+  tokens for about US$0.018 ($0.20 / $1.20 per million). One sticking answer needed the
+  repair round. The expectations are still developer-written and need teacher review.
+  `.env` had not been git-ignored; it now is.
 - Codex reviewed tickets 4–8 (5 findings, 4 fixed: import warning text reaching the model,
   unchecked selection in snapshots, whole-score claims on scores over 64 bars, stale
   warnings after checking a bar; the fifth is the hash limitation above).
