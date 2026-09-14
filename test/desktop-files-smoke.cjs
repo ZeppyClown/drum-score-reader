@@ -170,6 +170,21 @@ app.whenReady().then(async () => {
   assert.equal(await dirty(), false);
   assert.equal((await editor()).past, 0);
 
+  // 8b. Export the open score as MIDI, MusicXML and PDF through the File menu.
+  const exportsDir = path.join(temp, 'exports');
+  fs.mkdirSync(exportsDir);
+  for (const [label, file, check] of [
+    ['MIDI…', 'groove.mid', bytes => bytes.subarray(0, 4).toString() === 'MThd'],
+    ['MusicXML…', 'groove.musicxml', bytes => /<score-partwise version="4\.0">[\s\S]*<work-title>My groove<\/work-title>/.test(bytes.toString())],
+    ['PDF…', 'groove.pdf', bytes => bytes.subarray(0, 5).toString() === '%PDF-' && bytes.length > 2000],
+  ]) {
+    answers.save.push(path.join(exportsDir, file));
+    click(label);
+    await waitFor(() => fs.existsSync(path.join(exportsDir, file)), `export ${file}`);
+    await waitFor(async () => new RegExp(`Exported ${file.replace('.', '\\.')}`).test(await statusText()), `export status ${file}`);
+    assert.ok(check(fs.readFileSync(path.join(exportsDir, file))), `${file} content`);
+  }
+
   // 9. Closing with unsaved changes: Cancel keeps the window; Save writes and closes.
   press('9');
   await waitFor(() => dirty(), 'dirty before close');
@@ -186,7 +201,7 @@ app.whenReady().then(async () => {
   assert.ok(final.revision > saved.revision);
   assert.deepEqual(answers, { message: [], sync: [], save: [], open: [] });
 
-  console.log(`PASS: recovery, New/Open/Save, undo/redo menu, details, autosave, future-version refusal, view-only 3/4, close prompt (${asked.length} dialogs).`);
+  console.log(`PASS: recovery, New/Open/Save, undo/redo menu, details, autosave, future-version refusal, view-only 3/4, MIDI/MusicXML/PDF export, close prompt (${asked.length} dialogs).`);
   fs.rmSync(temp, { recursive: true, force: true });
   app.quit();
 }).catch(error => {

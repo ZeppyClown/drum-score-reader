@@ -65,6 +65,12 @@ function initScoreFiles({ trustedSender }) {
         { label: 'Save', accelerator: 'CmdOrCtrl+S', click: () => send('save') },
         { label: 'Save As…', accelerator: 'Shift+CmdOrCtrl+S', click: () => send('save-as') },
         { type: 'separator' },
+        { label: 'Export', submenu: [
+          { label: 'PDF…', accelerator: 'CmdOrCtrl+P', click: () => send('export', 'pdf') },
+          { label: 'MIDI…', click: () => send('export', 'midi') },
+          { label: 'MusicXML…', click: () => send('export', 'musicxml') },
+        ] },
+        { type: 'separator' },
         { role: process.platform === 'darwin' ? 'close' : 'quit' },
       ] },
       { label: 'Edit', submenu: [
@@ -116,6 +122,39 @@ function initScoreFiles({ trustedSender }) {
   });
   handle('score:new', async () => { session.newScore(); return { ok: true }; });
   handle('score:autosave', async (doc, dirty) => { await session.autosave(doc, Boolean(dirty)); return { ok: true }; });
+  // Export: the page sends the finished bytes (MIDI, MusicXML) or asks main to print itself
+  // to PDF; main chooses the path. Only these three kinds, with size limits, are accepted.
+  const EXPORTS = {
+    midi: { extension: 'mid', name: 'MIDI file', maxBytes: 5 * 1024 * 1024 },
+    musicxml: { extension: 'musicxml', name: 'MusicXML file', maxBytes: 20 * 1024 * 1024 },
+    pdf: { extension: 'pdf', name: 'PDF', maxBytes: 50 * 1024 * 1024 },
+  };
+  handle('score:export', async (kind, data, title) => {
+    const format = EXPORTS[kind];
+    if (!format) throw new Error('Choose PDF, MIDI or MusicXML.');
+    const safeTitle = String(title || 'Untitled score').replace(/[\\/:*?"<>|\u0000-\u001f]/g, '-').slice(0, 100).trim() || 'Untitled score';
+    let bytes;
+    if (kind === 'pdf') {
+      bytes = await win.webContents.printToPDF({ pageSize: 'A4', printBackground: false, preferCSSPageSize: true });
+    } else if (kind === 'midi' && data instanceof Uint8Array) {
+      bytes = Buffer.from(data);
+    } else if (kind === 'musicxml' && typeof data === 'string') {
+      bytes = Buffer.from(data, 'utf8');
+    } else {
+      throw new Error('The export data could not be read.');
+    }
+    if (bytes.length > format.maxBytes) throw new Error('The export is too large.');
+    const result = await dialog.showSaveDialog(win, {
+      title: `Export ${format.name}`,
+      defaultPath: path.join(app.getPath('documents'), `${safeTitle}.${format.extension}`),
+      filters: [{ name: format.name, extensions: [format.extension] }],
+    });
+    if (result.canceled || !result.filePath) return { canceled: true };
+    const target = result.filePath.endsWith(`.${format.extension}`) ? result.filePath : `${result.filePath}.${format.extension}`;
+    await files.writeAtomic(target, bytes);
+    return { saved: true, name: path.basename(target) };
+  });
+
   // Asked before New/Open replaces unsaved work. "Don't Save" removes the recovery copy
   // here, after the person chose it, so the page cannot delete recovery data on its own.
   handle('score:confirm-discard', async (title, scoreId) => {

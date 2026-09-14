@@ -184,6 +184,8 @@ export function render() {
   // VexFlow's actual staff geometry so it lines up with the correct staff line/space
   const cy  = cursorCentreY(cs, state.cursor.position) - SPACE / 2;
   const svg = div.querySelector('svg');
+  // A viewBox lets the score scale to the page width when printed or exported to PDF.
+  svg.setAttribute('viewBox', `0 0 ${maxRowW} ${totalHeight}`);
 
   drawBarOverlays(svg, staves);
 

@@ -4,7 +4,7 @@ contextBridge.exposeInMainWorld('omr', {
   pasteAiImage: () => ipcRenderer.invoke('ai:paste-image'),
 });
 // Score files: the renderer sends documents; main chooses paths and touches the disk.
-const COMMANDS = new Set(['new', 'open', 'open-recent', 'save', 'save-as', 'save-and-close', 'undo', 'redo']);
+const COMMANDS = new Set(['new', 'open', 'open-recent', 'save', 'save-as', 'save-and-close', 'undo', 'redo', 'export']);
 contextBridge.exposeInMainWorld('scoreFiles', {
   save: (doc, options) => ipcRenderer.invoke('score:save', doc, options),
   open: options => ipcRenderer.invoke('score:open', options),
@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('scoreFiles', {
   confirmDiscard: (title, scoreId) => ipcRenderer.invoke('score:confirm-discard', title, scoreId),
   recover: () => ipcRenderer.invoke('score:recover'),
   setStatus: status => ipcRenderer.invoke('score:status', status),
+  exportScore: (kind, data, title) => ipcRenderer.invoke('score:export', kind, data, title),
   onCommand: callback => ipcRenderer.on('app:command', (_event, name, arg) => {
     if (COMMANDS.has(name)) callback(name, arg);
   }),

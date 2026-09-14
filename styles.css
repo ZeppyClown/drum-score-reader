@@ -115,3 +115,14 @@ body.panel-open #keypad { right: 404px !important; }
 .page-box-retry { position: absolute; bottom: 2px; left: 2px; font-size: 11px; padding: 0 6px; background: #fff; color: #b91c1c; border-color: #fca5a5; }
 body.modal-open { overflow: hidden; }
 #import-status button { font-weight: 400; padding: 1px 8px; margin-left: 4px; }
+#print-title { display: none; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  body { overflow: visible; background: #fff; }
+  body > div:first-child, #import-panel, #side-panel, #keypad, #side-menu, #backdrop, .modal { display: none !important; }
+  #print-title { display: block; font: 600 18px system-ui, sans-serif; margin: 0 0 8px; }
+  #score { position: static; inset: auto; overflow: visible; padding: 0; }
+  /* VexFlow sets the SVG size inline, so the print size must override it. */
+  #score svg { width: 100% !important; height: auto !important; }
+  #score-cursor, .bar-unreviewed, .bar-selected { display: none; }
+}

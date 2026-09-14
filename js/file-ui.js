@@ -7,6 +7,8 @@ import { state } from './state.js';
 import { replaceEditor, undoEdit, redoEdit, onEditorChange } from './editor-store.js';
 import { createEditor, documentOf, isDirty } from './commands.js';
 import { createMeta, splitDocument } from './score-document.js';
+import { scoreToMidi } from './export-midi.js';
+import { scoreToMusicXml } from './export-musicxml.js';
 
 const AUTOSAVE_DELAY_MS = 1000;
 let queue = Promise.resolve();
@@ -73,6 +75,17 @@ function editInPlace(kind) {
   if (kind === 'undo') undoEdit(); else redoEdit();
 }
 
+// MIDI and MusicXML are built here from the score; PDF prints this page (print styles in
+// styles.css hide everything but the title and the notation).
+async function exportScore(kind) {
+  const doc = documentOf(state.editor);
+  const data = kind === 'midi' ? scoreToMidi(doc) : kind === 'musicxml' ? scoreToMusicXml(doc) : null;
+  document.getElementById('print-title').textContent = `${doc.title} — ${doc.tempoBpm} BPM`;
+  const result = await api().exportScore(kind, data, doc.title);
+  if (result.error) status(`Export failed: ${result.error}`);
+  else if (result.saved) status(`Exported ${result.name}.`);
+}
+
 const COMMANDS = {
   new: () => serially(newScore),
   open: () => serially(() => open()),
@@ -80,6 +93,7 @@ const COMMANDS = {
   save: () => serially(() => save()),
   'save-as': () => serially(() => save({ saveAs: true })),
   'save-and-close': () => serially(() => save()),  // main closes the window once this save succeeds
+  export: kind => serially(() => exportScore(kind)),
   undo: () => editInPlace('undo'),
   redo: () => editInPlace('redo'),
 };
