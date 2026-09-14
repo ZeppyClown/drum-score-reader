@@ -22,7 +22,7 @@ Built (each with Node tests and a real-Electron workflow test; Codex built or re
 |---|---|
 | B3 page/PDF import | `backend/page_segment.py` finds staves and bars from pixels; review screen to fix boxes; bars read one by one with retry and resume. Measured on 857 real pages: Songsterr 528/549 pages exactly right, Reflow 215/308 (Reflow stays local). |
 | B2 multi-bar Luna | One screenshot can hold up to 16 bars. |
-| B5 benchmark lab | `eval/recognition/`: 45 synthetic bars drawn by the app, plus held-out Songsterr. Local model: 0% exact bars, drum F1 22.2. **GPT-5.6 Luna (high): 51.1% exact, onset F1 97.7, drum F1 84.3, ~90 s and ~US$0.01 per bar.** Gemini (adult developer check, synthetic only) — see eval/recognition/README.md. |
+| B5 benchmark lab | `eval/recognition/`: 45 synthetic bars drawn by the app, plus held-out Songsterr. Local model: 0% exact bars, drum F1 22.2. **GPT-5.6 Luna (high): 51.1% exact, onset F1 97.7, drum F1 84.3, ~90 s and ~US$0.01 per bar.** Gemini (adult developer check, synthetic only): 40% exact, drum F1 82.6. On 30 real Songsterr bars Luna fell to 3.3% exact (drum F1 30 vs the local model's 50): its drum key fits DrumHub notation, not Songsterr's. |
 | E1 playback | Synthesised drums, count-in, loop, practice tempo, moving note highlight, Space to play. |
 | E2–E4 practice | Practice plan, tries saved in local SQLite, hardest bars per student. |
 | F1–F3 library | 26 original exercises, search with reasons, preview and insert. |
@@ -30,11 +30,13 @@ Built (each with Node tests and a real-Electron workflow test; Codex built or re
 | H1–H4 teacher | Students (display name only), assignments, dashboard, teacher summary from saved facts only. |
 | D4 actions | Answers can offer select / loop / slow down / open exercise buttons; nothing happens without a click. |
 | I1 export | PDF, MIDI and MusicXML from the File menu. |
-| I2 safety | One monthly cloud limit (US$5 default), 20 requests per minute, provider health, key redaction, store:false. Codex red-team of prompts and malformed outputs — see below. |
+| I2 safety | One monthly cloud limit (US$5 default), 20 requests per minute, provider health, key redaction, store:false. Codex and Gemini separately attacked the prompts and checks: 11 real gaps (ungrounded drums, unsafe/off-topic replies, hidden characters, names in teacher-typed titles, and more), all fixed with a regression test each (`test/red-team.test.mjs`). Live Luna rerun: 20/20, all gates pass. |
 | Phase 8 accessibility | Codex review found 21 problems; all fixed: focus handling in dialogs, keyboard box editing, score in words, keyboard bar selection, named controls, no silent failures. |
 | Phase 8 packaging | `npm run dist:dir` builds an unsigned macOS app; checked that it starts the recognition service from its own files. Python still has to be installed. |
 
 Not done, and why:
+
+- **Luna prompt drum key for other publishers' charts** — measured as the biggest recognition weakness (above); change the prompt, then rerun `eval/recognition`.
 
 - **G3 fine-tuning gate** — a decision document, not code; needs Victor and teacher-rated fills.
 - **I3 Gemini judge** — the plan requires calibrating it against teachers first.
@@ -43,7 +45,7 @@ Not done, and why:
 - **Pilot and release thresholds** (Phase 8.4) — needs real teachers and students.
 - **Decisions 5, 7, 8, 9, 11** in the master plan §10 are still open (budget default is set to US$5 as a placeholder).
 
-Verified 2026-09-15: 272 Node tests (`npm test`) and 7 real-Electron workflow tests
+Verified 2026-09-15: 288 Node tests (`npm test`) and 7 real-Electron workflow tests
 (`npm run test:desktop`) pass; the packaged app starts.
 
 ### Earlier status (2026-09-14)
