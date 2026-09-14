@@ -1,4 +1,5 @@
 // Real Electron app: crash recovery, undo/redo menu, score details, save, open, New,
+process.env.DRUMHUB_IGNORE_DOTENV = '1';  // never use a real key from .env in tests
 // future-version refusal, and the unsaved-changes prompt on close. Native dialogs are
 // scripted and the app's data folder is a temporary directory.
 const { app, BrowserWindow, Menu, dialog } = require('electron');

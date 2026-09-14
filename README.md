@@ -300,7 +300,9 @@ choose **Paste screenshot with GPT-5.6 Luna**. The main process reads the clipbo
 and sends it directly to `gpt-5.6-luna` at original image detail with a strict structured
 output schema. The returned transcription becomes an editable bar; internal JSON is never
 shown to the user. The API key remains in the main process and is never exposed to the
-renderer. Temporary demand failures are retried twice with exponential backoff. Set
+renderer. Temporary demand failures are retried twice with exponential backoff. Put
+`OPENAI_API_KEY=…` in a `.env` file in the project folder (git-ignored) or set it in the
+environment. Set
 `OPENAI_OMR_MODEL` to override the import model (`OPENAI_MODEL` still works) and
 `OPENAI_AGENT_MODEL` for Ask DrumHub questions.
 

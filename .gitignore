@@ -31,3 +31,7 @@ __pycache__/
 /ml/data-prep/export_log.txt
 /ml/data-prep/export_pdf.sh
 /ml/data-prep/export_pdf_log.txt
+
+# Local secrets (OpenAI key)
+.env
+.env.*

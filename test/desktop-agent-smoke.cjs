@@ -1,4 +1,5 @@
 // Real Electron app: the Ask DrumHub tab. OpenAI is replaced by a scripted fetch in main,
+process.env.DRUMHUB_IGNORE_DOTENV = '1';  // never use a real key from .env in tests
 // so this checks the whole path (page → preload → main → agent → tools → checks → page)
 // without a network. Opens the hand-labelled fixture score.
 const { app, BrowserWindow, Menu, dialog } = require('electron');

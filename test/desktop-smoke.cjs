@@ -1,4 +1,5 @@
 // Real Electron renderer + IPC + released Python model. Only the native picker is automated.
+process.env.DRUMHUB_IGNORE_DOTENV = '1';  // never use a real key from .env in tests
 const { app, BrowserWindow, dialog, session, clipboard, nativeImage } = require('electron');
 const assert = require('node:assert/strict');
 const path = require('node:path');

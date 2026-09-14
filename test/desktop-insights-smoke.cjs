@@ -1,4 +1,5 @@
 // Real Electron app: selecting bars, the Insights panel, citations, and out-of-date results.
+process.env.DRUMHUB_IGNORE_DOTENV = '1';  // never use a real key from .env in tests
 // Opens the hand-labelled fixture score from test/fixture-scores.mjs.
 const { app, BrowserWindow, Menu, dialog } = require('electron');
 const assert = require('node:assert/strict');

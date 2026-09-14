@@ -22,6 +22,7 @@ import { TOOL_NAMES } from '../../js/agent-tools.js';
 import { gradeAnswer } from './graders.mjs';
 
 const require = createRequire(import.meta.url);
+require('dotenv').config({ path: fileURLToPath(new URL('../../.env', import.meta.url)), quiet: true });
 const { ScoreAgent } = require('../../desktop/score-agent.cjs');
 const { OpenAiClient, modelSettings } = require('../../desktop/openai-client.cjs');
 
@@ -84,6 +85,9 @@ export function summarize(results, { inputPrice = null, outputPrice = null, prov
     abstention: pct(rate(graded, 'abstention')),
     unreviewedDisclosure: pct(rate(graded, 'unreviewedDisclosure')),
     noUnsupportedClaims: pct(rate(graded, 'noUnsupportedClaims')),
+    readerFriendly: pct(rate(graded, 'noInternalJargon')),
+    noDuplicateWarnings: pct(rate(graded, 'noDuplicateWarnings')),
+    forbiddenText: pct(rate(graded, 'forbiddenText')),
     groundedSentences: sentences.total ? Math.round((sentences.grounded / sentences.total) * 1000) / 10 : null,
     latencyMs: { p50: percentile(latencies, 50), p95: percentile(latencies, 95) },
     tokens,
@@ -161,6 +165,9 @@ function printSummary(report, summary) {
   line('Correct abstention (%)', m.abstention);
   line('Unchecked-import warning (%)', m.unreviewedDisclosure);
   line('No unsupported claims (%)', m.noUnsupportedClaims);
+  line('Nothing it was told not to say (%)', m.forbiddenText);
+  line('No internal jargon (%)', m.readerFriendly);
+  line('No duplicate warnings (%)', m.noDuplicateWarnings);
   line('Grounded sentences (%)', m.groundedSentences);
   line('Latency p50 / p95 (ms)', `${m.latencyMs.p50} / ${m.latencyMs.p95}`);
   line('Tokens in / out', `${m.tokens.input} / ${m.tokens.output}`);

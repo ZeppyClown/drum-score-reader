@@ -1,5 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog, clipboard } = require('electron');
 const path = require('path');
+// OPENAI_API_KEY and model settings can live in a git-ignored .env next to this file.
+// Real environment variables win. Tests set DRUMHUB_IGNORE_DOTENV so they never use a real key.
+if (!process.env.DRUMHUB_IGNORE_DOTENV) require('dotenv').config({ path: path.join(__dirname, '.env'), quiet: true });
 const { pathToFileURL } = require('url');
 const { OmrService } = require('./desktop/omr-service.cjs');
 const { OpenAiOmr } = require('./desktop/openai-omr.cjs');
