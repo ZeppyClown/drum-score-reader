@@ -3,7 +3,7 @@ import { render } from './score.js';
 
 // ── Side menu initialisation ──────────────────────────────────────────────────
 // The side menu slides in from the left when the ☰ button is clicked.
-// It currently holds one control: "bars per line" (how many bars fit on each row).
+// It holds the import buttons and the "bars per line" setting (how many bars fit on each row).
 export function initMenu() {
   const menuBtn  = document.getElementById('menu-btn');
   const sideMenu = document.getElementById('side-menu');
@@ -41,12 +41,14 @@ export function initMenu() {
     backdrop.classList.toggle('hidden', !open);
     sideMenu.inert = !open;
     menuBtn.setAttribute('aria-expanded', String(open));
-    if (open) bplInput.focus();
+    if (open) (sideMenu.querySelector('.menu-action:not([hidden])') ?? bplInput).focus();
   };
   const isOpen = () => menuBtn.getAttribute('aria-expanded') === 'true';
 
   menuBtn.addEventListener('click', () => setOpen(!isOpen()));
   backdrop.addEventListener('click', () => setOpen(false));
+  // Choosing an import closes the menu; the import then shows its own dialog or status.
+  sideMenu.addEventListener('click', event => { if (event.target.closest('.menu-action')) setOpen(false); });
   // Escape closes the menu and puts focus back on the ☰ button.
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape' || !isOpen()) return;

@@ -9,13 +9,10 @@
 
   <!-- Top bar -->
   <div class="fixed top-0 left-0 right-0 h-10 bg-gray-100 border-b border-gray-200 flex items-center px-3 z-50">
-    <button id="menu-btn" type="button" aria-label="Layout menu" aria-expanded="false" aria-controls="side-menu" class="text-gray-600 hover:bg-gray-200 rounded px-2 py-1 text-base leading-none">
+    <button id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="side-menu" class="text-gray-600 hover:bg-gray-200 rounded px-2 py-1 text-base leading-none">
       ☰
     </button>
-    <button id="import-btn" type="button">Import bar image…</button>
-    <button id="page-import-btn" type="button">Import page or PDF…</button>
     <button id="ai-import-btn" type="button">Paste screenshot with GPT-5.6 Luna</button>
-    <button id="panel-btn" type="button" aria-expanded="false" aria-controls="side-panel">Insights, Ask &amp; Practice</button>
     <div id="score-details">
       <label>Title <input id="score-title" type="text" maxlength="200" spellcheck="false" /></label>
       <label>Tempo <input id="score-tempo" type="number" min="20" max="300" step="1" /> BPM</label>
@@ -42,9 +39,15 @@
   <div id="backdrop" class="hidden fixed top-10 inset-0 z-30"></div>
 
   <!-- Side menu -->
-  <div id="side-menu" role="region" aria-label="Layout menu" inert class="fixed top-10 left-0 bottom-0 w-60 bg-gray-50 border-r border-gray-200 z-40 p-5 -translate-x-full transition-transform duration-200 ease-in-out">
+  <div id="side-menu" role="region" aria-label="Menu" inert class="fixed top-10 left-0 bottom-0 w-60 bg-gray-50 border-r border-gray-200 z-40 p-5 -translate-x-full transition-transform duration-200 ease-in-out">
 
-    <label for="bpl-input" class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3" style="display:block">Bars per line</label>
+    <p class="menu-heading">Import</p>
+    <div class="menu-actions">
+      <button id="import-btn" type="button" class="menu-action">Import bar image…</button>
+      <button id="page-import-btn" type="button" class="menu-action">Import page or PDF…</button>
+    </div>
+
+    <label for="bpl-input" class="menu-heading text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3" style="display:block">Bars per line</label>
 
     <!-- Flowbite warning alert (hidden until triggered) -->
     <div id="bpl-alert" class="hidden flex items-start gap-2 p-3 mb-3 text-sm text-yellow-800 rounded-lg bg-yellow-50 border border-yellow-300" role="alert">
@@ -129,6 +132,16 @@
       </article>
     </section>
   </aside>
+
+  <!-- Floating helper button: opens Insights, Ask DrumHub, Library and Practice -->
+  <button id="panel-btn" type="button" aria-expanded="false" aria-controls="side-panel" aria-label="Insights, Ask &amp; Practice" title="Insights, Ask &amp; Practice">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3v3" /><circle cx="12" cy="2.5" r="1" fill="currentColor" stroke="none" />
+      <rect x="4" y="6.5" width="16" height="12" rx="3.5" />
+      <circle cx="9" cy="12" r="1.4" fill="currentColor" stroke="none" /><circle cx="15" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <path d="M9.5 15.5h5" /><path d="M2 11v3M22 11v3" />
+    </svg>
+  </button>
 
   <!-- Only shown when printing / exporting a PDF -->
   <h1 id="print-title"></h1>

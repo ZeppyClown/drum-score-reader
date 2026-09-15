@@ -65,7 +65,7 @@ drum score reader/
 │   ├── export-midi.js  ← Score → Standard MIDI File on the General MIDI drum channel (pure)
 │   └── export-musicxml.js ← Score → MusicXML 4.0 drum part (pure)
 │   ├── file-ui.js      ← New/Open/Save/Save As, autosave, crash recovery (talks to main via preload)
-├── js/menu.js          ← 8. Side menu (bars-per-line setting only)
+├── js/menu.js          ← 8. Side menu (☰): Import bar image, Import page or PDF, bars per line
 ├── main.js, preload.js ← Electron main process and the narrow bridge the page may call
 ├── desktop/            ← Main-process modules (see §9–§12):
 │   ├── omr-service.cjs      ← Starts/stops the Python recognition service; /predict and /segment
@@ -482,7 +482,7 @@ Changes `cursor.position` (1–10). Does not touch any notes. `render()` moves t
 
 ## 8. `js/menu.js` — Side Menu
 
-Handles only one setting: **bars per line**.
+Holds the two import buttons (choosing one closes the menu) and one setting: **bars per line**. Insights, Ask DrumHub, Library and Practice open from the round bot button at the bottom right (`#panel-btn`).
 
 ```
 User types a number in the input

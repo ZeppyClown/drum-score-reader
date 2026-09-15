@@ -437,7 +437,8 @@ async function offerResume() {
 export function initPageImport() {
   if (!window.pages) { $('page-import-btn').hidden = true; return; }
   window.pages.onProgress(onProgress);
-  $('page-import-btn').addEventListener('click', event => { dialogOpener = event.currentTarget; event.currentTarget.blur(); openPage(); });
+  // The button sits in the side menu, which closes when it is pressed, so focus returns to ☰.
+  $('page-import-btn').addEventListener('click', () => { dialogOpener = $('menu-btn'); openPage(); });
   $('page-close').addEventListener('click', close);
   $('page-transcribe').addEventListener('click', transcribe);
   $('page-stop').addEventListener('click', stopRecognition);

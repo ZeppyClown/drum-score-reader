@@ -114,7 +114,7 @@ app.whenReady().then(async () => {
   // 5. Add every bar to the score, in reading order, as unchecked local-model bars.
   await evaluate('document.getElementById("page-add").click()');
   await waitFor(() => evaluate('document.getElementById("page-import").hidden'), 'screen closed');
-  assert.equal(await evaluate('document.activeElement?.id'), 'page-import-btn', 'focus returns to the opener');
+  assert.equal(await evaluate('document.activeElement?.id'), 'menu-btn', 'focus returns to the menu button that holds the import');
   const score = await editor();
   assert.equal(score.bars.length, found);
   assert.ok(score.bars.every(bar => bar.provenance.source === 'local_omr' && bar.provenance.reviewed === false));

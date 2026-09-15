@@ -106,7 +106,7 @@ app.whenReady().then(async () => {
   // The closed layout menu is inert; opening it focuses its input; Escape closes it again.
   assert.equal(await evaluate('document.getElementById("side-menu").inert'), true);
   await evaluate('document.getElementById("menu-btn").click()');
-  assert.equal(await evaluate('document.activeElement.id'), 'bpl-input');
+  assert.equal(await evaluate('document.activeElement.id'), 'import-btn');
   press('Escape');
   await waitFor(() => evaluate('document.getElementById("side-menu").inert && document.activeElement.id === "menu-btn"'), 'Escape closes menu');
   await evaluate('document.activeElement?.blur()');
