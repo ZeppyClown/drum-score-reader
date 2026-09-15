@@ -10,6 +10,7 @@ import { noteTicks } from './bar.js';
 import { countLabel, findComplexPassages, inspectBars } from './score-analysis.js';
 import { scoreSnapshot } from './score-snapshot.js';
 import { resolveSelection } from './selection.js';
+import { renderBarsPreview } from './bar-drawing.js';
 
 const MODULE = 'library-ui';
 const LEVELS = ['beginner', 'intermediate', 'advanced'];
@@ -100,6 +101,21 @@ function gridPre(item) {
   return pre;
 }
 
+// Notation drawn like the score, with the count table kept for screen readers. Falls back
+// to the visible table when VexFlow isn't available (e.g. Node tests).
+function notationPreview(item) {
+  const box = add('div', 'notation');
+  const bars = item?.bars ?? [];
+  const table = gridPre(item);
+  if (bars.length && renderBarsPreview(box, bars)) {
+    box.setAttribute('role', 'img');
+    box.setAttribute('aria-label', `Notation preview of ${bars.length === 1 ? 'one bar' : `${bars.length} bars`}`);
+    table.classList.add('sr-only');
+    return [box, table];
+  }
+  return [table];
+}
+
 function resultCard(result, item, { onAdd, previewKey, previewStates }) {
   const card = add('article', 'card');
   const heading = add('h4', 'card-title', item.title);
@@ -118,7 +134,7 @@ function resultCard(result, item, { onAdd, previewKey, previewStates }) {
     card.querySelector(`.${MODULE}-preview`)?.remove();
     if (previewStates.has(previewKey)) {
       const wrap = add('div', 'preview');
-      wrap.append(gridPre(item));
+      wrap.append(...notationPreview(item));
       card.append(wrap);
     }
     preview.textContent = previewStates.has(previewKey) ? 'Hide preview' : 'Preview';
@@ -131,7 +147,7 @@ function resultCard(result, item, { onAdd, previewKey, previewStates }) {
   card.append(actions);
   if (previewStates.has(previewKey)) {
     const wrap = add('div', 'preview');
-    wrap.append(gridPre(item));
+    wrap.append(...notationPreview(item));
     card.append(wrap);
   }
   return card;
@@ -180,7 +196,8 @@ export function mountLibrary(container, { getEditor, dispatch, onChange, fills =
     .${MODULE}-facts, .${MODULE}-description, .${MODULE}-why, .${MODULE}-fill-context { margin: 5px 0; }
     .${MODULE}-facts { color: #4b5563; }
     .${MODULE}-why { color: #374151; font-size: .92rem; }
-    .${MODULE}-preview { margin: 8px 0; padding: 8px; background: #f3f4f6; overflow: auto; }
+    .${MODULE}-preview { margin: 8px 0; padding: 8px; background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; overflow: auto; }
+    .${MODULE}-notation svg { display: block; }
     .${MODULE}-grid { margin: 0; font: 13px ui-monospace, SFMono-Regular, monospace; white-space: pre-wrap; }
     .${MODULE}-status { min-height: 1.4em; margin: 10px 0; color: #124e2a; }
     .${MODULE}-error { color: #9f1239; }
@@ -319,7 +336,7 @@ export function mountLibrary(container, { getEditor, dispatch, onChange, fills =
     const validation = validateGeneratedFill(result.notes);
     const checks = add('ul', 'checks');
     (result.checks?.length ? result.checks : validation.errors).forEach(check => checks.append(add('li', '', check)));
-    generated.append(checks, gridPre({ bars: [{ notes: validation.bar.notes }] }));
+    generated.append(checks, ...notationPreview({ bars: [{ notes: validation.bar.notes }] }));
     const addButton = add('button', 'button', 'Add to score');
     addButton.type = 'button'; addButton.disabled = !validation.ok;
     addButton.addEventListener('click', () => {

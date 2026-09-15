@@ -1,8 +1,7 @@
 import { STAVE_X, STAVE_Y0, ROW_HEIGHT, SPACE } from './constants.js';
 import { state } from './state.js';
 import { barRow, barCol, barY, cursorCentreY } from './layout.js';
-import { isRest, tripletStarts } from './bar.js';
-import { noteKeys, noteStemDir } from './notation.js';
+import { drawBarNotes } from './bar-drawing.js';
 import { needsReview } from './review.js';
 import { resolveSelection } from './selection.js';
 
@@ -10,7 +9,7 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 
 // Destructure the VexFlow classes we need from the global VexFlow object.
 // VexFlow is loaded as a CJS bundle via <script> in index.html, so it's a global.
-const { Renderer, Stave, StaveNote, Voice, Formatter, Beam, Dot, Fraction, Tuplet } = VexFlow;
+const { Renderer, Stave } = VexFlow;
 
 // The div where the entire score SVG is rendered
 const div = document.getElementById('score');
@@ -37,38 +36,6 @@ function getBarX(i, widths) {
   const rowStart = barRow(i) * state.barsPerRow;  // index of the first bar on this row
   for (let j = rowStart; j < i; j++) x += widths[j];
   return x;
-}
-
-// ── Build VexFlow tickable objects from a bar's notes ─────────────────────────
-// VexFlow needs an array of StaveNote objects in beat order.
-// A "tickable" is VexFlow's term for any object that takes up time (note or rest).
-//
-// For rests: duration string gets 'r' appended (e.g. 'qr' = crotchet rest).
-//            key is always 'b/4' which centres the rest on the middle line.
-// For drum notes: one key per drum in the chord, each carrying its own notehead
-//            shape (see notation.js), and one shared stem from noteStemDir().
-// In VexFlow 5 the `dots` constructor option was removed — we must call
-// Dot.buildAndAttach() after construction to attach the dot modifier visually.
-// Notes are already in order (the array IS the sequence), so no sorting needed.
-function buildTickables(bar) {
-  return bar.notes.map(note => {
-    const dur = note.duration ?? 'q';
-    let sn;
-    if (isRest(note)) {
-      sn = new StaveNote({ clef: 'percussion', keys: noteKeys(note), duration: dur + 'r' });
-    } else {
-      sn = new StaveNote({
-        clef:           'percussion',
-        keys:           noteKeys(note),
-        duration:       dur,
-        stemDirection:  noteStemDir(note),  // VexFlow 5 reads camelCase; stem_direction is ignored
-      });
-    }
-    if (note.dotted) {
-      Dot.buildAndAttach([sn], { all: true });
-    }
-    return sn;
-  });
 }
 
 // ── Main render function ──────────────────────────────────────────────────────
@@ -119,52 +86,9 @@ export function render() {
     staves.push(stave);
 
     if (bar.notes.length > 0) {
-      const tickables = buildTickables(bar);
-
-      // Triplets must be attached BEFORE the voice counts ticks: each Tuplet
-      // shortens its three notes to 2/3 of their written length.
-      const tuplets = tripletStarts(bar).map(start =>
-        new Tuplet(tickables.slice(start, start + 3), { numNotes: 3, notesOccupied: 2 }));
-
-      // Voice tells VexFlow the bar's meter (4 beats in 4/4 for every editable score).
-      // SOFT mode means VexFlow won't throw an error if the notes don't add up
-      // exactly to a full bar — useful while the user is still editing.
-      const voice = new Voice({ numBeats: state.editor.meta.meter.beats, beatValue: state.editor.meta.meter.beatUnit });
-      voice.setMode(Voice.Mode.SOFT);
-      voice.addTickables(tickables);
-
-      // ── Beam generation must happen BEFORE voice.draw() ──────────────────
-      // When VexFlow draws a voice, it draws flags on 8th/16th notes.
-      // Beam.generateBeams() suppresses those flags and replaces them with
-      // beam bars connecting adjacent short notes.
-      // If we called generateBeams() AFTER draw(), the flags would already
-      // be drawn and visible underneath the beams.
-      //
-      // maintainStemDirections: keep each note's own stem (hands up, feet/floor
-      //   toms down, from noteStemDir). Without it VexFlow re-picks every group's
-      //   direction from pitch — even for unbeamed quarter notes — which drew snare
-      //   stems down and kick stems up. A beam breaks where the direction changes.
-      // groups: [new Fraction(1, 4)] tells VexFlow to form one beam group per
-      //   quarter-note beat. This is what makes dotted-8th + 16th beam together:
-      //   they fill exactly one beat (3 + 1 = 4 sixteenth-note ticks), so VexFlow
-      //   keeps them in the same group instead of splitting at the dot boundary.
-      const beams = Beam.generateBeams(tickables, {
-        maintainStemDirections: true,
-        groups: [new Fraction(1, 4)],
-      });
-
-      // Format: space the notes evenly across the available note area of the bar
-      // (stave width minus the clef/time-sig area and a small right margin)
-      const noteWidth = stave.getX() + stave.getWidth() - stave.getNoteStartX() - 15;
-      new Formatter().joinVoices([voice]).format([voice], noteWidth);
-      voice.draw(ctx, stave);
-
-      // Draw the beam bars (connecting lines between beamed stems) after voice.draw()
-      beams.forEach(b => b.setContext(ctx).draw());
-      tuplets.forEach(t => t.setContext(ctx).draw());  // the "3" over each triplet
-
-      // Remember the tickables for the bar the cursor is currently in,
-      // so we can snap the cursor's x-position to the correct notehead below.
+      // Notes, beams and triplet brackets (bar-drawing.js, shared with Library previews).
+      const tickables = drawBarNotes(ctx, stave, bar, state.editor.meta.meter);
+      // Remember the tickables for the bar the cursor is in, so the cursor snaps to its notehead.
       if (i === state.cursor.barIndex) cursorTickables = tickables;
       noteXs[i] = tickables.map(t => t.getAbsoluteX());
     }
