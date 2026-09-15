@@ -2,7 +2,7 @@
 // model, GPT-5.6 Luna and Gemini, scored the same way. Adult developer tool.
 //
 //   node eval/recognition/run.mjs --providers local,luna,gemini [--set synthetic|heldout] [--limit 20]
-//        [--luna-effort high|medium] [--gemini-model gemini-3.6-flash-high] [--concurrency 3]
+//        [--luna-effort high|medium|low] [--gemini-model gemini-3.6-flash-high] [--concurrency 3]
 //        [--luna-price 0.2,1.2] [--no-write] [--resume]
 //
 // Sets:
@@ -211,7 +211,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     if (!provider) throw new Error(`Unknown provider ${name}`);
     if (flag('concurrency')) provider.concurrency = Number(flag('concurrency'));
     console.log(`${provider.name} (${provider.model}${provider.effort ? `, ${provider.effort}` : ''}) on ${items.length} ${set.name} bars`);
-    const progressFile = path.join(HERE, 'reports', `.progress-${set.name}-${name}.jsonl`);
+    const progressFile = path.join(HERE, 'reports', `.progress-${set.name}-${name}${provider.effort ? `-${provider.effort}` : ''}.jsonl`);
     const results = await runProvider(provider, items, { progressFile, resume: args.includes('--resume') });
     await provider.close?.();
     const summary = summarize(results, name === 'luna' ? { inputPrice, outputPrice } : {});

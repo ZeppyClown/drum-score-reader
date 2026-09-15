@@ -1,0 +1,1220 @@
+{
+ "reportVersion": 1,
+ "runAt": "2026-09-15T00:45:59.451Z",
+ "commit": "f044625",
+ "set": {
+  "name": "synthetic",
+  "source": "drumhub-synthetic",
+  "hash": "151f4e84606019e4282f1efed0aa5adbb7b7cd4a3d6f4983a28c21ed7ffa6a51",
+  "bars": 45
+ },
+ "providers": {
+  "luna": {
+   "model": "gpt-5.6-luna",
+   "effort": "low",
+   "summary": {
+    "bars": 45,
+    "answered": 33,
+    "errors": 12,
+    "errorRate": 26.7,
+    "exactBars": 13.3,
+    "onsetF1": 78.9,
+    "drumHitF1": 61.8,
+    "durationAccuracy": 70.8,
+    "latencyMs": {
+     "p50": 20127,
+     "p95": 27682
+    },
+    "tokens": {
+     "input": 39793,
+     "output": 52347
+    },
+    "estimatedCostUsd": 0.0708
+   },
+   "results": [
+    {
+     "id": "crash-downbeat-transitions",
+     "ms": 14204,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 6,
+       "matched": 6
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1168,
+      "output_tokens_details": {
+       "reasoning_tokens": 1034
+      },
+      "total_tokens": 2284
+     },
+     "note": ""
+    },
+    {
+     "id": "dotted-eighth-pulse",
+     "ms": 27682,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 1,
+       "matched": 1
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 2,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 1,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 2097,
+      "output_tokens_details": {
+       "reasoning_tokens": 1804
+      },
+      "total_tokens": 3213
+     },
+     "note": "4 bars returned"
+    },
+    {
+     "id": "fill-crash-downbeat",
+     "ms": 20033,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 3,
+       "predicted": 3,
+       "matched": 3
+      },
+      "drumHits": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 3
+      },
+      "durations": {
+       "compared": 3,
+       "matched": 3
+      }
+     },
+     "usage": {
+      "input_tokens": 1015,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1307,
+      "output_tokens_details": {
+       "reasoning_tokens": 1217
+      },
+      "total_tokens": 2322
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-dotted-kick-tom",
+     "ms": 8570,
+     "error": "No barlines are visible in the image, so complete 4/4 bars cannot be identified. Please provide a wider crop showing the barlines at both sides and between measures."
+    },
+    {
+     "id": "fill-dotted-snare-pair",
+     "ms": 3694,
+     "error": "No complete bar is bounded by barlines in the image; the bar continues past the right edge and was skipped. Crop or include the full notation through the next barline on the right."
+    },
+    {
+     "id": "fill-eighth-snare-roll",
+     "ms": 9386,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 852,
+      "output_tokens_details": {
+       "reasoning_tokens": 681
+      },
+      "total_tokens": 1968
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-eighth-tom-ascent",
+     "ms": 4263,
+     "error": "No complete bar can be identified because the image shows no clear barline at the right edge. Crop to include the full notation system, especially the barline(s) immediately before and after the notes."
+    },
+    {
+     "id": "fill-eighth-tom-descent",
+     "ms": 4024,
+     "error": "The bar is cut off at the right edge because its closing barline is not visible. Crop or provide the image including the full right side of the staff."
+    },
+    {
+     "id": "fill-floor-tom-landing",
+     "ms": 16106,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 9,
+       "predicted": 9,
+       "matched": 7
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1612,
+      "output_tokens_details": {
+       "reasoning_tokens": 1427
+      },
+      "total_tokens": 2728
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-kick-snare-punctuation",
+     "ms": 20652,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 13,
+       "predicted": 14,
+       "matched": 13
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1512,
+      "output_tokens_details": {
+       "reasoning_tokens": 1328
+      },
+      "total_tokens": 2628
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-latin-bell-turn",
+     "ms": 28878,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 7,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 17,
+       "predicted": 7,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 2375,
+      "output_tokens_details": {
+       "reasoning_tokens": 2070
+      },
+      "total_tokens": 3707
+     },
+     "note": "2 bars returned"
+    },
+    {
+     "id": "fill-metal-double-kick",
+     "ms": 24365,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 17,
+       "predicted": 17,
+       "matched": 17
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 14
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 2273,
+      "output_tokens_details": {
+       "reasoning_tokens": 1985
+      },
+      "total_tokens": 3605
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-quarter-snare-line",
+     "ms": 9361,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": {
+      "input_tokens": 1015,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 913,
+      "output_tokens_details": {
+       "reasoning_tokens": 810
+      },
+      "total_tokens": 1928
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-rest-then-snare",
+     "ms": 3509,
+     "error": "The bar is cut off at the right edge because its ending barline is not visible. Crop or provide a wider image including the complete right side and ending barline."
+    },
+    {
+     "id": "fill-rim-tom-dialogue",
+     "ms": 20497,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 4
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1729,
+      "output_tokens_details": {
+       "reasoning_tokens": 1502
+      },
+      "total_tokens": 2845
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-sixteenth-snare-run",
+     "ms": 22693,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "durations": {
+       "compared": 16,
+       "matched": 16
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1744,
+      "output_tokens_details": {
+       "reasoning_tokens": 1445
+      },
+      "total_tokens": 3076
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-sixteenth-tom-descent",
+     "ms": 8207,
+     "error": "No complete bar can be identified because the image does not show readable barlines or a complete bar boundary. Crop or provide the full notation including the barlines at the left and right edges (and any internal barlines)."
+    },
+    {
+     "id": "fill-sixteenth-tom-snare",
+     "ms": 16949,
+     "error": "The notation is cut off at the right edge and no complete barline-to-barline 4/4 bar is readable. Crop or provide the full image including the right-hand barline."
+    },
+    {
+     "id": "fill-stop-start",
+     "ms": 18780,
+     "error": "No complete bar is reliably readable because the barlines are not discernible in the provided crop. Please provide a wider, higher-resolution crop including the left and right barlines (and any barlines between measures)."
+    },
+    {
+     "id": "fill-tom-cascade-crash",
+     "ms": 22376,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 14,
+       "matched": 14
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 14,
+       "matched": 13
+      },
+      "durations": {
+       "compared": 14,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 2166,
+      "output_tokens_details": {
+       "reasoning_tokens": 1827
+      },
+      "total_tokens": 3498
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-triplet-snare",
+     "ms": 9044,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 0
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1231,
+      "input_tokens_details": {
+       "cache_write_tokens": 1228,
+       "cached_tokens": 0
+      },
+      "output_tokens": 699,
+      "output_tokens_details": {
+       "reasoning_tokens": 440
+      },
+      "total_tokens": 1930
+     },
+     "note": ""
+    },
+    {
+     "id": "fill-triplet-tom-turn",
+     "ms": 13558,
+     "error": "No complete bar is readable because the image has no visible ending barline. Crop or extend the image to include the full right edge and the barline after the notation."
+    },
+    {
+     "id": "funk-pocket-sixteenths",
+     "ms": 22004,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 24,
+       "predicted": 6,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 2100,
+      "output_tokens_details": {
+       "reasoning_tokens": 1696
+      },
+      "total_tokens": 3432
+     },
+     "note": "4 bars returned"
+    },
+    {
+     "id": "kick-on-the-and",
+     "ms": 13637,
+     "error": "No complete bar is delimited by visible barlines. Please crop or provide the full notation including the barline before the pattern and the barline after it."
+    },
+    {
+     "id": "latin-bell-sixteenths",
+     "ms": 18484,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 6,
+       "matched": 1
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1483,
+      "output_tokens_details": {
+       "reasoning_tokens": 1142
+      },
+      "total_tokens": 2815
+     },
+     "note": "4 bars returned"
+    },
+    {
+     "id": "latin-foot-and-hand",
+     "ms": 13181,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 6,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 1113
+      },
+      "output_tokens": 1040,
+      "output_tokens_details": {
+       "reasoning_tokens": 907
+      },
+      "total_tokens": 2156
+     },
+     "note": ""
+    },
+    {
+     "id": "metal-double-kick-grid",
+     "ms": 14041,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 32,
+       "predicted": 8,
+       "matched": 6
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1337,
+      "output_tokens_details": {
+       "reasoning_tokens": 977
+      },
+      "total_tokens": 2669
+     },
+     "note": "4 bars returned"
+    },
+    {
+     "id": "metal-stop-start",
+     "ms": 20514,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 6
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 9
+      },
+      "durations": {
+       "compared": 6,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1790,
+      "output_tokens_details": {
+       "reasoning_tokens": 1434
+      },
+      "total_tokens": 3122
+     },
+     "note": "2 bars returned"
+    },
+    {
+     "id": "open-and-closed-sixteenths",
+     "ms": 21009,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 5,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1888,
+      "output_tokens_details": {
+       "reasoning_tokens": 1552
+      },
+      "total_tokens": 3220
+     },
+     "note": "4 bars returned"
+    },
+    {
+     "id": "open-hat-breaths",
+     "ms": 21472,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1743,
+      "output_tokens_details": {
+       "reasoning_tokens": 1552
+      },
+      "total_tokens": 2859
+     },
+     "note": ""
+    },
+    {
+     "id": "pop-backbeat-eighths",
+     "ms": 28994,
+     "error": "The right edge cuts off the bar before its ending barline. Please crop or provide the full image, including the complete barline at the right."
+    },
+    {
+     "id": "pop-half-time-backbeat",
+     "ms": 13869,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 10,
+       "predicted": 10,
+       "matched": 10
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1036,
+      "output_tokens_details": {
+       "reasoning_tokens": 852
+      },
+      "total_tokens": 2152
+     },
+     "note": ""
+    },
+    {
+     "id": "rests-in-the-groove",
+     "ms": 16833,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 4,
+       "predicted": 8,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 12,
+       "matched": 6
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1393,
+      "output_tokens_details": {
+       "reasoning_tokens": 1210
+      },
+      "total_tokens": 2509
+     },
+     "note": ""
+    },
+    {
+     "id": "rim-click-spaces",
+     "ms": 23298,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 6,
+       "predicted": 8,
+       "matched": 6
+      },
+      "drumHits": {
+       "truth": 10,
+       "predicted": 13,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 6,
+       "matched": 6
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 2100,
+      "output_tokens_details": {
+       "reasoning_tokens": 1902
+      },
+      "total_tokens": 3216
+     },
+     "note": ""
+    },
+    {
+     "id": "rock-quarter-pulse",
+     "ms": 12639,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 4,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 4
+      }
+     },
+     "usage": {
+      "input_tokens": 1015,
+      "input_tokens_details": {
+       "cache_write_tokens": 0,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1099,
+      "output_tokens_details": {
+       "reasoning_tokens": 982
+      },
+      "total_tokens": 2114
+     },
+     "note": ""
+    },
+    {
+     "id": "shuffle-rest-answers",
+     "ms": 20127,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 12,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 16,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 8
+      }
+     },
+     "usage": {
+      "input_tokens": 1231,
+      "input_tokens_details": {
+       "cache_write_tokens": 1228,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1700,
+      "output_tokens_details": {
+       "reasoning_tokens": 1419
+      },
+      "total_tokens": 2931
+     },
+     "note": ""
+    },
+    {
+     "id": "sixteenth-hat-grid",
+     "ms": 21789,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 10,
+       "matched": 10
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1779,
+      "output_tokens_details": {
+       "reasoning_tokens": 1433
+      },
+      "total_tokens": 3111
+     },
+     "note": "2 bars returned"
+    },
+    {
+     "id": "sixteenth-kick-steps",
+     "ms": 14507,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 24,
+       "predicted": 12,
+       "matched": 10
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1376,
+      "output_tokens_details": {
+       "reasoning_tokens": 1034
+      },
+      "total_tokens": 2708
+     },
+     "note": "2 bars returned"
+    },
+    {
+     "id": "sixteenth-rest-grid",
+     "ms": 25430,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 10,
+       "predicted": 5,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 14,
+       "predicted": 9,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 2061,
+      "output_tokens_details": {
+       "reasoning_tokens": 1842
+      },
+      "total_tokens": 3393
+     },
+     "note": ""
+    },
+    {
+     "id": "snare-on-e-and-a",
+     "ms": 16317,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 16,
+       "predicted": 4,
+       "matched": 4
+      },
+      "drumHits": {
+       "truth": 22,
+       "predicted": 6,
+       "matched": 5
+      },
+      "durations": {
+       "compared": 4,
+       "matched": 0
+      }
+     },
+     "usage": {
+      "input_tokens": 1332,
+      "input_tokens_details": {
+       "cache_write_tokens": 1329,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1328,
+      "output_tokens_details": {
+       "reasoning_tokens": 1034
+      },
+      "total_tokens": 2660
+     },
+     "note": "3 bars returned"
+    },
+    {
+     "id": "steady-rock-eighths",
+     "ms": 22971,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 8,
+       "matched": 8
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "durations": {
+       "compared": 8,
+       "matched": 6
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1691,
+      "output_tokens_details": {
+       "reasoning_tokens": 1504
+      },
+      "total_tokens": 2807
+     },
+     "note": ""
+    },
+    {
+     "id": "straight-triplet-rock",
+     "ms": 13681,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 16,
+       "predicted": 16,
+       "matched": 16
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1231,
+      "input_tokens_details": {
+       "cache_write_tokens": 1228,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1526,
+      "output_tokens_details": {
+       "reasoning_tokens": 1245
+      },
+      "total_tokens": 2757
+     },
+     "note": ""
+    },
+    {
+     "id": "tom-groove-movement",
+     "ms": 25064,
+     "score": {
+      "exact": false,
+      "onsets": {
+       "truth": 8,
+       "predicted": 9,
+       "matched": 7
+      },
+      "drumHits": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 7
+      },
+      "durations": {
+       "compared": 7,
+       "matched": 6
+      }
+     },
+     "usage": {
+      "input_tokens": 1116,
+      "input_tokens_details": {
+       "cache_write_tokens": 1113,
+       "cached_tokens": 0
+      },
+      "output_tokens": 2016,
+      "output_tokens_details": {
+       "reasoning_tokens": 1719
+      },
+      "total_tokens": 3132
+     },
+     "note": ""
+    },
+    {
+     "id": "triplet-kick-conversation",
+     "ms": 19915,
+     "score": {
+      "exact": true,
+      "onsets": {
+       "truth": 12,
+       "predicted": 12,
+       "matched": 12
+      },
+      "drumHits": {
+       "truth": 19,
+       "predicted": 19,
+       "matched": 19
+      },
+      "durations": {
+       "compared": 12,
+       "matched": 12
+      }
+     },
+     "usage": {
+      "input_tokens": 1231,
+      "input_tokens_details": {
+       "cache_write_tokens": 1228,
+       "cached_tokens": 0
+      },
+      "output_tokens": 1414,
+      "output_tokens_details": {
+       "reasoning_tokens": 1127
+      },
+      "total_tokens": 2645
+     },
+     "note": ""
+    },
+    {
+     "id": "triplet-snare-shift",
+     "ms": 17162,
+     "error": "The notation is not reliably readable as complete 4/4 bars because the apparent barlines and triplet groupings are ambiguous in this crop. Please provide a higher-resolution crop including the full staff, especially the left and right barlines and the time signature."
+    }
+   ]
+  }
+ }
+}

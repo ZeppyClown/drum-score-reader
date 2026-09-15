@@ -38,6 +38,8 @@ The Reflow teaching charts are never used here: their file names identify studen
 |---|---|---|---|---|---|---|---|---|---|
 | Local `baseline-14drum-v1` | synthetic | 45 | 0% | 67.9 | 22.2 | 83.1% | 0 | 30 ms | free |
 | GPT-5.6 Luna (high) | synthetic | 45 | **51.1%** | **97.7** | **84.3** | 97.3% | 1 | 89 s | US$0.43 total |
+| GPT-5.6 Luna (medium) | synthetic | 45 | 28.9% | 87.6 | 70.8 | 86.6% | 6 | 34 s | US$0.15 total |
+| GPT-5.6 Luna (low) | synthetic | 45 | 13.3% | 78.9 | 61.8 | 70.8% | 12 | 20 s | US$0.07 total |
 | Gemini 3.6 Flash (agy) | synthetic | 45 | 40.0% | 98.8 | 82.6 | 97.8% | 0 | 45 s | Antigravity plan |
 | Local `baseline-14drum-v1` | heldout (all) | 1,548 | 16.8% | 85.0 | 54.1 | 92.2% | 0 | 15 ms | free |
 | Local `baseline-14drum-v1` | heldout, first 30 (Rush "2112") | 30 | 10.0% | 85.1 | 49.5 | 91.0% | 0 | 15 ms | free |
@@ -48,6 +50,9 @@ What this means:
 - **Gemini (adult developer check only) is close to Luna** on DrumHub's own drawing: fewer bars
   exactly right (40% vs 51%) but no refusals, and it's faster. It can never be used in the app
   (plan §2.1), so this only tells us how good another strong model is.
+- **Luna's reasoning effort trades speed for accuracy, steeply.** Low is about 4× faster than high
+  but gets a quarter as many bars exactly right (13% vs 51%) and gives up on 12 of 45 bars. Medium
+  sits in between (29%, 34 s). The app stays on high.
 - **Luna reads DrumHub-style notation well** (half the bars exactly right, almost every note in
   the right place) but slowly, at about 1.5 minutes per bar.
 - **On Songsterr notation Luna is worse than the local model at naming drums** (F1 30 vs 50),
