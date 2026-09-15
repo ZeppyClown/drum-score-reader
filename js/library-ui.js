@@ -170,7 +170,9 @@ export function mountLibrary(container, { getEditor, dispatch, onChange, fills =
     .${MODULE}-tab[aria-pressed="true"] { background: #1d4ed8; color: white; }
     .${MODULE}-label { display: flex; flex-direction: column; gap: 3px; font-weight: 600; }
     .${MODULE}-input, .${MODULE}-select { min-height: 32px; padding: 4px 7px; border: 1px solid #9ca3af; border-radius: 4px; font: inherit; }
-    .${MODULE}-search { flex: 1 1 220px; }
+    /* The label (a column) grows along the row; the box inside keeps its normal height. */
+    .${MODULE}-search-label { flex: 1 1 220px; }
+    .${MODULE}-search { height: 32px; width: 100%; }
     .${MODULE}-button { min-height: 32px; padding: 5px 10px; border: 1px solid #1d4ed8; border-radius: 4px; background: #eff6ff; color: #1e3a8a; cursor: pointer; font: inherit; }
     .${MODULE}-button:focus-visible, .${MODULE}-input:focus-visible, .${MODULE}-select:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
     .${MODULE}-card { margin: 10px 0; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; }
@@ -205,7 +207,9 @@ export function mountLibrary(container, { getEditor, dispatch, onChange, fills =
   const exerciseControls = add('div', 'filters');
   const search = add('input', 'input search');
   search.type = 'search'; search.id = 'library-ui-search'; search.placeholder = 'Search exercises';
-  exerciseControls.append(labelFor('Search', search));
+  const searchLabel = labelFor('Search', search);
+  searchLabel.classList.add(`${MODULE}-search-label`);
+  exerciseControls.append(searchLabel);
   const level = add('select', 'select'); options(level, LEVELS);
   const styleSelect = add('select', 'select');
   const subdivision = add('select', 'select'); options(subdivision, SUBDIVISIONS, 'Any note value');
