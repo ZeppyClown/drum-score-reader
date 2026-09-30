@@ -15,7 +15,7 @@ function apiResponse(text = JSON.stringify(transcription), { ok = true, status =
   }) : ({ error: { message: text } }) };
 }
 
-test('OpenAI sends the clipboard PNG to Luna at original detail with a strict schema', async () => {
+test('OpenAI sends the clipboard PNG to Sol at original detail with high reasoning and a strict schema', async () => {
   let call;
   const openai = new OpenAiOmr({ apiKey: 'test-key', fetchImpl: async (...args) => {
     call = args; return apiResponse();
@@ -23,11 +23,11 @@ test('OpenAI sends the clipboard PNG to Luna at original detail with a strict sc
   const png = Buffer.from('png bytes');
   const result = await openai.recognize(png);
   assert.deepEqual(result.bars, transcription.bars);
-  assert.equal(result.model, 'gpt-5.6-luna');
+  assert.equal(result.model, 'gpt-5.6-sol');
   assert.equal(call[0], 'https://api.openai.com/v1/responses');
   assert.equal(call[1].headers.authorization, 'Bearer test-key');
   const request = JSON.parse(call[1].body);
-  assert.equal(request.model, 'gpt-5.6-luna');
+  assert.equal(request.model, 'gpt-5.6-sol');
   assert.equal(request.store, false);
   assert.equal(request.reasoning.effort, 'high');
   assert.equal(request.input[0].content[1].type, 'input_image');
@@ -159,7 +159,7 @@ test('the import leaves room for reasoning and waits long enough for busy bars',
   const omr = new Omr({ apiKey: 'x', fetchImpl: async (_url, init) => { sent = JSON.parse(init.body); return apiResponse(); } });
   await omr.recognize(Buffer.from('png'));
   assert.equal(sent.max_output_tokens, MAX_OUTPUT_TOKENS);
-  assert.ok(MAX_OUTPUT_TOKENS >= 100000 && MAX_OUTPUT_TOKENS <= 128000, 'room for several bars at high reasoning, within Luna\'s maximum');
+  assert.ok(MAX_OUTPUT_TOKENS >= 100000 && MAX_OUTPUT_TOKENS <= 128000, 'room for several bars at high reasoning, within Sol\'s maximum');
   assert.ok(omr.client.timeoutMs >= IMPORT_TIMEOUT_MS && IMPORT_TIMEOUT_MS >= 600000);
 });
 
@@ -199,13 +199,13 @@ test('a second cut-off reply is reported, not retried forever', async () => {
 test('several bars come back in order; too many bars, no bars, or a malformed bar are refused', async () => {
   const { OpenAiOmr: Omr, MAX_BARS, RESPONSE_SCHEMA: schema } = require('../desktop/openai-omr.cjs');
   assert.equal(schema.properties.schemaVersion.enum[0], 2);
-  assert.equal(MAX_BARS, 16);
+  assert.equal(MAX_BARS, 64);
   const reply = body => new Omr({ apiKey: 'x', fetchImpl: async () => apiResponse(JSON.stringify({ ...transcription, ...body })) });
   const bar = n => ({ notes: [{ position: n, duration: 'eighth', drums: ['snare'] }], uncertainties: [] });
   const three = await reply({ bars: [bar(0), bar(8), bar(16)], message: 'The last bar was cut off and skipped.' }).recognize(Buffer.from('png'));
   assert.deepEqual(three.bars.map(b => b.notes[0].position), [0, 8, 16]);
   assert.equal(three.message, 'The last bar was cut off and skipped.');
-  await assert.rejects(reply({ bars: Array.from({ length: 17 }, () => bar(0)) }).recognize(Buffer.from('png')), /more than 16 bars/);
+  await assert.rejects(reply({ bars: Array.from({ length: 65 }, () => bar(0)) }).recognize(Buffer.from('png')), /more than 64 bars/);
   await assert.rejects(reply({ bars: [] }).recognize(Buffer.from('png')), /Crop the screenshot/);
   await assert.rejects(reply({ bars: [{ notes: [] }] }).recognize(Buffer.from('png')), /invalid transcription/);
   await assert.rejects(reply({ schemaVersion: 1, notes: [], bars: undefined }).recognize(Buffer.from('png')), /invalid transcription/);

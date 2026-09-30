@@ -71,7 +71,7 @@ drum score reader/
 │   ├── omr-service.cjs      ← Starts/stops the Python recognition service; /predict and /segment
 │   ├── openai-client.cjs    ← The one OpenAI transport: store:false, retries, key redaction, budget check
 │   ├── cloud-budget.cjs     ← Monthly US$ limit, 20 requests/minute, provider health; shared by all cloud features
-│   ├── openai-omr.cjs       ← Screenshot → up to 16 bars with GPT-5.6 Luna (prompt + strict schema)
+│   ├── openai-omr.cjs       ← Screenshot → up to 64 bars with GPT-5.6 Sol at high reasoning (prompt + strict schema)
 │   ├── score-agent.cjs, agent-ipc.cjs, app-settings.cjs ← Ask DrumHub tool loop, adult cloud opt-in
 │   ├── page-import.cjs, page-import-ipc.cjs ← Page/PDF import jobs saved box by box, cropping, progress
 │   ├── fill-generator.cjs   ← Fill Lab: one new fill from Luna, checked against the drum list and claims rules
@@ -580,7 +580,7 @@ agent-ui.js → ask-request.js (scope + snapshot) → preload window.agent.ask
 
 - **Cloud help is off by default.** Turning it on shows an adult-only confirmation and is
   saved in `settings.json` in the app data folder (`desktop/app-settings.cjs`). The same
-  switch gates the Luna screenshot import.
+  switch gates the Sol screenshot import.
 - The model never sees the title, import warning text, or notes except through tool results.
 - An answer is rejected if it cites bars the tools were not given, mentions bar numbers
   without references, or claims accents, sticking, dynamics, ornaments, ties, repeat signs
@@ -596,14 +596,14 @@ agent-ui.js → ask-request.js (scope + snapshot) → preload window.agent.ask
 Import page or PDF… → main: dialog → service POST /segment (backend/page_segment.py)
   → desktop/page-import.cjs saves page PNGs + suggested boxes (userData/page-imports/<job>)
   → review screen: draw / move / resize / remove boxes; numbers = reading order (page-boxes.js)
-  → Read (keyboard: arrows move a box, Alt+arrows resize, Delete removes, Add box): main crops each box (nativeImage) → local model (predictData) or Luna
+  → Read (keyboard: arrows move a box, Alt+arrows resize, Delete removes, Add box): main crops each box (nativeImage) → local model (predictData) or Sol
        results saved one by one; a failed box can be retried alone; moving a box redoes it
   → Add bars to score: importBarsCommand in reading order; failed boxes can become
        empty unchecked bars so the order stays right; the job folder is deleted
 ```
 
 An import that was opened but not added is offered again (Resume / Discard) the next
-time the app starts. Luna needs cloud help on, like screenshot import.
+time the app starts. Sol needs cloud help on, like screenshot import.
 
 ---
 

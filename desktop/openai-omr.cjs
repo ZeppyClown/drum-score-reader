@@ -13,7 +13,7 @@ const DURATIONS = [
 
 // Most bars one screenshot may contain. More would risk the token and time limits, and
 // one miscounted bar shifts every bar after it.
-const MAX_BARS = 16;
+const MAX_BARS = 64;
 
 const NOTE_SCHEMA = {
   type: 'object', additionalProperties: false,
@@ -90,7 +90,7 @@ function validateResult(result) {
       !['ok', 'needs_crop'].includes(result.status) || !barsOk || typeof result.message !== 'string') {
     throw new Error('OpenAI returned an invalid transcription. Try the screenshot again.');
   }
-  // Luna's own words (which may echo text printed on the image) are shown as short plain text.
+  // The model's own words (which may echo text printed on the image) are shown as short plain text.
   if (result.status === 'needs_crop' || result.bars.length === 0) {
     throw new Error(cleanShortText(result.message) || 'Crop the screenshot to complete 4/4 bars and retry.');
   }
@@ -107,13 +107,12 @@ function validateResult(result) {
   };
 }
 
-// Luna counts its hidden reasoning against max_output_tokens. On busy bars it used
+// Reasoning counts against max_output_tokens. On busy bars Luna used
 // all of the old 4,096 on reasoning and never wrote the JSON (2026-09-14), and answers
 // took 30–60 s at medium effort. Victor chose high effort for accuracy and several bars per
 // screenshot (2026-09-14). One busy bar at high effort used 17,000 tokens and 2 min 49 s,
-// so the budget is 100,000 of Luna's 128,000 maximum (at most about 12 cents per screenshot
-// at $1.20 per million output tokens) and the wait is 10 minutes. A reply that is still cut
-// off is retried once at medium effort.
+// so the budget is 100,000 of Sol's 128,000 maximum and the wait is 10 minutes. A reply
+// that is still cut off is retried once at medium effort.
 const REASONING_EFFORT = 'high';
 const FALLBACK_EFFORT = 'medium';
 const MAX_OUTPUT_TOKENS = 100000;
@@ -134,7 +133,7 @@ function describeEvent(event) {
 }
 
 // Screenshot → one bar of notes, through the shared OpenAI transport.
-// log(line): progress for the terminal (main.js prints it with a [luna] prefix).
+// log(line): progress for the terminal (main.js prints it with an [omr] prefix).
 class OpenAiOmr {
   // effort: reasoning effort for the first try (benchmarks compare settings; the app uses the default).
   constructor({ apiKey = process.env.OPENAI_API_KEY, model = modelSettings().omr, client, timeoutMs = IMPORT_TIMEOUT_MS,

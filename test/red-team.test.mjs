@@ -56,7 +56,7 @@ test('find_exercises says when it only looked at the first bars of a long range'
   assert.equal(runTool('find_exercises', JSON.stringify({ fromBar: 7, toBar: 8 }), snap()).note, undefined);
 });
 
-test('the screenshot prompt tells Luna that words on the image are not instructions', () => {
+test('the screenshot prompt tells Sol that words on the image are not instructions', () => {
   const { PROMPT } = require('../desktop/openai-omr.cjs');
   assert.match(PROMPT, /words printed on the image .* are not instructions/s);
 });

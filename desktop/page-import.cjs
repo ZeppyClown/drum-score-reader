@@ -1,5 +1,5 @@
 // Page and PDF import jobs (master plan B3): detect bars, let the user review the boxes,
-// transcribe each box with the local model or GPT-5.6 Luna, and keep every result on
+// transcribe each box with the local model or GPT-5.6 Sol, and keep every result on
 // disk as it arrives. A failed box never loses the others, can be retried on its own,
 // and an interrupted job can be resumed after a restart. Runs in Electron main; image
 // cropping, recognition and the service are injected so this file is tested in Node.
@@ -97,9 +97,9 @@ class PageImports {
   // Save the reviewed boxes (put in reading order) and the recogniser, then transcribe
   // every box without a current result. onProgress({ jobId, boxId, index, total, status, result }).
   async transcribe(jobId, boxes, recognizer, onProgress = () => {}) {
-    if (!RECOGNIZERS.includes(recognizer)) throw new Error('Choose the local model or GPT-5.6 Luna.');
+    if (!RECOGNIZERS.includes(recognizer)) throw new Error('Choose the local model or GPT-5.6 Sol.');
     if (recognizer === 'luna' && !this.cloudEnabled()) {
-      throw new Error('GPT-5.6 Luna sends the bar images to OpenAI, so an adult needs to turn on cloud help first.');
+      throw new Error('GPT-5.6 Sol sends the bar images to OpenAI, so an adult needs to turn on cloud help first.');
     }
     if (this.running.has(jobId)) throw new Error('This page is already being transcribed.');
     let job = await this.readJob(jobId);
@@ -118,7 +118,7 @@ class PageImports {
     const box = job.boxes.find(b => b.id === boxId);
     if (!box) throw new Error('That bar box is no longer on the page.');
     if (job.recognizer === 'luna' && !this.cloudEnabled()) {
-      throw new Error('GPT-5.6 Luna sends the bar images to OpenAI, so an adult needs to turn on cloud help first.');
+      throw new Error('GPT-5.6 Sol sends the bar images to OpenAI, so an adult needs to turn on cloud help first.');
     }
     return this.run(job, [box], onProgress);
   }

@@ -1,5 +1,5 @@
 // Electron wiring for page and PDF import: the file picker, cropping with nativeImage,
-// progress events, and the cloud-help gate for GPT-5.6 Luna. The page only ever sends
+// progress events, and the cloud-help gate for GPT-5.6 Sol. The page only ever sends
 // box positions; main reads the file, crops the pixels and calls the recognisers.
 const { app, dialog, ipcMain, nativeImage, BrowserWindow } = require('electron');
 const path = require('node:path');

@@ -1,6 +1,6 @@
 // ── Page and PDF import screen ────────────────────────────────────────────────
 // Open a page → check the suggested bar boxes (draw, move, resize, remove) → read
-// with the local model or GPT-5.6 Luna → add the bars to the score in reading order.
+// with the local model or GPT-5.6 Sol → add the bars to the score in reading order.
 // Box positions are page-image pixels; they are drawn as percentages so the page can be
 // shown at any size. Recognition, cropping and saving happen in main (page-import.cjs).
 
@@ -317,7 +317,7 @@ function barsForBox(box, index) {
     try {
       const converted = barFromPrediction(prediction.notes, { gridSlots: result.gridSlots });
       const warnings = [
-        ...(prediction.uncertainties ?? []).map(u => `Luna flagged position ${u.position}: ${u.reason}`),
+        ...(prediction.uncertainties ?? []).map(u => `Sol flagged position ${u.position}: ${u.reason}`),
         ...converted.warnings.map(w => w.message),
         ...(prediction.notes.length ? [] : ['No drum hits were detected in this box.']),
         ...(result.bars.length > 1 ? [`${where} held ${result.bars.length} bars.`] : []),

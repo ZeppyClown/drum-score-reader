@@ -7,7 +7,7 @@ const ok = body => ({ ok: true, status: 200, json: async () => body });
 const completed = text => ok({ status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text }] }] });
 
 test('import and agent models are separate settings with sensible fallbacks', () => {
-  assert.deepEqual(modelSettings({}), { omr: 'gpt-5.6-luna', agent: 'gpt-5.6-luna' });
+  assert.deepEqual(modelSettings({}), { omr: 'gpt-5.6-sol', agent: 'gpt-5.6-luna' });
   assert.deepEqual(modelSettings({ OPENAI_MODEL: 'old' }), { omr: 'old', agent: 'gpt-5.6-luna' });
   assert.deepEqual(modelSettings({ OPENAI_MODEL: 'old', OPENAI_OMR_MODEL: 'omr', OPENAI_AGENT_MODEL: 'agent' }),
     { omr: 'omr', agent: 'agent' });

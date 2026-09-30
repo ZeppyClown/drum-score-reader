@@ -25,8 +25,8 @@ const service = new OmrService(app.isPackaged
 // One monthly cloud spending limit shared by every OpenAI request (desktop/cloud-budget.cjs).
 const { CloudBudget } = require('./desktop/cloud-budget.cjs');
 const budget = new CloudBudget({ file: path.join(app.getPath('userData'), 'cloud-budget.json') });
-// Luna import progress and raw output go to the terminal that runs `npm start`.
-const openai = new OpenAiOmr({ log: line => console.log(`[luna] ${line}`), budget });
+// Cloud import progress and raw output go to the terminal that runs `npm start`.
+const openai = new OpenAiOmr({ log: line => console.log(`[omr] ${line}`), budget });
 let importing = false;
 let quitting = false;
 let scoreFiles = null;

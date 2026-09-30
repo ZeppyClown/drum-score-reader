@@ -31,7 +31,7 @@ async function setup(t, overrides = {}) {
         return { notes: notesFor(box.x / 50), gridSlots: 32, model: 'baseline-14drum-v1' };
       },
     },
-    luna: { recognize: async png => ({ bars: [{ notes: notesFor(8), uncertainties: [] }], gridSlots: 32, model: 'gpt-5.6-luna', message: '' }) },
+    luna: { recognize: async png => ({ bars: [{ notes: notesFor(8), uncertainties: [] }], gridSlots: 32, model: 'gpt-5.6-sol', message: '' }) },
     crop: async (pagePng, box) => { crops.push([pagePng.toString(), box.id]); return Buffer.from(JSON.stringify({ x: box.x })); },
     cloudEnabled: () => overrides.cloud ?? false,
   });
@@ -82,15 +82,15 @@ test('retry runs just the failed box; moved boxes and a new recogniser are trans
   crops.length = 0;
   const luna = await imports.transcribe(job.jobId, moved, 'luna');
   assert.equal(crops.length, 3);
-  assert.equal(luna.results['box-1'].model, 'gpt-5.6-luna');
+  assert.equal(luna.results['box-1'].model, 'gpt-5.6-sol');
 });
 
-test('Luna needs cloud help; bad boxes and unknown jobs are refused', async t => {
+test('Sol needs cloud help; bad boxes and unknown jobs are refused', async t => {
   const { imports } = await setup(t, { cloud: false });
   const job = await imports.open('/scores/page.png');
   await assert.rejects(imports.transcribe(job.jobId, job.boxes, 'luna'), /adult needs to turn on cloud help/);
   await assert.rejects(imports.transcribe(job.jobId, [{ ...job.boxes[0], x: 950 }], 'local'), /past the edge/);
-  await assert.rejects(imports.transcribe(job.jobId, job.boxes, 'magic'), /local model or GPT-5.6 Luna/);
+  await assert.rejects(imports.transcribe(job.jobId, job.boxes, 'magic'), /local model or GPT-5.6 Sol/);
   await assert.rejects(imports.load('../../etc'), /Unknown page import/);
   await assert.rejects(imports.load('00000000-0000-4000-8000-000000000999'), /no longer available/);
 });

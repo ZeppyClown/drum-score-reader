@@ -5,7 +5,7 @@ import { importedProvenance } from './score-document.js';
 import { state } from './state.js';
 
 // predictions: [{ notes, uncertainties? }] in reading order (one for a local image, one or
-// more for a Luna screenshot). All usable bars are added as one undoable command; each
+// more for a Sol screenshot). All usable bars are added as one undoable command; each
 // starts unreviewed with the model name and its own warnings. A bar that cannot be turned
 // into notes is skipped and reported instead of stopping the others.
 function applyPredictions(predictions, { gridSlots, model, sourceName, source, note = '' }, status) {
@@ -16,7 +16,7 @@ function applyPredictions(predictions, { gridSlots, model, sourceName, source, n
       const converted = barFromPrediction(prediction.notes, { gridSlots });
       const messages = converted.warnings.map(warning => warning.message);
       for (const uncertainty of prediction.uncertainties ?? []) {
-        messages.unshift(`Luna flagged position ${uncertainty.position}: ${uncertainty.reason}`);
+        messages.unshift(`Sol flagged position ${uncertainty.position}: ${uncertainty.reason}`);
       }
       if (!prediction.notes.length) messages.unshift('No drum hits were detected. A bar of rests was imported; check the crop and add any missing notes.');
       items.push({ bar: converted.bar, provenance: importedProvenance({ source, model, warnings: messages.slice(0, 50) }) });
@@ -81,20 +81,25 @@ export function initImport() {
   async function pasteScreenshot() {
     if (aiButton.disabled) return;
     button.disabled = aiButton.disabled = true;
-    status.textContent = 'Sending the clipboard screenshot to GPT-5.6 Luna… this can take a few minutes, longer with several bars.';
+    status.classList.add('reading-screenshot');
+    status.textContent = 'Reading screenshot…';
     warnings.replaceChildren();
     try {
       if (!window.omr) throw new Error('Open the desktop app with npm start to import images.');
       const result = await window.omr.pasteAiImage();
       if (result.code === 'cloud_required' && window.agent) {
-        status.textContent = `Luna import needs cloud help: ${result.error}`;
+        status.textContent = `Sol import needs cloud help: ${result.error}`;
         offerCloudHelp();
         return;
       }
       if (result.error) throw new Error(result.error);
       applyPredictions(result.bars, { gridSlots: result.gridSlots, model: result.model, sourceName: `${result.model} screenshot`, source: 'openai_omr', note: result.message }, status);
-    } catch (error) { status.textContent = `Luna import failed: ${error.message}`; }
-    finally { button.disabled = aiButton.disabled = false; aiButton.blur(); }
+    } catch (error) { status.textContent = `Sol import failed: ${error.message}`; }
+    finally {
+      status.classList.remove('reading-screenshot');
+      button.disabled = aiButton.disabled = false;
+      aiButton.blur();
+    }
   }
 
   aiButton.addEventListener('click', pasteScreenshot);

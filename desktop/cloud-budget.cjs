@@ -7,7 +7,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 // USD per million tokens. Unknown models are counted at the most expensive listed price.
-const PRICES = Object.freeze({ 'gpt-5.6-luna': Object.freeze({ input: 0.2, output: 1.2 }) });
+const PRICES = Object.freeze({
+  'gpt-5.6-luna': Object.freeze({ input: 0.2, output: 1.2 }),
+  'gpt-5.6-sol': Object.freeze({ input: 4, output: 20 }),
+});
 const DEFAULT_LIMIT_USD = 5;
 // Requests allowed in any 60 seconds, across all cloud features, so a loop or a stuck
 // button can't fire off a burst of paid calls.

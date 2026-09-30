@@ -3,15 +3,16 @@
 // reaches the page. Every request is sent with store:false, retried on temporary
 // failures, and every error message has the key removed before it leaves this file.
 const ENDPOINT = 'https://api.openai.com/v1/responses';
-const DEFAULT_MODEL = 'gpt-5.6-luna';
+const DEFAULT_OMR_MODEL = 'gpt-5.6-sol';
+const DEFAULT_AGENT_MODEL = 'gpt-5.6-luna';
 const sleep = delay => new Promise(resolve => setTimeout(resolve, delay));
 
 // Separate settings so import and the agent can move to different models independently.
 // OPENAI_MODEL is the older single setting and still works as a fallback for import.
 function modelSettings(env = process.env) {
   return {
-    omr: env.OPENAI_OMR_MODEL || env.OPENAI_MODEL || DEFAULT_MODEL,
-    agent: env.OPENAI_AGENT_MODEL || DEFAULT_MODEL,
+    omr: env.OPENAI_OMR_MODEL || env.OPENAI_MODEL || DEFAULT_OMR_MODEL,
+    agent: env.OPENAI_AGENT_MODEL || DEFAULT_AGENT_MODEL,
   };
 }
 
@@ -133,4 +134,5 @@ class OpenAiClient {
   }
 }
 
-module.exports = { OpenAiClient, modelSettings, apiErrorMessage, redactSecret, outputText, DEFAULT_MODEL };
+module.exports = { OpenAiClient, modelSettings, apiErrorMessage, redactSecret, outputText,
+  DEFAULT_OMR_MODEL, DEFAULT_AGENT_MODEL };

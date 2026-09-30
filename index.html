@@ -12,7 +12,7 @@
     <button id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="side-menu" class="text-gray-600 hover:bg-gray-200 rounded px-2 py-1 text-base leading-none">
       ☰
     </button>
-    <button id="ai-import-btn" type="button">Paste screenshot with GPT-5.6 Luna</button>
+    <button id="ai-import-btn" type="button">Paste your screenshot</button>
     <div id="score-details">
       <label>Title <input id="score-title" type="text" maxlength="200" spellcheck="false" /></label>
       <label>Tempo <input id="score-tempo" type="number" min="20" max="300" step="1" /> BPM</label>
@@ -22,7 +22,7 @@
   </div>
 
   <section id="import-panel" aria-label="Bar import">
-    <p>Copy a screenshot of one or more complete 4/4 bars (up to 16), then press ⌘V or use the Luna button. The screenshot is sent to OpenAI; local import remains available.</p>
+    <p>Copy a screenshot of one or more complete 4/4 bars (up to 64).</p>
     <p id="import-status" role="status" aria-live="polite">New imports are added after your existing bars.</p>
     <div id="review-bar">
       <span id="review-count" role="status">All bars checked</span>
@@ -76,7 +76,7 @@
         <h2 id="page-import-title">Import page</h2>
         <span id="page-import-file"></span>
         <label>Who reads the bars
-          <select id="page-recognizer" aria-label="Who reads the bars"><option value="local">the local model (offline)</option><option value="luna">GPT-5.6 Luna (online, needs cloud help)</option></select>
+          <select id="page-recognizer" aria-label="Who reads the bars"><option value="local">the local model (offline)</option><option value="luna">GPT-5.6 Sol (online, needs cloud help)</option></select>
         </label>
         <button id="page-close" type="button">Close</button>
       </header>

@@ -22,10 +22,16 @@ test('usage is priced, saved, and a new month starts at zero', async t => {
   assert.equal(reopened.status().month, '2026-10');
 });
 
+test('Sol usage is priced at its published token rates', async t => {
+  const budget = new CloudBudget({ file: tempFile(t) });
+  await budget.record('gpt-5.6-sol', { input_tokens: 1_000_000, output_tokens: 100_000 });
+  assert.equal(budget.status().spentUsd, 6);
+});
+
 test('unknown models are counted at the highest known price', async t => {
   const budget = new CloudBudget({ file: tempFile(t) });
   await budget.record('some-new-model', { input_tokens: 0, output_tokens: 1_000_000 });
-  assert.equal(budget.status().spentUsd, 1.2);
+  assert.equal(budget.status().spentUsd, 20);
 });
 
 test('the shared client refuses to send once the monthly limit is reached, and counts cut-off replies', async t => {

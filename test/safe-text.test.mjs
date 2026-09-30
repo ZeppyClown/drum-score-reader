@@ -58,7 +58,7 @@ test('Fill Lab style must be a plain word or two, not extra instructions', async
   assert.doesNotMatch((await generator.generate({ ...request, style: "R&B / hip-hop" })).error ?? '', /Style/);
 });
 
-test('Luna messages and uncertainty notes are cleaned before they are shown', async () => {
+test('Sol messages and uncertainty notes are cleaned before they are shown', async () => {
   const { OpenAiOmr } = require('../desktop/openai-omr.cjs');
   const reply = body => ({ ok: true, status: 200, json: async () => ({ status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(body) }] }] }) });
   const result = (extra) => ({ schemaVersion: 2, gridSlots: 32, status: 'ok', message: '', bars: [], ...extra });

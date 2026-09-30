@@ -296,8 +296,8 @@ OPENAI_API_KEY="your-key" npm start
 ```
 
 Copy a tightly cropped PNG screenshot of one 4/4 bar, then press Cmd+V in the editor or
-choose **Paste screenshot with GPT-5.6 Luna**. The main process reads the clipboard image
-and sends it directly to `gpt-5.6-luna` at original image detail with a strict structured
+choose **Paste screenshot with GPT-5.6 Sol**. The main process reads the clipboard image
+and sends it directly to `gpt-5.6-sol` at original image detail and high reasoning effort with a strict structured
 output schema. The returned transcription becomes an editable bar; internal JSON is never
 shown to the user. The API key remains in the main process and is never exposed to the
 renderer. Temporary demand failures are retried twice with exponential backoff. Put

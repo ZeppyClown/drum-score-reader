@@ -9,7 +9,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const userData = fs.mkdtempSync(path.join(os.tmpdir(), 'drumhub-desktop-smoke-'));
 app.setPath('userData', userData);
-// Luna screenshot import is a cloud feature, so this run starts with adult cloud help on.
+// Sol screenshot import is a cloud feature, so this run starts with adult cloud help on.
 fs.writeFileSync(path.join(userData, 'settings.json'), JSON.stringify({ cloudAssist: { enabled: true, changedAt: null } }));
 // The imports leave unsaved changes, so quitting asks to save: answer "Don't Save".
 const prompts = [];
@@ -94,9 +94,9 @@ app.whenReady().then(async () => {
     assert.match(await clickImport(), /as bar 4/);
     assert.match(await evaluate('document.getElementById("import-warnings").textContent'), /shortened/);
   } finally { OmrService.prototype.predict = predict; }
-  // A screenshot with three bars: two usable, one Luna got wrong (out-of-order positions).
+  // A screenshot with three bars: two usable, one Sol got wrong (out-of-order positions).
   const openaiResult = {
-    schemaVersion: 2, gridSlots: 32, status: 'ok', message: 'The last bar was cut off and skipped.', model: 'gpt-5.6-luna',
+    schemaVersion: 2, gridSlots: 32, status: 'ok', message: 'The last bar was cut off and skipped.', model: 'gpt-5.6-sol',
     bars: [
       { notes: [
         { position: 0, duration: 'eighth', drums: ['kick', 'hi_hat_closed'] },
@@ -113,9 +113,9 @@ app.whenReady().then(async () => {
   clipboard.writeImage(nativeImage.createFromPath(path.join(images, image)));
   await evaluate('document.getElementById("ai-import-btn").click()');
   await waitFor(() => evaluate('!document.getElementById("ai-import-btn").disabled'));
-  const lunaStatus = await evaluate('document.getElementById("import-status").textContent');
-  assert.match(lunaStatus, /gpt-5.6-luna screenshot as bars 5–6\. The last bar was cut off and skipped\. Skipped bar 2 of the image \(Note 2 is out of order/);
-  assert.match(await evaluate('document.getElementById("import-warnings").textContent'), /Luna flagged position 8/);
+  const solStatus = await evaluate('document.getElementById("import-status").textContent');
+  assert.match(solStatus, /gpt-5.6-sol screenshot as bars 5–6\. The last bar was cut off and skipped\. Skipped bar 2 of the image \(Note 2 is out of order/);
+  assert.match(await evaluate('document.getElementById("import-warnings").textContent'), /Sol flagged position 8/);
   assert.equal((await state()).cursor.barIndex, 4, 'cursor on the first imported bar');
   assert.deepEqual((await state()).bars[5].notes[0].drums, ['crash']);
   // Review: six imported bars start unchecked; editing one does not check it.
@@ -128,7 +128,7 @@ app.whenReady().then(async () => {
   assert.deepEqual((await state()).bars.map(bar => bar.provenance.source),
     ['local_omr', 'local_omr', 'local_omr', 'local_omr', 'openai_omr', 'openai_omr']);
   assert.equal((await state()).editor.history.past.at(-1).label, 'Import 2 bars');
-  assert.equal((await state()).bars[4].provenance.model, 'gpt-5.6-luna');
+  assert.equal((await state()).bars[4].provenance.model, 'gpt-5.6-sol');
   assert.equal((await state()).bars[0].provenance.model, 'baseline-14drum-v1');
   await evaluate('document.getElementById("review-next").click()');
   assert.equal((await state()).cursor.barIndex, 5);
@@ -159,5 +159,5 @@ app.whenReady().then(async () => {
   app.quit();
   await closed;
   assert.deepEqual(prompts, ['Do you want to save the changes to “Untitled score”?']);
-  console.log('PASS: local and Luna clipboard-image import, SVG rendering, editing, append preservation, cancellation, errors, isolated preload, unsaved-changes prompt on quit.');
+  console.log('PASS: local and Sol clipboard-image import, SVG rendering, editing, append preservation, cancellation, errors, isolated preload, unsaved-changes prompt on quit.');
 }).catch(error => { console.error(error); app.once('will-quit', () => app.exit(1)); app.quit(); });

@@ -15,7 +15,7 @@
 //   reviewed: manual bars start reviewed; imported bars start unreviewed and only
 //             an explicit user action marks them reviewed
 //   warnings: plain-language notes from the import, shown for review
-//   model:    optional recogniser name, e.g. 'gpt-5.6-luna'
+//   model:    optional recogniser name, e.g. 'gpt-5.6-sol'
 //
 // meter: any valid meter can be saved and opened, but only 4/4 is editable for now
 // (isEditableMeter); other meters open view-only.
