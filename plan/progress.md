@@ -449,10 +449,34 @@ Built in `js/export-midi.js`, `js/export-musicxml.js` and File > Export (printTo
 
 ## Immediate next milestone
 
+### 2026-10-03 — Current objective: offline threshold experiment
+
+Branch: `agent/validation-threshold-study`. Status: offline validation-only F1
+threshold selection completed; thresholds frozen before one test inference pass.
+Sequence accuracy: validation 7.40→10.58%, test 12.50→10.85%; test exact-bar
+accuracy 12.55→10.81%; test macro per-drum presence F1 0.5444→0.6135.
+Scope: 1,919 validation bars and 2,184 supported test bars, with 359 test bars excluded.
+No release change and no accepted improvement: presence F1 rose while test sequence
+and exact-bar accuracy fell. Next recommendation: investigate an onset-sensitive
+objective or model errors.
+
+Reproduce from this isolated worktree with explicit `--dataset` and `--checkpoint`
+pointing to the original checkout's ignored assets (reports stay in a fresh `/tmp`
+directory; CLI defaults resolve within this worktree):
+
+```sh
+original_root="$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")"
+env -u PYTHONPATH PYTHONDONTWRITEBYTECODE=1 python3 ml/omr/tune_thresholds.py \
+  --dataset "$original_root/ml/data/training/dataset" \
+  --checkpoint "$original_root/ml/data/releases/baseline-14drum-v1/omr_finetuned.pt" \
+  --output "$(mktemp -d /tmp/drumhub-thresholds.XXXXXX)/result.json"
+```
+
 Workstreams 1–3 are done. The next delivery workstream is complete-page/PDF import,
 starting with page rendering and crop review. Accuracy improvement remains valuable:
-tune per-drum thresholds on validation data to measure whether false positives fall
-without unacceptable recall loss. Changing training weights would require retraining.
+the offline threshold experiment above reduced false positives but lowered held-out
+exact-bar accuracy, so the released scalar threshold stays unchanged. Changing
+training weights would require retraining.
 `The Trees` can be restored in a later dataset version when a complete 159-bar PDF is
 available. Single-bar imports currently use the released baseline and require correction.
 
