@@ -27,6 +27,10 @@ __pycache__/
 /ml/data/reflow_pdf/
 /ml/data/labels/
 /ml/data/songsterr/
+/ml/data/finetune/
+/ml/data/finetune.zip
+/ml/data/finetune_alibaba.zip
+/ml/data/finetune_app/
 /ml/data-prep/export_gp5.sh
 /ml/data-prep/export_log.txt
 /ml/data-prep/export_pdf.sh
@@ -38,3 +42,11 @@ __pycache__/
 eval/recognition/reports/.gemini-schema.json
 dist/
 eval/recognition/reports/.progress-*.jsonl
+/ml/data/Qwen3-VL-*/
+# Hand corrections name Reflow chart files, which identify students
+/ml/omr/label_corrections.json
+# Songsterr charts and the MuseScore PDFs made from them (copyrighted, not ours to publish)
+/ml/data/songsterr_musescore/
+/ml/data/label_review_changes.json
+# A separate project that happens to sit in this folder
+/ai-engineer-workshop-2026-project/

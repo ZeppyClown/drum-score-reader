@@ -1,0 +1,13 @@
+# Bars left out of fine-tuning because the label does not match the picture.
+# One per line: a whole song (the manifest's `song` value) or one image file name.
+#
+# 2026-10-06: six Songsterr songs whose labels come from a different track than the one
+# drawn. The pictures show grooves while the labels say empty bars (or the other way round).
+# Found by counting note stems in every picture and comparing with the label's note count:
+# 48-98% of these songs' bars disagree, against under 8% for every other song.
+21 Guns Drum Tab by Green Day _ Songsterr Tabs with Rhythm
+Best Of You Drum Tab by Foo Fighters _ Songsterr Tabs with Rhythm
+I Wish It Would Rain Down Drum Tab by Phil Collins _ Songsterr Tabs with Rhythm
+King Of Pain Drum Tab by The Police _ Songsterr Tabs with Rhythm
+On My Way Drum Tab by Phil Collins _ Songsterr Tabs with Rhythm
+Seek & Destroy Drum Tab by Metallica _ Songsterr Tabs with Rhythm

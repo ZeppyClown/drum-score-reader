@@ -27,6 +27,12 @@ Give it a cropped image of one bar of drum notation, and it outputs an ordered l
 > [Performance](#performance) before building on it. Older figures from a 19-drum run are
 > retained only in [Superseded metrics](#superseded-metrics).
 
+> **2026-10-05: being replaced.** A fine-tuned Qwen3-VL 8B read 72.4% of 312 held-out bars
+> perfectly, against 12.8% for this model on the same bars, and is now the chosen score
+> reader. It needs a GPU server, so the app still falls back to this model when no server is
+> set. Training and scoring: `ml/notebooks/Qwen OMR Fine-tune.ipynb`; data:
+> `ml/omr/prepare_finetune.py`; status and plan: `plan/progress.md`.
+
 ---
 
 ## What it does
