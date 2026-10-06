@@ -14,6 +14,194 @@ Updated 2026-09-15 at `main` (not pushed). **Every build item in `drumhub_master
 Phases 0–8 now exists in the app**; what remains needs a person (teacher review, signing
 certificates, a pilot) or a decision from Victor. See the 2026-09-15 entry below.
 
+### 2026-10-06 — Score reading: editable label review page, 184 MuseScore drum PDFs, tidy-up
+
+- The label review page now lets Victor retype a bar's notes as well as remove it, and
+  downloads his changes as one file (`ml/data-prep/label_review.py`, `--apply` to use them).
+- MuseScore turned 184 of the 200 Songsterr charts into drums-only PDFs (787 pages) with
+  `ml/data-prep/musescore_drum_pdf.py`. 16 charts will not open in MuseScore 4.4.2; 19 have
+  several percussion parts and need a look.
+- Cause of the six mislabelled songs: the label script takes the first percussion track in a
+  chart, which is sometimes the tambourine or pads. Not fixed yet.
+- Filing: the charts moved from `drums without pdf/` to `ml/data/songsterr_musescore/`.
+- Everything Victor needs to do or decide is in `plan/todo.md`.
+
+### 2026-10-06 — Score reading: found what the trained Qwen gets wrong, and removed 721 mislabelled bars
+
+- Went through all 86 bars the trained Qwen missed. 12 were the answer key's fault: one test
+  song was labelled as empty bars although the pictures show a groove. Without it the score is
+  75.3%, not 72.4%.
+- Real weak spots: toms (8 of 36 bars right; floor tom 2 never read), 32nd notes (0 of 10),
+  and thin empty-bar crops.
+- Checked all 19,942 bars by comparing the number of stems in each picture with the label.
+  Six Songsterr songs (721 bars) have labels from the wrong track and are now left out of
+  training (`ml/omr/excluded_bars.txt`). Now 15,225 training, 1,898 validation, 2,098 test bars.
+- 243 doubtful single bars are on a tick-box page for Victor: `ml/data/finetune/label_review.html`.
+- Details: `plan/score_reader_findings.md`, sections 3a and 3b.
+- Open: Victor reviews the 243 bars; then rebuild `finetune.zip`. The check cannot see wrong
+  drums or wrong note lengths, only a wrong number of notes.
+
+### 2026-10-06 — Score reading: 21 open models tested untrained, to choose which to fine-tune
+
+Victor asked to measure the open models before committing to one. The benchmark lab can now send
+its bars to open models hosted on openrouter.ai (`--providers openrouter`).
+
+- Tested 21 open models on the 45 DrumHub-drawn benchmark bars, same instructions and scoring
+  as GPT-5.6 Luna. Full table: `eval/recognition/README.md`.
+- Best full measurement: **GLM 5.3 Flash, 26.7% of bars exactly right**, then DeepSeek V4.1
+  Flash 22.2% and Gemma 4 31B 13.3%. Luna scores 51.1% on the same bars.
+- **The run is incomplete.** The OpenRouter key reached its US$5 limit, and several reasoning
+  models ran out of answer room. MiMo 2.6 Pro (11 right of 18 answered) and Qwen 3.5 397B
+  (5 right of 10 answered) look strong but are not fully measured.
+- All three Qwen3-VL sizes score 0% untrained, yet the 8B reached 72% on Songsterr bars after
+  training. So this test alone cannot pick the model: the finalists must each be fine-tuned
+  on the same bars and compared.
+- Cost: about US$5 of OpenRouter credit, of which roughly US$1.50 went on a first attempt that
+  had to be thrown away (models left to reason without a limit).
+- Open: finish the unmeasured models (needs a higher key limit); check which finalists can
+  actually be fine-tuned and where; then train the finalists.
+
+### 2026-10-05 — Score reading: fine-tuned Qwen3-VL trial beats MobileNetV3 by a wide margin
+
+**Why:** the local MobileNetV3 model reads only about one held-out bar in eight perfectly
+(12.5%) and none of the bars DrumHub draws itself. This trial tested whether a bigger
+vision-language model, taught on the same bars, does better.
+
+**Result of the first trial**
+
+| | Qwen3-VL 8B, fine-tuned | MobileNetV3 `baseline-14drum-v1` |
+|---|---|---|
+| Held-out bars read perfectly (drums and note lengths in order) | **72.4%** | 12.5% |
+| Also with every hit in the right position | 71.5% | 12.5% |
+| Bars scored | 312, spread over 25 held-out songs | 2,184 from 28 songs |
+| Training bars used | 3,000 of 15,839 | 15,839 |
+| Time per bar | 13.7 s on a Colab T4 | 0.016 s on the M1 |
+
+- Trained in 133 minutes on a free Colab T4 (2 passes over the data, LoRA adapter on a 4-bit model).
+- Only 2 of 312 answers were unreadable.
+- The 72.4% is from a 312-bar sample, so it is accurate to about ±5 points. MobileNetV3 was
+  not rescored on the same 312 bars.
+- Remaining mistakes are mostly the same ones MobileNetV3 makes: toms confused with each
+  other or with snare, a whole note read as a quarter, an empty bar read as a note.
+
+**What was built**
+
+- `ml/omr/prepare_finetune.py` — turns the strict training subset (same bars, same
+  by-song split as the MobileNetV3 baseline) into image → text pairs. `--zip` packs them
+  for Colab together with the 45 app-drawn benchmark bars; `--alibaba` writes the layout
+  Alibaba Cloud Model Studio expects.
+- `ml/notebooks/Qwen OMR Fine-tune.ipynb` — trains, saves checkpoints to Drive so a
+  disconnect resumes, scores held-out bars, and now also scores the 45 app-drawn bars.
+  A finished run is never retrained. `Qwen OMR Fine-tune_after.ipynb` is the trial run
+  with its outputs.
+- Trained adapter and scores: Google Drive, `MyDrive/unsloth/qwen-omr/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit/`.
+
+**Alibaba Cloud route (tried, blocked)**
+
+- Vision models can only be fine-tuned in the China (Beijing) region, which stopped at
+  `NO_REAL_REGISTER_AUTHENTICATION` (identity verification required).
+- The Singapore region stopped at `RISK.RISK_CONTROL_REJECTION` (account restricted;
+  only customer service can lift it) and lists no vision model for fine-tuning anyway.
+- Their docs also say fine-tuned weights cannot be exported.
+- `ml/data/finetune_alibaba.zip` (3,000 bars) is built and was uploaded as a Model Studio
+  dataset, in case the account is cleared later. No training job was ever started there.
+
+**Decisions (Victor, 2026-10-05)**
+
+- Fine-tuned Qwen3-VL replaces MobileNetV3 as the score reader.
+- The goal is the highest reading accuracy. Paying for training, bigger models and hosting
+  is fine, and so is calling the model through an API instead of running it on the Mac.
+- Next source of material is printed drum books, once the reader is accurate enough.
+
+**Result on the app's own drawing style**
+
+- The trial model read **13.3% of the 45 DrumHub-drawn bars perfectly (6 of 45), with 4
+  unreadable answers** (GPT-5.6 Luna: 51.1%, MobileNetV3: 0%).
+- Cause: DrumHub draws drums differently from Songsterr. Kick sits below the staff on a
+  ledger line instead of in the bottom space, hi-hat on the top line instead of above it,
+  and stems point up instead of down. The model had only seen Songsterr/Reflow drawing.
+- More bars in the same style will not fix this; it needs bars in other styles.
+
+**Checks on the 72.4% result**
+
+- Same bars, fair comparison: MobileNetV3 scores **12.8% on the same 312 sampled bars**
+  (12.5% on all 2,184), so the gap is real and not a lucky sample.
+- 36% of test bars have exactly the same notes as some training bar (13% are empty bars).
+  The model's 72.4% is well above that, so it is reading, not only remembering. The
+  notebook now also reports accuracy on bars whose notes never appeared in training.
+- No two identical images carry different labels (17,730 distinct images checked).
+- A rule "every note must end before the next one starts" is not safe as an error check:
+  4.3% of correct labels break it, because the source files merge two voices into one.
+
+**Built so far**
+
+- **Second drawing style for training.** `ml/data-prep/render_app_bars.cjs` makes the app
+  redraw the training labels in its own notation: **15,798 of 15,839 bars drawn** in about
+  9 minutes (41 could not be drawn; 228 had a note shortened to fit). Each picture is
+  saved with the notes the app actually drew, so image and label always agree. The 45
+  benchmark bars come from the exercise catalogue, not from these songs.
+- **Upload package** `ml/data/finetune.zip` now holds both styles plus the 45 benchmark
+  bars (254 MB; Google Drive shows it as 242 MB).
+- **Notebook settings** (`ml/notebooks/Qwen OMR Fine-tune.ipynb`, cell 2):
+  `MODEL`, `TRAIN_BARS`, `APP_STYLE_BARS`, `EPOCHS`, `LORA_RANK`, `LOAD_IN_4BIT`. Each
+  combination saves to its own Drive folder, so runs can be compared and never overwrite
+  each other. A finished run is loaded, not retrained.
+- **App can use the Qwen server.** With `QWEN_OMR_URL` and `QWEN_OMR_TOKEN` in `.env`,
+  "Import bar image…" and page import send each bar there, only with cloud help on (the
+  adult confirmation now says so). Without them the app still uses MobileNetV3. Covered by
+  `test/omr-remote.test.cjs`; full suite 294 of 294 passing; real-app import smoke test passing.
+- **Temporary server.** Notebook cell 9 serves the trained model from the Colab session
+  and prints the two `.env` lines. For trying it out only; it stops with the session.
+
+None of the notebook changes since the first trial have been run on a GPU. They pass
+local checks only (every cell parses; scoring, data selection and the server cell were
+run locally with a stand-in model).
+
+**Tried and closed**
+
+- Alibaba Cloud Model Studio: blocked by identity verification (Beijing) and an account
+  restriction (Singapore). Dataset zip kept in case the account is cleared.
+- OpenAI image fine-tuning: only covers older models, and a web search suggests the
+  fine-tuning platform is being wound down for new users (not confirmed).
+
+**Plan: how to reach the highest accuracy**
+
+Work through these in order. Each step is measured on the same test bars before the next
+one is paid for.
+
+1. **Two-style trial (ready to run).** Same 3,000 Songsterr-style bars as the first trial
+   plus 3,000 app-drawn bars: `APP_STYLE_BARS = 3000`. Shows whether a second style lifts
+   the 13.3% without hurting the 72.4%. Free T4, about 4–5 hours.
+2. **Model comparison (ready to run).** Same data, change only `MODEL`: Qwen3-VL 4B and
+   32B first, then Gemma 3 12B. InternVL3 and PaliGemma 2 need their own training
+   script. The 32B needs a paid GPU (Colab Pro A100 or a rented GPU).
+3. **Full-quality training of the winner (needs a paid GPU).** All bars in both styles,
+   full precision instead of 4-bit, larger adapter (`LOAD_IN_4BIT = False`,
+   `LORA_RANK = 64`, `TRAIN_BARS = None`, `APP_STYLE_BARS = None`), scored on all 2,184
+   test bars (`EVAL_BARS = None`).
+4. **Printed books (needs Victor).** No scan or photo of a real book has been tested, so
+   accuracy on books is unknown. Needed: about 100–200 bars from the books that matter,
+   read by the model and corrected by hand in the DrumHub editor, to serve as the test.
+   Then add training bars in book style: the app can redraw every label with the drum
+   positions books use, and with scan wear (tilt, blur, shadows), once real pages show
+   what to copy.
+5. **Permanent hosting.** Fireworks AI lists Qwen3-VL and takes adapters trained
+   elsewhere; prices and upload format not checked yet. Needs an account and API key.
+
+**Open items**
+
+- [ ] Run the two-style trial (step 1) and send the cell 6 and cell 8 summaries.
+- [ ] Get a paid GPU account for steps 2–3.
+- [ ] Download `eval_results.json` from the first run's Drive folder into the project so
+      the 86 missed bars can be analysed by drum and rhythm.
+- [ ] Try a real import in the app through the Colab server (cell 9).
+- [ ] Speed: 13.7 s per bar on the free T4 is about 23 minutes for a 100-bar page. Not yet
+      measured on a proper GPU server.
+- [ ] Bars read by Qwen are still saved with the `local_omr` source tag (the model name
+      shows Qwen). Add a proper source value before this ships.
+- [ ] Before book content goes into the product, check what the publishers' terms allow.
+- [ ] Nothing from today is committed.
+
 ### 2026-09-15 — Master plan Phases 4–8: page import, playback, library, practice, export, hardening
 
 Built (each with Node tests and a real-Electron workflow test; Codex built or reviewed several slices):

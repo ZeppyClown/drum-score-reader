@@ -1,8 +1,74 @@
 # DrumHub — Master Product and Agent Plan
 
-Updated: 2026-09-14
+Updated: 2026-10-04 (first written 2026-09-14)
 
-Status: detailed companion to the authoritative delivery plan in `README.md`.
+Status: detailed companion to the authoritative delivery plan in `README.md`. Sections
+A–I below are **built** (see §0); section J and Phases 9–13 are the new teacher-assistant
+work and are **not started**.
+
+## 0. Where the project stands (2026-10-04)
+
+Checked against the code, `progress.md` and a fresh `npm test` run (289 passing).
+
+| Area | State | What is still open |
+| --- | --- | --- |
+| A. Score workspace (edit, save, undo, metadata) | Built | Only 4/4 is editable |
+| B. Recognition (bar, screenshot, page/PDF, review, benchmark) | Built | Quality: local model 12.5% exact bars on held-out songs; Luna 51% on DrumHub-drawn bars but 3.3% on Songsterr bars (its drum key does not fit other publishers) |
+| C. Score facts without AI | Built | Complexity and fill labels have never been checked by a teacher |
+| D. Ask DrumHub (8 read-only tools, checked answers, confirm-first actions) | Built | Question bank is developer-written; cloud help is adult-only |
+| E. Playback and practice tracking | Built | Tries are typed in by hand; nothing listens to the playing |
+| F–G. Exercise library (26) and Fill Lab (21 + generated) | Built | No exercise is teacher-reviewed (`reviewedByTeacher: false` on all) |
+| H. Students, assignments, dashboard, teacher summary | Built | One summary on request; no per-skill memory, no lesson notes, no parent version |
+| I. Export, cloud limits, red-team tests, eval harness | Built | Unsigned app, Python not bundled, Gemini judge not calibrated |
+
+What the built app cannot do yet, and section J needs:
+
+1. **It has no list of skills.** Exercises carry free-text goals ("backbeat", "kick
+   independence"), score analysis produces complexity signals, and practice history is
+   stored per bar range of one score. Nothing links the three, so the app cannot say
+   "this student struggles with 16th-note kick patterns" across songs.
+2. **Practice facts are self-reported.** "Clean" is a checkbox. Consistency and
+   coordination cannot be tracked honestly until the app measures playing.
+3. **No song library.** The 289 charted songs exist only as training data in `ml/data/`.
+4. **Audio input does not exist** in any form.
+
+Documentation drift found during this review (not fixed here): the status table and test
+counts in the root `README.md`, and "Immediate next milestone" in `plan/README.md`, still
+describe the project before 2026-09-15.
+
+### 0.1 What Victor's own teaching charts show (reviewed 2026-10-04)
+
+Source: `ml/data/reflow/` (228 files), `reflow_pdf/` (179), `reflow_gp5/` (178), plus the
+Songsterr set. Text was read from all 179 PDFs; four were looked at as pictures.
+
+- **The "student notes" are charts, not written notes.** There is no prose about any
+  student anywhere in the folder. What exists is a dated sequence of charts per student:
+  one student has about 47 charts from March 2019 to May 2021 (ear tests and grooves →
+  rudiments and sight reading → numbered homework → full songs), three others have 2–9
+  each. File dates are last-saved dates, so the order is a strong hint, not a record.
+- **A grade curriculum already exists as folders:** Starting grade 1, Grade 1, Grade 1
+  fills, Grade 2, Grade 3, Grade 4 (Rockschool pieces, ear test, ghost notes, ruff, leg
+  exercises), Grade 5, Grade 5 fills, Stroke roll, Side reading. This is the backbone
+  for the skill list (J0) and mostly answers decision 13.
+- **Two lesson types the plan missed: ear tests (about 30 charts) and sight reading
+  (about 10).** Both are exam components and both fit what the app already does
+  (playback, exercise generation). Added as J12.
+- **The charts hold things DrumHub's score cannot:** sticking (R/L) on most technique
+  sheets, counting written above the notes, section names ("Verse", "Chorus", "Band
+  Enters"), repeat-the-last-bar signs, repeat barlines with "4 x", tempo changes inside
+  a chart, sextuplets and 6/8. The GP5 exports keep tempo but **lose sticking, counting
+  and section names** (checked on three files); those survive only in the `.flow` files
+  and as positioned text in the PDFs.
+- **Victor counts "1 E N A" and "1 Tri Plet"; the app says "1 e & a" and "trip let".**
+  The app should count the way the teacher does.
+- **Some homework sheets copy numbered exercises from a published method book**
+  ("Exercise 303–306, refer to picture for sticking"), and one folder holds purchased
+  "Official" tabs. Neither may go into a shipped exercise catalogue or song index.
+- **Privacy, needs a decision now:** the GitHub repository is public, and the tracked
+  files `ml/dataset_manifest.csv` (1,564 rows), `ml/training_manifest.csv` (1,094 rows),
+  `ml/training_exclusions.csv` and two data-prep scripts contain students' first names,
+  because chart file names start with them. One folder name is unkind about a student.
+  See decision 19.
 
 ## 1. Product decision
 
@@ -29,6 +95,23 @@ The five goals recovered from `Drumhub Project Context - Summer Plans.md` remain
 They are extended with a sixth goal: **Ask DrumHub**, a score-aware assistant that can
 answer questions about the open score, identify complex passages, explain rhythms, and
 turn cited passages into practice actions.
+
+A seventh goal was added on 2026-10-04: a **teacher assistant** that plans lessons from
+a song, remembers each student, proposes assignments and exercises, and drafts lesson
+notes and progress summaries. It is specified in §4 J. The teacher is the user; the
+assistant proposes and the teacher confirms.
+
+**Product rule (2026-10-04): automate preparation, not musicianship.** DrumHub gives a
+drum teacher their preparation time back; it does not teach drums or write music. Every
+feature is tested against that rule:
+
+- The teacher states the objective first ("bars 9–16 this week", "not ready for the
+  16th-note kicks"); the app prepares options; the teacher chooses and edits.
+- Screens name the teacher as the author ("Victor's teaching plan, prepared with
+  DrumHub"), never "AI lesson plan".
+- Generated notation is always a short exercise or an adaptation of material the teacher
+  brought, never a finished piece of music.
+- The app never decides on its own what a student should learn next; it drafts.
 
 ## 2. AI allocation
 
@@ -202,6 +285,9 @@ bars plus compact score-level facts rather than uploading the whole document bli
   harness.
 - **Quality gate:** current 12.5% exact-bar accuracy is visibly labelled a baseline. Do
   not market it as automatic accurate transcription.
+- **Decision 2026-10-05 (Victor):** MobileNetV3 is being replaced by a fine-tuned open
+  model served from a paid server. See B6. The local path stays in place until B6 passes
+  its quality gate.
 
 #### B2. Cloud single-bar OMR
 
@@ -246,6 +332,82 @@ bars plus compact score-level facts rather than uploading the whole document bli
 - **AI:** Gemini is a developer-only challenger; ChatGPT is incumbent; Claude reviews
   methodology.
 - **Quality gate:** model changes are based on held-out measurements, never anecdotes.
+
+#### B6. Fine-tuned open-model reader (added 2026-10-05, in progress)
+
+- **User result:** import a bar or page and get notes that are right most of the time, from
+  DrumHub's own drawings, Songsterr-style charts, and later printed drum books.
+- **Decision (Victor, 2026-10-05):** accuracy comes first; paying for training and a hosted
+  server is accepted. Read notes accurately first, then buy printed drum books to read.
+- **Implementation so far:** training notebook `ml/notebooks/Qwen OMR Fine-tune.ipynb`;
+  data builder `ml/omr/prepare_finetune.py`; 15,798 training bars redrawn in DrumHub's style
+  (`ml/data-prep/render_app_bars.cjs`); the app can send a bar to a remote reader
+  (`QWEN_OMR_URL`, `QWEN_OMR_TOKEN`, behind the adult cloud-help switch); open models added
+  to the benchmark lab (`--providers openrouter`). Full write-up:
+  `plan/score_reader_findings.md`.
+
+**Recorded measurements**
+
+Trained model (Qwen3-VL 8B from Hugging Face, trained on 3,000 bars, 2 passes, 133 minutes
+on a free Colab T4):
+
+| Reader | Songsterr-style bars (312 unseen, 25 songs) | DrumHub-drawn bars (45) |
+|---|---|---|
+| MobileNetV3 (old) | 12.8% | 0% |
+| Qwen3-VL 8B, trained | **72.4%** | 13.3% |
+
+- About 14 seconds per bar on the Colab GPU. 2 of 312 answers were malformed.
+- Training error fell from 3.15 to about 0.004, so it learned its 3,000 training bars almost
+  perfectly: not underfitting. The drop to 72% on unseen bars is a real overfitting gap.
+- 36% of test bars have the same notes as some training bar, so part of the 72% is easier
+  than it looks.
+- It is strongly tied to one drawing style (72% vs 13%).
+- Not checked: no validation score was recorded during training, and accuracy on seen versus
+  unseen note patterns has not been measured for this run.
+
+Where the training bars come from (each bar is one picture plus its correct notes; whole songs
+are kept together, so no song is in more than one group):
+
+| Group | Songsterr charts | Victor's own Reflow charts | Total |
+|---|---|---|---|
+| Training | 12,098 bars, 94 songs | 3,741 bars, 138 songs | 15,839 |
+| Validation | 906 bars, 8 songs | 1,013 bars, 19 songs | 1,919 |
+| Test | 1,548 bars, 11 songs | 636 bars, 17 songs | 2,184 |
+
+Untrained open models (2026-10-06, 45 DrumHub-drawn bars, same instructions as Luna):
+
+| Model | Bars answered | Exactly right (of 45) |
+|---|---|---|
+| GPT-5.6 Luna (closed, for reference) | 44 | 51.1% |
+| Gemini 3.6 Flash (closed, developer check only) | 45 | 40.0% |
+| GLM 5.3 Flash | 45 | **26.7%** |
+| MiMo 2.6 Pro | 18 | 24.4% (11 of the 18 answered) |
+| DeepSeek V4.1 Flash | 45 | 22.2% |
+| Qwen 3.8 Flash | 30 | 17.8% |
+| Gemma 4 31B | 45 | 13.3% |
+| Qwen 3.5 397B | 10 | 11.1% (5 of the 10 answered) |
+| Qwen3-VL 235B, 32B, 8B | 45 each | 0% |
+
+- 21 models tested; the rest scored under 14% (all rows in `eval/recognition/README.md`).
+- The run is incomplete: the OpenRouter key reached its US$5 limit and several reasoning
+  models ran out of answer room. Rows with fewer than 44 bars answered are not full
+  measurements.
+- Untrained score does not predict trained score: Qwen3-VL 8B is 0% untrained, 72% trained.
+
+**Still to do**
+
+1. Finish the four under-measured models (MiMo 2.6 Pro, Qwen 3.5 397B, Qwen 3.8 Flash,
+   DeepSeek V4 Vision).
+2. Check which finalists can be fine-tuned, and on what service.
+3. Train each finalist on the same bars in both drawing styles; add a validation score during
+   training and keep the best version, not the last.
+4. Train the winner on all 15,839 bars; test on real printed drum-book pages (none tested yet).
+5. Choose a permanent paid server and point the app at it.
+
+- **AI:** fine-tuned open model at runtime. Claude builds data, notebook and app wiring;
+  Victor runs all Colab training. Gemini stays a developer-only comparison (§2.1).
+- **Quality gate:** not set yet (Victor's decision). Until it is, the trained reader is not
+  shown to students: 13% on DrumHub's own drawings is not usable.
 
 ### C. Deterministic score intelligence
 
@@ -526,6 +688,183 @@ bars plus compact score-level facts rather than uploading the whole document bli
   abstention 100%; unreviewed OMR disclosure 100%; grounded claims at least 95%; zero
   unconfirmed mutations.
 
+### J. Teacher assistant (added 2026-10-04, not started)
+
+The ten requested features, in dependency order. Each one follows the rule the rest of
+the app already follows: **code works out the facts, the model only writes the wording,
+code checks the wording, and the teacher confirms anything that changes a record.**
+
+#### J0. Skill list (needed by everything below)
+
+- **User result:** none directly; it is what lets the app talk about "16th-note kick
+  patterns" instead of "bars 9–12 of one song".
+- **Implementation:** one fixed list in `js/skills.js` (for example: steady eighths,
+  backbeat, kick on the "and", 16th-note hi-hat, open hi-hat, triplets, tom movement,
+  hand–foot together, syncopation, reading rests, dotted rhythms, 32nds), each with a
+  level. Re-tag the 26 exercises and 21 fills with it. Add `skillsInBars(snapshot, range)`
+  to `score-analysis.js`, built from the signals that already drive complexity.
+- **Sources (2026-10-04):** each skill records where its level comes from:
+  `trinity_grade` (Trinity Rock & Pop Drums syllabus, graded exams from 2018, "parameters
+  for own-choice songs", Grades 1–6 checked line by line against the official PDF),
+  `trinity_diploma` (ATCL checked), or `teacher` (Victor's own order, e.g. paradiddles,
+  which the graded syllabus never names and Victor teaches in the first lessons). The
+  app never states a teacher-defined level as an exam requirement.
+- **A student is a set of skills, not one grade.** Store evidence per skill.
+- **Start with what the score can show:** note values and rests, quaver versus
+  semiquaver off-beats, triplets, 32nds, snare/kick independence, open/closed hi-hat,
+  left-foot hi-hat, cross-stick, movement around the toms. Syllabus items the score
+  cannot hold (dynamics, accents, ghost notes, ties, grace notes, brushes, 6/8 and other
+  meters, improvisation) are teacher-marked only until J13 adds the fields.
+- **AI:** none. Victor approves the list.
+- **Quality gate:** every exercise has at least one skill; hand-labelled fixture bars get
+  the expected skills 100% of the time.
+
+#### J1. Remember what each student can and cannot play
+
+- **Exists:** students, sessions, tries and per-range personal difficulty in SQLite.
+- **Build:** practice-store schema v2 — `skill_evidence` (student, skill, clean BPM, date,
+  which try it came from), `teacher_marks` (student, skill, can play / working on / not
+  yet, date) and a free-text `notes` field. Evidence is derived from tries through J0;
+  a teacher mark always wins over derived evidence. Delete and export cover the new tables.
+- **AI:** none. This is a database, not model memory.
+- **Quality gate:** every "can play" shown traces to a teacher mark or to named tries;
+  deleting a student removes all of it; one failed try never creates a "cannot play".
+
+#### J2. Track tempo progression, consistency, coordination and reading
+
+- **Now, from existing data:** best clean BPM per skill and per passage over time, drawn
+  as a chart in the Practice tab. Label it "logged by the student".
+- **Later, measured (ticket 26):** connect an electronic kit over Web MIDI, compare each
+  hit with the times `playback-schedule.js` already calculates, and store timing error in
+  milliseconds, missed and extra hits, and hands-versus-feet accuracy. Consistency =
+  spread of timing error; coordination = accuracy on notes where a hand and a foot land
+  together. Reading = first-try accuracy on a bar the student has not seen.
+- **AI:** none.
+- **Quality gate:** no consistency, coordination or reading number is shown unless it
+  was measured; self-reported and measured facts are never mixed in one figure.
+
+#### J3. Turn a song into a teaching plan by difficulty
+
+- **Exists:** per-bar complexity, repeats, fill candidates and a five-step practice plan
+  for one bar range.
+- **Build:** `buildTeachingPlan(snapshot)` in `score-analysis.js`: collapse repeated bars
+  into distinct patterns, tag each with skills (J0), order easiest first, and give each
+  stage its bars, skills, a tempo ladder and matching exercises. The plan is built locally
+  over the whole score, so the 64-bar model limit does not apply; only the compact plan
+  goes to the model.
+- **AI:** Luna writes the teacher-facing wording around the plan.
+- **Quality gate:** every bar of the song belongs to exactly one stage; stage order is
+  stable; a teacher agrees with the order on at least three real songs before release.
+
+#### J4. Suggest the next exercise from weaknesses
+
+- **Exists:** `exercisesForPassage` (by score passage) and personal difficulty.
+- **Build:** `nextExercises(studentId)`: weakest skills that have enough evidence →
+  catalogue entries at the student's level whose prerequisites are met → reasons.
+- **AI:** none picks; Luna may explain.
+- **Quality gate:** every suggestion names the skill, the evidence and the exercise id;
+  nothing is suggested from fewer than three sessions.
+
+#### J5. Practice assignments for each student
+
+- **Exists:** assignments created by hand.
+- **Build:** `proposeAssignments(studentId, teachingPlan)` picks the next plan stage the
+  student has not shown, plus one J4 exercise, with target BPM from their last clean
+  tempo. Shown as a draft with Accept / Edit / Dismiss.
+- **AI:** Luna drafts the goal sentence only.
+- **Quality gate:** zero assignments created without a teacher click.
+
+#### J6. Weekly lesson notes
+
+- **Exists:** on-request teacher summary with fact ids and a checker.
+- **Build:** a lesson note = what was assigned last time and whether it was done, what
+  changed in the skill record, proposed next assignments (J5), and the teacher's own
+  comment. One button, "Prepare this week's notes", drafts one per student and saves it
+  in a `lesson_notes` table. No background scheduler: a desktop app drafts when it is
+  opened or when asked.
+- **AI:** Luna drafts from fact ids, exactly as the teacher summary does today.
+- **Quality gate:** the existing summary checks pass (numbers match cited facts, no
+  names, no judgments); a note is marked draft until the teacher saves it.
+
+#### J7. Parent and student progress summaries
+
+- **Build:** an `audience` setting on the teacher summary (teacher / parent / student)
+  that changes wording and length, never the facts. Export through the existing PDF
+  printing. Nothing is sent anywhere by the app.
+- **AI:** Luna drafts; same checker.
+- **Quality gate:** the three versions cite the same facts; a teacher reads each one
+  before it leaves the app.
+
+#### J8. Generate rudiment, groove and fill exercises at the right level
+
+- **Exists:** Fill Lab generates one checked fill.
+- **Build:** the same generator with a `kind` (fill / groove / rudiment) and level limits
+  taken from J0 (allowed note lengths, drums, tempo range). Catalogue results first,
+  generated ones second, preview before insert.
+- **Gap:** rudiments are defined by sticking (R L R R…), which the score does not store.
+  Needs an optional `sticking` value per note, drawn under the staff (decision 14).
+- **AI:** Luna generates strict note JSON; bar rules reject anything invalid.
+- **Quality gate:** 100% valid bars after checking; a teacher rates usefulness.
+
+#### J9. Recommend songs that teach a skill
+
+- **Build:** run J0 tagging once over the 289 charted songs' labels in `ml/data/labels/`
+  and write a local `song-index.json` (title, artist, bar count, level, skills with bar
+  counts, hardest passage). Recommending is a filter over that file. The index holds
+  facts about songs, not their notation.
+- **AI:** none picks; Luna may explain why a song fits.
+- **Quality gate:** every recommended song exists in the index and its skill counts can
+  be reproduced from its labels. Ships only if decision 15 allows it.
+
+#### J10. Notation, screenshots and audio into editable lesson material
+
+- **Exists:** bar image, screenshot, page and PDF import, all editable.
+- **Cheap addition:** import a Guitar Pro file directly. `ml/data-prep/parse/` already
+  reads GP5/GP7 into per-bar notes, so this is an exact import with nothing to correct.
+- **Audio:** the largest unknown in this plan. Start with a spike, not a feature: run an
+  existing open drum-transcription model on ten songs that already have charts and score
+  it with `eval/recognition`. Build the feature only if the spike clears a threshold
+  Victor sets. Do not train a new model for this.
+- **Quality gate:** audio import, if built, produces unreviewed bars like every other
+  import.
+
+#### J11. Adapt material to the teacher's instruction
+
+- **User result:** the teacher says "keep the kick pattern, make the hi-hat eighths,
+  drop the toms in bars 9–16" and gets a simplified copy to check.
+- **Implementation:** a small set of named, code-run changes in `js/bar.js` terms (remove
+  a drum, halve a subdivision on one drum, replace a fill with the groove, keep only
+  kick and snare). The model only turns the instruction into a list of those changes;
+  code applies them to a **copy**, shown beside the original. The original is never
+  changed. This is the first agent feature that produces notation from an instruction,
+  so it settles decision 6 as "preview on a copy only".
+- **Limit:** the score does not store ghost notes, accents or dynamics, so "remove the
+  ghost notes" cannot work until those exist.
+- **AI:** Luna maps words to the change list. Code does the editing.
+- **Quality gate:** every change in the result is one of the named changes; result bars
+  are valid; nothing is applied without the teacher accepting the preview.
+
+#### J12. Ear tests and sight-reading sheets
+
+- **Why:** about 40 of Victor's charts are these two things, made by hand, one at a time.
+- **Ear test:** the app plays a short groove or fill at the student's grade without
+  showing it; the notation is revealed afterwards. Uses the existing playback and
+  catalogue; no new AI needed for catalogue items.
+- **Sight reading:** a fresh 4–8 bar sheet at a chosen grade, built from the level limits
+  in J0, printed through the existing PDF export.
+- **AI:** Luna may generate new items through the J8 generator; code enforces the grade
+  limits.
+- **Quality gate:** every item stays inside its grade's allowed note lengths and drums;
+  Victor checks a sample per grade against his own sheets.
+
+#### J13. Chart details the score must be able to hold
+
+Needed before the app can replace hand-made technique sheets: sticking under notes
+(decision 14), section names on bars, counting shown above notes in the teacher's own
+syllables, and repeat-the-last-bar signs. Each is an additive, optional field in
+`score-document.js`. Order: sticking and section names first; they unlock J8 rudiments
+and J3 teaching plans by section.
+
 ## 5. Ask DrumHub architecture
 
 MVP flow:
@@ -563,10 +902,52 @@ Grounding rules:
 - Keep responses child-friendly and scoped to drumming without pretending a keyword
   blocklist alone is a complete child-safety system.
 
-Do not introduce LangGraph for the read-only MVP. A small explicit tool loop in Electron
-main is easier to test and keeps the ONNX path independent. Move orchestration behind a
-stable interface to `backend/agent/` only when persistent memory, retrieval, multiple
-action tools, and resumable sessions make a graph useful.
+### 5.1 Harness decision for the teacher assistant (2026-10-04)
+
+"Harness" here means the code around the model: the tool loop, the checks, the limits,
+the memory and the fallback.
+
+**Decision: keep DrumHub's own small harness and extend it. Do not adopt a general agent
+harness (LangGraph, an agent SDK, or a coding-agent runtime) as the product core.**
+
+Why, from the code as it stands:
+
+1. **Nine of the ten features are not agent tasks.** Teaching plans, skill memory, next
+   exercise, assignments, tracking, song recommendation and lesson notes are fixed
+   pipelines: code gathers facts, the model writes one checked draft. Only "ask a
+   question about a student" needs a tool loop, and that loop exists
+   (`desktop/score-agent.cjs`, 188 lines).
+2. **The safety rules live in the harness DrumHub owns.** The model never sees notes,
+   names or titles except through tool results; every answer is checked in code; one
+   repair, then an offline answer. A general harness brings its own memory, context
+   handling and tools. Its memory would hold facts about children outside the SQLite
+   file that export and delete cover.
+3. **Student memory must be a database, not model memory.** A teacher has to be able to
+   see, correct and delete what the app "remembers". J1 does that with tables.
+4. **Shipping.** The app has two runtime dependencies and no bundler. A general harness
+   adds a runtime, usually ties the app to one provider, and bypasses the spending limit
+   and key redaction in `openai-client.cjs`.
+5. **The evaluations are written against the current contract** (20-question bank,
+   red-team tests, release gates). Replacing the loop means rebuilding them.
+
+What to build instead:
+
+- **One shared helper**, `desktop/checked-call.cjs`: call → check → one repair → offline
+  fallback, with the usage trace. That pattern is already written three times
+  (`score-agent.cjs`, `fill-generator.cjs`, `teacher-summary.cjs`); extract it when the
+  fourth user (lesson notes) arrives, not before.
+- **A second tool set for the same loop**: read-only student tools (`get_skill_record`,
+  `get_tempo_history`, `get_assignments`, `get_teaching_plan`, `find_songs_for_skill`,
+  `next_exercises`) used when the teacher asks about a student. Names are replaced by
+  "the student" before anything is sent, as the teacher summary does today.
+- **Proposed actions, never direct writes**: draft assignment, draft lesson note. The
+  existing confirm-first action buttons already work this way.
+- **A teacher question bank** in `eval/score-agent/` with the same gates.
+
+Revisit this decision only if a task appears that needs many model steps over minutes,
+must survive an app restart mid-task, or needs several models working together. None of
+the ten features does. A general harness remains the right tool for *building* DrumHub
+(Claude Code, Codex) and is not part of what ships.
 
 ## 6. Delivery sequence
 
@@ -642,6 +1023,39 @@ action tools, and resumable sessions make a graph useful.
 3. Cost budgets, provider health, cancellation, and graceful offline behavior.
 4. Teacher/student pilot and release thresholds.
 
+Phases 0–8 were built by 2026-09-15. What remains in them needs a person, not code:
+teacher review of labels and exercises, a signing certificate, bundled Python, a pilot.
+
+### Phase 9 — Skills and student record (J0, J1, J2 logged part)
+
+1. Skill list, exercise re-tagging, `skillsInBars`.
+2. Practice store schema v2: skill evidence, teacher marks, notes.
+3. Skill record view and tempo-progress chart in the Practice tab.
+
+### Phase 10 — Planning (J3, J4, J5)
+
+1. Song teaching plan.
+2. Next-exercise suggestions.
+3. Assignment drafts the teacher accepts, edits or dismisses.
+
+### Phase 11 — Lesson paperwork (J6, J7, teacher questions)
+
+1. Extract `checked-call.cjs`.
+2. Lesson notes and "Prepare this week's notes".
+3. Parent and student versions of the summary, with PDF export.
+4. Student tools in the Ask loop and the teacher question bank.
+
+### Phase 12 — Content (J8, J9, J10 notation part)
+
+1. Song index from the charted songs; song recommendations.
+2. Guitar Pro file import.
+3. Groove and rudiment generation; sticking in the score if decision 14 says yes.
+
+### Phase 13 — Measured playing (J2 measured part, J10 audio)
+
+1. Electronic-kit input over Web MIDI and measured timing.
+2. Audio transcription spike on ten charted songs; build only if it clears the threshold.
+
 ## 7. Work ownership matrix
 
 | Delivery slice | Builder | Runtime AI | Independent check |
@@ -686,6 +1100,26 @@ or fixture task that does not touch the owner's files.
 | 13 | Page rasterize/crop review | `backend/` page modules, import UI, integration fixtures | Claude | ChatGPT; Gemini synthetic visual audit | 1–4 | Correct reading order after review, per-crop retry, and partial recovery |
 | 14 | Playback/loop tracer bullet | `js/playback.js`, controls, audio/timing tests | Claude | ChatGPT | 1, 8 | Bars selected from an agent citation loop at requested BPM with synchronized highlight |
 | 15 | Local practice sessions | `backend/` or main-process SQLite layer, session UI/tests | Claude | ChatGPT | 3, 14 | Event-derived metrics, export/delete, no raw chat by default, schema migration coverage |
+
+Tickets 1–15 are done (see `progress.md`, 2026-09-14 and 2026-09-15).
+
+### 8.1 Teacher-assistant tickets (added 2026-10-04)
+
+| # | Vertical slice | Primary files | Depends on | Acceptance check |
+| --- | --- | --- | --- | --- |
+| 16 | Skill list and tagging | `js/skills.js`, `js/exercise-catalogue.js`, `js/score-analysis.js`, tests | Decision 13 | Every exercise and fill has a skill; fixture bars return the hand-labelled skills |
+| 17 | Student record v2 | `desktop/practice-store.cjs`, `practice-ipc.cjs`, migration tests | 16 | v1 database upgrades without loss; teacher mark beats derived evidence; delete and export include the new tables |
+| 18 | Skill record and tempo chart | `js/practice-ui.js` | 17 | Each "can play" opens the tries or mark behind it; chart numbers match a database query |
+| 19 | Song teaching plan | `js/score-analysis.js`, `js/insights-ui.js`, fixtures | 16 | Every bar is in exactly one stage; same score gives the same plan; works on a score over 64 bars |
+| 20 | Next exercise and assignment drafts | `desktop/practice-store.cjs`, `js/practice-ui.js` | 17, 19 | No suggestion under three sessions; no assignment saved without a click |
+| 21 | Shared checked call | `desktop/checked-call.cjs`; the three existing callers | — | All 289 tests and the live agent evaluation still pass with no behaviour change |
+| 22 | Lesson notes and audience summaries | `desktop/teacher-summary.cjs`, `js/practice-ui.js` | 17, 20, 21 | Existing summary checks pass for all three audiences; notes stay draft until saved |
+| 23 | Teacher questions in Ask DrumHub | `js/agent-tools.js`, `desktop/score-agent.cjs`, `eval/score-agent/` | 17, 21 | Student name never appears in a request; teacher question bank passes the release gates |
+| 24 | Song index and recommendations | `eval/` or `ml/` build script, `js/song-index.json`, `js/library-ui.js` | 16, decision 15 | Index rebuilds identically from labels; every recommendation names its skill counts |
+| 25 | Guitar Pro import | `backend/app.py`, `desktop/omr-service.cjs`, import UI | — | A GP file imports with the same notes as its label files; unsupported bars are reported, not approximated |
+| 26 | Groove and rudiment generation | `desktop/fill-generator.cjs`, `js/score-document.js` (sticking) | 16, decision 14 | 100% valid bars; level limits enforced by code |
+| 27 | Electronic-kit input | new `js/midi-input.js`, `js/playback-schedule.js`, practice store | 17, decision 16 | Timing error on a scripted MIDI fixture matches hand-calculated values |
+| 28 | Audio transcription spike | `eval/recognition/` | — | A written result on ten charted songs and a build / do-not-build decision |
 
 Suggested handoff protocol for every ticket:
 
@@ -734,6 +1168,34 @@ Re-check provider terms and model aliases at each release; they are not stable a
 10. What measured OMR threshold is required before removing the baseline warning?
 11. What provider contract, consent, age assurance, moderation, and child-privacy controls
     are required before any cloud feature is available to an 8–16-year-old?
+
+Decisions 5, 7, 8, 9 and 11 are still open (the US$5 monthly limit is a placeholder).
+Added on 2026-10-04 for the teacher assistant:
+
+12. **Resolved for the first version (2026-10-05): teacher-only.** Student and parent
+    access is deferred; J7 summaries can be prepared by the teacher and exported as PDFs.
+13. **Exam board resolved (2026-10-05): Trinity Rock & Pop Drums first.** Other boards
+    are deferred. The skill list and Victor's own teaching order still need approval;
+    Trinity-sourced levels and teacher-defined levels remain distinct.
+14. Should a note be able to carry sticking (R/L)? Rudiment exercises need it.
+15. May a song index built from the charted songs ship inside the app, or does it stay
+    on the teacher's own computer?
+16. Do the students have electronic kits with MIDI? If not, measured tracking needs a
+    microphone, which can time hits but cannot reliably tell which drum was hit.
+17. May a teacher's free-text notes about a student ever be sent to a cloud model?
+18. What result on the audio spike is good enough to build audio import?
+
+19. Student first names are in tracked files of a public repository. Rename the charts
+    to neutral ids and regenerate the manifests (this changes dataset hashes, so the
+    model release evidence must be re-linked), make the repository private, or accept
+    it? Removing names from past commits needs a history rewrite, which only Victor
+    should start.
+20. May a student's dated chart history be used as the test set for "what should come
+    next" (J4, J5), with names replaced by ids?
+
+Confirmed for the first version (2026-10-05): teacher-only; Trinity Rock & Pop Drums first.
+Recommended for the remaining decisions: add sticking; song index stays local; MIDI
+first; teacher notes never leave the computer.
 
 Recommended defaults: local/offline student mode, cloud available only in adult mode until
 the age/provider review is complete, bring-your-own API key during development, 4/4 MVP,
