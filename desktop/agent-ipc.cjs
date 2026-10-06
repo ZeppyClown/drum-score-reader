@@ -48,6 +48,7 @@ function initAgent({ trustedSender, budget = null }) {
       type: 'warning', buttons: ['I am an adult — turn on cloud help', 'Cancel'], defaultId: 1, cancelId: 1,
       message: 'Turn on cloud help? For teachers and parents only.',
       detail: 'Typed questions, facts about the notes (not the title), and pasted screenshots will be sent to OpenAI. ' +
+        (process.env.QWEN_OMR_URL ? 'Bar and page images you import will be sent to the DrumHub recognition server. ' : '') +
         'Students under 18 should keep using the offline answers. You can turn this off at any time.',
     });
     if (response === 0) await settings.setCloud(true);

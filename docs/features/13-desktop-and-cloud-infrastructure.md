@@ -20,6 +20,8 @@ Development loads a git-ignored `.env` beside `main.js`; packaged builds load it
 | --- | --- |
 | `OMR_PYTHON` | Python executable used for the local service. |
 | `OMR_BUNDLE` | Alternate local model bundle in development. |
+| `QWEN_OMR_URL` | https address of the fine-tuned Qwen recognition server. When set, bars are read there instead of by the local model, and only with cloud help on. |
+| `QWEN_OMR_TOKEN` | Password for that server, sent as a bearer token. |
 | `OPENAI_API_KEY` | Credential retained in the main process. |
 | `OPENAI_OMR_MODEL` | Screenshot/page recognition model override. |
 | `OPENAI_MODEL` | Older fallback recognition model setting. |

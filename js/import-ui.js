@@ -44,7 +44,7 @@ export function initImport() {
   const aiButton = document.getElementById('ai-import-btn');
   const status = document.getElementById('import-status');
   const warnings = document.getElementById('import-warnings');
-  button.addEventListener('click', async () => {
+  async function importBar() {
     button.disabled = aiButton.disabled = true;
     status.textContent = 'Choose one bar image. Recognition may take a moment…';
     warnings.replaceChildren();
@@ -52,15 +52,21 @@ export function initImport() {
       if (!window.omr) throw new Error('Open the desktop app with npm start to import images.');
       const result = await window.omr.importBar();
       if (result.canceled) { status.textContent = 'Import canceled.'; return; }
+      if (result.code === 'cloud_required' && window.agent) {
+        status.textContent = `Import needs cloud help: ${result.error}`;
+        offerCloudHelp(importBar);
+        return;
+      }
       if (result.error) throw new Error(result.error);
       applyPredictions([result], { gridSlots: result.gridSlots, model: result.model, sourceName: result.filename, source: 'local_omr' }, status);
     } catch (error) { status.textContent = `Import failed: ${error.message}`; }
     finally { button.disabled = aiButton.disabled = false; button.blur(); }
-  });
+  }
+  button.addEventListener('click', importBar);
 
   // "Turn on cloud help…" next to the message: shows the adult confirmation (in main),
-  // tells the Ask DrumHub tab, and retries the paste once cloud help is on.
-  function offerCloudHelp() {
+  // tells the Ask DrumHub tab, and retries the import once cloud help is on.
+  function offerCloudHelp(retry = pasteScreenshot) {
     const turnOn = document.createElement('button');
     turnOn.type = 'button';
     turnOn.id = 'import-cloud-btn';
@@ -73,7 +79,7 @@ export function initImport() {
       finally { turnOn.disabled = false; }
       window.dispatchEvent(new CustomEvent('cloud-help-changed', { detail: next }));
       if (next.error) { status.textContent = next.error; return; }
-      if (next.cloudEnabled) pasteScreenshot();
+      if (next.cloudEnabled) retry();
     });
     status.append(' ', turnOn);
   }

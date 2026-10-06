@@ -19,9 +19,9 @@ const { FillGenerator } = require('./desktop/fill-generator.cjs');
 const { OpenAiClient } = require('./desktop/openai-client.cjs');
 // In a packaged app the Python service is unpacked next to the archive (Python cannot run
 // files inside app.asar) and the model release is a bundled resource.
-const service = new OmrService(app.isPackaged
+const service = new OmrService({ cloudEnabled: () => Boolean(agentIpc?.settings.cloudEnabled), ...(app.isPackaged
   ? { root: __dirname.replace('app.asar', 'app.asar.unpacked'), bundle: path.join(process.resourcesPath, 'model') }
-  : { root: __dirname });
+  : { root: __dirname }) });
 // One monthly cloud spending limit shared by every OpenAI request (desktop/cloud-budget.cjs).
 const { CloudBudget } = require('./desktop/cloud-budget.cjs');
 const budget = new CloudBudget({ file: path.join(app.getPath('userData'), 'cloud-budget.json') });
@@ -49,9 +49,10 @@ ipcMain.handle('omr:import', async event => {
       filters: [{ name: 'Bar images', extensions: ['png', 'jpg', 'jpeg'] }],
     });
     if (picked.canceled || !picked.filePaths.length) return { canceled: true };
+    if (service.remote) await agentIpc.ready;   // cloud-help setting must be loaded before it is checked
     const prediction = await service.predict(picked.filePaths[0]);
-    return { ...prediction, model: path.basename(service.bundle), filename: path.basename(picked.filePaths[0]) };
-  } catch (error) { return { error: error.message }; }
+    return { ...prediction, model: prediction.model ?? path.basename(service.bundle), filename: path.basename(picked.filePaths[0]) };
+  } catch (error) { return { error: error.message, code: error.code }; }
   finally { importing = false; }
 });
 

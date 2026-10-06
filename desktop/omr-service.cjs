@@ -2,12 +2,44 @@ const { spawn } = require('node:child_process');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const REMOTE_TIMEOUT_MS = 120000;   // one bar on a GPU server; the trial server took about 14 s
+
 class OmrService {
+  // remoteUrl (QWEN_OMR_URL): when set, single bars are read by the fine-tuned Qwen server
+  // there instead of the local model. The local service still finds the bars on a page.
   constructor({ root, python = process.env.OMR_PYTHON || 'python3',
     bundle = process.env.OMR_BUNDLE || path.join(root, 'ml/data/releases/baseline-14drum-v1'),
-    startupTimeout = 30000 } = {}) {
-    Object.assign(this, { root, python, bundle, startupTimeout });
+    startupTimeout = 30000, remoteUrl = process.env.QWEN_OMR_URL || '',
+    remoteToken = process.env.QWEN_OMR_TOKEN || '', cloudEnabled = () => false, fetchImpl = fetch } = {}) {
+    Object.assign(this, { root, python, bundle, startupTimeout, remoteToken, cloudEnabled, fetchImpl });
+    this.remoteUrl = remoteUrl.trim().replace(/\/+$/, '');
     this.generation = 0;
+  }
+
+  get remote() { return Boolean(this.remoteUrl); }
+
+  // The image leaves this computer, so this needs cloud help on, like every cloud feature.
+  async predictRemote(data, name) {
+    if (!this.remoteUrl.startsWith('https://')) throw new Error('QWEN_OMR_URL must start with https://. Fix it in .env and restart the app.');
+    if (!this.cloudEnabled()) {
+      throw Object.assign(new Error('Reading a bar sends the image to the DrumHub recognition server, so an adult needs to turn on cloud help first.'), { code: 'cloud_required' });
+    }
+    if (data.length > MAX_UPLOAD_BYTES) throw new Error('Choose a PNG or JPEG image of 10 MB or smaller.');
+    const form = new FormData();
+    form.append('image', new Blob([data]), name);
+    let response, result;
+    try {
+      response = await this.fetchImpl(`${this.remoteUrl}/predict`, { method: 'POST', body: form,
+        headers: { authorization: `Bearer ${this.remoteToken}` }, signal: AbortSignal.timeout(REMOTE_TIMEOUT_MS) });
+      result = await response.json();
+    } catch {
+      throw new Error('The recognition server did not answer. Check that it is running and that QWEN_OMR_URL is current, then retry.');
+    }
+    if (!response.ok) throw new Error(`${result?.error?.message || 'Recognition failed'}. Choose a clear PNG or JPEG crop of one bar and retry.`);
+    if (!Array.isArray(result?.notes)) throw new Error('The recognition server returned invalid output. Retry the import.');
+    // The model writes 32nd-note slots 0-31, so the grid is always 32.
+    return { notes: result.notes, gridSlots: 32, model: typeof result.model === 'string' ? result.model.slice(0, 80) : 'Qwen3-VL' };
   }
 
   async start() {
@@ -68,7 +100,7 @@ class OmrService {
   }
 
   async predict(filePath) {
-    const health = await this.start();
+    const health = this.remote ? { max_upload_bytes: MAX_UPLOAD_BYTES } : await this.start();
     const file = await fs.open(filePath, 'r');
     let data;
     try {
@@ -90,8 +122,9 @@ class OmrService {
 
   // One bar image already in memory (a crop from page import).
   async predictData(data, name = 'bar.png', health = null) {
-    const ready = health ?? await this.start();
     if (!data?.length) throw new Error('The bar image is empty.');
+    if (this.remote) return this.predictRemote(data, name);
+    const ready = health ?? await this.start();
     if (data.length > ready.max_upload_bytes) throw new Error('Choose a PNG or JPEG image of 10 MB or smaller.');
     const form = new FormData();
     form.append('image', new Blob([data]), name);
