@@ -4,6 +4,8 @@
 //   node eval/recognition/run.mjs --providers local,luna,gemini [--set synthetic|heldout] [--limit 20]
 //        [--luna-effort high|medium|low] [--gemini-model gemini-3.6-flash-high] [--concurrency 3]
 //        [--luna-price 0.2,1.2] [--no-write] [--resume]
+//   node eval/recognition/run.mjs --providers openrouter [--models qwen/qwen3.8-27b,moonshotai/kimi-k3]
+//        every open-weight model in OPEN_MODELS, through openrouter.ai (OPENROUTER_API_KEY in .env)
 //
 // Sets:
 //   synthetic — eval/recognition/synthetic: bars DrumHub rendered from its own original catalogue.
@@ -138,6 +140,58 @@ function geminiProvider({ model, set }) {
   };
 }
 
+// Open-weight models that read images, as listed on openrouter.ai on 2026-10-05 (the newest or
+// largest of each family). Open weights matter because the winner gets fine-tuned on our bars.
+// qwen3-vl-8b is the base of the first fine-tuning trial, kept as the reference point.
+export const OPEN_MODELS = [
+  'qwen/qwen3.8-27b', 'qwen/qwen3.8-flash', 'qwen/qwen3.6-27b', 'qwen/qwen3.5-397b-a17b',
+  'qwen/qwen3-vl-235b-a22b-instruct', 'qwen/qwen3-vl-32b-instruct', 'qwen/qwen3-vl-8b-instruct',
+  'deepseek/deepseek-v4.1-flash', 'deepseek/deepseek-v4-flash-vision-exp',
+  'z-ai/glm-5.3-flash', 'xiaomi/mimo-v2.6-pro', 'meta/muse-glimmer-30b', 'meta-llama/llama-4-maverick',
+  'google/gemma-4-31b-it', 'mistralai/mistral-small-2603', 'minimax/minimax-m3', 'stepfun/step-3.7-flash',
+  'thinkingmachines/inkling', 'inclusionai/ling-3.0-flash-vl', 'nex-agi/nex-n2.5-pro', 'baidu/ernie-4.5-vl-424b-a47b',
+];
+
+// Left to reason freely, the reasoning models spent 5-7 minutes and their whole 12,000-token
+// allowance on one bar and often never answered (2026-10-05). --open-effort changes this.
+const REASONING_EFFORT_OPEN = process.argv.includes('--open-effort') ? process.argv[process.argv.indexOf('--open-effort') + 1] : 'low';
+
+// The model's answer as text → the first bar's notes. Models wrap JSON in prose or code fences.
+export function notesFromReply(text) {
+  if (typeof text !== 'string' || !text.includes('{')) throw new Error('no JSON in the answer');
+  const result = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));
+  if (result.status === 'needs_crop') throw new Error(`needs_crop: ${result.message}`);
+  const notes = result.bars?.[0]?.notes ?? [];
+  if (!notes.every(n => Number.isInteger(n.position) && Array.isArray(n.drums))) throw new Error('notes are not in the asked shape');
+  return notes;
+}
+
+// Same prompt and answer shape as Luna. Not every open model can be forced to a schema, so the
+// schema is given in the prompt and the JSON is picked out of the answer.
+function openRouterProvider({ model }) {
+  const key = process.env.OPENROUTER_API_KEY;
+  if (!key) throw new Error('Set OPENROUTER_API_KEY in .env to benchmark open models.');
+  // Without the "one complete bar" line, small models take the needs_crop way out on every bar.
+  const text = `${PROMPT}\n\nThis image is exactly one complete bar, so status is ok and bars has one entry. Answer with one JSON object only, matching this JSON schema:\n${JSON.stringify(RESPONSE_SCHEMA)}`;
+  return {
+    name: `openrouter:${model}`, model, concurrency: 4,
+    run: async item => {
+      const image = `data:image/png;base64,${fs.readFileSync(item.image).toString('base64')}`;
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST', signal: AbortSignal.timeout(IMPORT_TIMEOUT_MS),
+        headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ model, max_tokens: 12000, reasoning: { effort: REASONING_EFFORT_OPEN }, messages: [{ role: 'user', content: [{ type: 'text', text }, { type: 'image_url', image_url: { url: image } }] }] }),
+      }).catch(error => { throw new Error(`fetch failed: ${error.cause?.code ?? error.cause?.message ?? error.message}`); });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || body.error) throw new Error(`OpenRouter ${response.status}: ${body.error?.message ?? 'no details'}`);
+      const usage = { input_tokens: body.usage?.prompt_tokens ?? 0, output_tokens: body.usage?.completion_tokens ?? 0, cost: body.usage?.cost ?? 0 };
+      const choice = body.choices?.[0];
+      if (!choice?.message?.content) throw new Error(`empty answer (finish: ${choice?.finish_reason}, ${usage.output_tokens} tokens used)`);
+      return { notes: notesFromReply(choice.message.content), usage };
+    },
+  };
+}
+
 // ── Running and scoring ───────────────────────────────────────────────────────
 
 // Each result is also appended to reports/.progress-<set>-<provider>.jsonl as it arrives, so a
@@ -183,12 +237,14 @@ export function summarize(results, { inputPrice = null, outputPrice = null } = {
   const onsets = sum('onsets'); const drums = sum('drumHits'); const durations = sum('durations');
   const f1 = s => { const p = s.predicted ? s.matched / s.predicted : 0; const r = s.truth ? s.matched / s.truth : 0; return p + r ? Math.round((2 * p * r / (p + r)) * 1000) / 10 : 0; };
   const tokens = ok.reduce((acc, r) => ({ input: acc.input + (r.usage?.input_tokens ?? 0), output: acc.output + (r.usage?.output_tokens ?? 0) }), { input: 0, output: 0 });
+  const billed = ok.reduce((acc, r) => acc + (r.usage?.cost ?? 0), 0);
   return {
     bars: results.length, answered: ok.length, errors: results.length - ok.length, errorRate: ratio(results.length - ok.length, results.length),
     exactBars: ratio(ok.filter(r => r.score.exact).length, results.length),
     onsetF1: f1(onsets), drumHitF1: f1(drums), durationAccuracy: ratio(durations.matched, durations.compared),
     latencyMs: { p50: pctl(ok.map(r => r.ms), 50), p95: pctl(ok.map(r => r.ms), 95) },
-    tokens, estimatedCostUsd: inputPrice === null ? null : Math.round(((tokens.input * inputPrice + tokens.output * outputPrice) / 1e6) * 10000) / 10000,
+    // OpenRouter reports what each call cost; Luna's cost is worked out from token prices.
+    tokens, estimatedCostUsd: inputPrice === null ? (billed ? Math.round(billed * 10000) / 10000 : null) : Math.round(((tokens.input * inputPrice + tokens.output * outputPrice) / 1e6) * 10000) / 10000,
   };
 }
 
@@ -198,7 +254,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const set = flag('set', 'synthetic') === 'heldout' ? heldoutSet() : syntheticSet();
   const limit = Number(flag('limit', set.items.length));
   const items = set.items.slice(0, limit);
-  const providers = flag('providers', 'local').split(',');
+  // "openrouter" stands for every model in --models (default: the OPEN_MODELS list).
+  const providers = flag('providers', 'local').split(',')
+    .flatMap(name => (name === 'openrouter' ? (flag('models')?.split(',') ?? OPEN_MODELS).map(model => `openrouter:${model}`) : [name]));
   const [inputPrice, outputPrice] = (flag('luna-price', '0.2,1.2')).split(',').map(Number);
   let commit = null;
   try { commit = execSync('git rev-parse --short HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { /* not a checkout */ }
@@ -207,11 +265,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const provider = name === 'local' ? localProvider()
       : name === 'luna' ? lunaProvider({ effort: flag('luna-effort', 'high') })
         : name === 'gemini' ? geminiProvider({ model: flag('gemini-model', 'gemini-3.6-flash-high'), set })
-          : null;
+          : name.startsWith('openrouter:') ? openRouterProvider({ model: name.slice('openrouter:'.length) })
+            : null;
     if (!provider) throw new Error(`Unknown provider ${name}`);
     if (flag('concurrency')) provider.concurrency = Number(flag('concurrency'));
     console.log(`${provider.name} (${provider.model}${provider.effort ? `, ${provider.effort}` : ''}) on ${items.length} ${set.name} bars`);
-    const progressFile = path.join(HERE, 'reports', `.progress-${set.name}-${name}${provider.effort ? `-${provider.effort}` : ''}.jsonl`);
+    const progressFile = path.join(HERE, 'reports', `.progress-${set.name}-${name.replace(/[^\w.-]+/g, '_')}${provider.effort ? `-${provider.effort}` : ''}.jsonl`);
     const results = await runProvider(provider, items, { progressFile, resume: args.includes('--resume') });
     await provider.close?.();
     const summary = summarize(results, name === 'luna' ? { inputPrice, outputPrice } : {});
@@ -219,7 +278,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.log(`  exact bars ${summary.exactBars}% | onset F1 ${summary.onsetF1} | drum-hit F1 ${summary.drumHitF1} | durations ${summary.durationAccuracy}% | errors ${summary.errors} | p50 ${summary.latencyMs.p50} ms | tokens ${summary.tokens.input}/${summary.tokens.output}${summary.estimatedCostUsd !== null ? ` | ~$${summary.estimatedCostUsd}` : ''}`);
   }
   if (!args.includes('--no-write')) {
-    const file = path.join(HERE, 'reports', `${report.runAt.replace(/[:.]/g, '-')}-${set.name}-${providers.join('-')}.json`);
+    const file = path.join(HERE, 'reports', `${report.runAt.replace(/[:.]/g, '-')}-${set.name}-${flag('providers', 'local').replaceAll(',', '-')}.json`);
     fs.writeFileSync(file, `${JSON.stringify(report, null, 1)}\n`);
     console.log(`Report: ${path.relative(ROOT, file)}`);
   }
